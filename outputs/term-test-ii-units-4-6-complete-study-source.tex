@@ -188,6 +188,33 @@ S_t = S_0\,\exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma\sqrt{t}
 \text{FX VaR} = V_{\text{foreign}}\times S_0\times\sigma_{\text{FX}}\times z_\alpha\times\sqrt{T}
 \]
 
+\subsection{Duration and Immunization}
+\[
+D_{\text{Mac}} = \frac{\displaystyle\sum_{t=1}^{T} \frac{t\cdot CF_t}{(1+y)^t}}{P}
+\]
+\[
+D^* = \frac{D_{\text{Mac}}}{1+y}, \qquad
+\frac{\Delta P}{P} \approx -D^*\,\Delta y
+\]
+Immunization condition:
+\[
+D_{\text{portfolio}} = D_{\text{liability}}
+\]
+
+\subsection{GBM (for CPPI Simulation)}
+\[
+S_t = S_0\,\exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)t + \sigma\sqrt{t}\,Z\right],
+\quad Z\sim\mathcal{N}(0,1)
+\]
+
+\subsection{FX P\&L and VaR}
+\[
+\text{FX P\&L} = V_{\text{foreign}}\times(S_t - S_0)
+\]
+\[
+\text{FX VaR} = V_{\text{foreign}}\times S_0\times\sigma_{\text{FX}}\times z_\alpha\times\sqrt{T}
+\]
+
 \hypertarget{quantitative-portfolio-management-term-test-ii---complete-study-source}{%
 \section{Quantitative Portfolio Management (Term Test II) - Complete
 Study
@@ -262,24 +289,61 @@ Diversification slides.
 \subparagraph{Solved examples (from source
 content)}\label{solved-examples-from-source-content}}
 
-Example 1 (equal allocation): - Total investment = INR 1,00,000 - Assets
-= 5 - Weight per asset = 1/5 = 20\% - Allocation per asset = INR 20,000
-Interpretation: pure equal-weight capital split.
 
-Example 2 (portfolio return from equal weights): - 4 stocks, equal
-weight 25\% each - Returns = 8\%, 12\%, 10\%, 14\% - Portfolio return =
-0.25x8 + 0.25x12 + 0.25x10 + 0.25x14 = 11\%
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{equal allocation}
 
-Example 3 (return in rupee terms): - Total capital = INR 3,00,000 - 5
-assets, equal allocation =\textgreater{} INR 60,000 each - Mean
-portfolio return shown in source = 11\% - Total rupee return = 3,00,000
-x 0.11 = INR 33,000
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Total investment = INR 1,00,000
+  \item Assets = 5
+  \item Weight per asset = 1/5 = 20\%
+  \item Allocation per asset = INR 20,000
+\end{itemize}
 
-Example 4 (empirical comparison linkage): - Equal weight used as
-diversification benchmark in optimization-vs-diversification deck. -
-Source case reports equal-weight expected return near 11.34\% versus
-concentrated optimized portfolio near 12.20\%. - Interpretation: higher
-expected return may come with concentration risk.
+\noindent\textbf{Interpretation:} pure equal-weight capital split.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{portfolio return from equal weights}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item 4 stocks, equal weight 25\% each
+  \item Returns = 8\%, 12\%, 10\%, 14\%
+  \item Portfolio return = 0.25$\times$8 + 0.25$\times$12 + 0.25$\times$10 + 0.25$\times$14 = 11\%
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{return in rupee terms}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Total capital = INR 3,00,000
+  \item 5 assets, equal allocation $\Rightarrow$ INR 60,000 each
+  \item Mean portfolio return shown in source = 11\%
+  \item Total rupee return = 3,00,000 x 0.11 = INR 33,000
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{empirical comparison linkage}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Equal weight used as diversification benchmark in optimization-vs-diversification deck.
+  \item Source case reports equal-weight expected return near 11.34\% versus concentrated optimized portfolio near 12.20\%.
+\end{itemize}
+
+\noindent\textbf{Interpretation:} higher expected return may come with concentration risk.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -325,19 +389,25 @@ Contributions}\label{a.-measuring-risk-contributions}}
 Core idea: - Portfolio risk is not only ``how risky each asset is.'' -
 It is ``how much each asset contributes to total portfolio risk.''
 
-Three measures: 1. Marginal Contribution to Risk (MCR\_i): MCR\_i =
-Cov(R\_i, R\_p) / sigma\_p Meaning: how much total risk changes for a
-small weight increase in asset i.
-
+Three measures:
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\item
-  Total Risk Contribution (TRC\_i): TRC\_i = w\_i x MCR\_i Meaning:
-  absolute risk contribution of asset i.
-\item
-  Percentage Risk Contribution (PRC\_i): PRC\_i = TRC\_i / sigma\_p
-  Meaning: contribution share of total risk.
+\item \textbf{Marginal Contribution to Risk} ($\text{MCR}_i$):
+\[
+\text{MCR}_i = \frac{\text{Cov}(R_i,\,R_p)}{\sigma_p}
+\]
+Meaning: how much total portfolio risk changes for a marginal weight increase in asset $i$.
+
+\item \textbf{Total Risk Contribution} ($\text{TRC}_i$):
+\[
+\text{TRC}_i = w_i \times \text{MCR}_i
+\]
+Meaning: absolute risk contribution of asset $i$.
+
+\item \textbf{Percentage Risk Contribution} ($\text{PRC}_i$):
+\[
+\text{PRC}_i = \frac{\text{TRC}_i}{\sigma_p}
+\]
+Meaning: share of total portfolio risk attributable to asset $i$.
 \end{enumerate}
 
 Why it matters: - Two assets can have similar variance but different
@@ -348,24 +418,63 @@ can hide in a single heavily correlated position.
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based}}
 
-Example 1 (two-asset case): - w\_A=0.60, Cov(A,p)=0.018, sigma\_p=0.12 -
-w\_B=0.40, Cov(B,p)=0.012, sigma\_p=0.12 - MCR\_A = 0.018/0.12 = 0.15 -
-MCR\_B = 0.012/0.12 = 0.10 - TRC\_A = 0.60x0.15 = 0.09 - TRC\_B =
-0.40x0.10 = 0.04 - PRC computed from TRC/sigma\_p in source slides.
-Interpretation: Asset A dominates risk share.
 
-Example 2 (alternate two-asset setup): - sigma\_p=0.10, Cov(A,p)=0.018,
-Cov(B,p)=0.012, same weights. - MCR\_A=0.18, MCR\_B=0.12 - TRC\_A=0.108,
-TRC\_B=0.048 - PRC from TRC/sigma\_p indicates strong A concentration.
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{two-asset case}
 
-Example 3 (three-asset fund case): - Equity/Bond/Commodity with given
-covariances and weights in source. - Source computes MCR, TRC, PRC and
-shows equity highest risk share. - Interpretation: rebalance needed if
-target is balanced risk profile.
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $w_A=0.60$,\; $\text{Cov}(A,p)=0.018$,\; $\sigma_p=0.12$
+  \item $w_B=0.40$,\; $\text{Cov}(B,p)=0.012$,\; $\sigma_p=0.12$
+  \item $\text{MCR}_A = 0.018/0.12 = 0.15$
+  \item $\text{MCR}_B = 0.012/0.12 = 0.10$
+  \item $\text{TRC}_A = 0.60 \times 0.15 = 0.09$
+  \item $\text{TRC}_B = 0.40 \times 0.10 = 0.04$
+  \item $\text{PRC}_i = \text{TRC}_i / \sigma_p$ (computed from above values).
+\end{itemize}
 
-Example 4 (risk-control decision): - Use PRC table to identify breach
-against target risk budget. - Action: reduce high PRC asset weight and
-increase under-allocated defensive assets.
+\noindent\textbf{Interpretation:} Asset A dominates risk share.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{alternate two-asset setup}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\sigma_p=0.10$,\; $\text{Cov}(A,p)=0.018$,\; $\text{Cov}(B,p)=0.012$; same weights as Example~1.
+  \item $\text{MCR}_A=0.18$,\; $\text{MCR}_B=0.12$
+  \item $\text{TRC}_A=0.108$,\; $\text{TRC}_B=0.048$
+  \item $\text{PRC}_A = \text{TRC}_A/\sigma_p$ is disproportionately large $\Rightarrow$ strong concentration in A.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{three-asset fund case}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Equity/Bond/Commodity with given covariances and weights in source.
+  \item Source computes MCR, TRC, PRC and shows equity highest risk share.
+\end{itemize}
+
+\noindent\textbf{Interpretation:} rebalance needed if target is balanced risk profile.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{risk-control decision}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Use PRC table to identify breach against target risk budget.
+  \item Action: reduce high PRC asset weight and increase under-allocated defensive assets.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -391,21 +500,57 @@ Keeps portfolio aligned with investor objective and constraints.
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-1}}
 
-Example 1 (equity-bond-commodity): - Risk contribution = weight x
-volatility - Equity: 0.50x0.20=0.10 - Bond: 0.30x0.10=0.03 - Commodity:
-0.20x0.15=0.03 - Total risk=0.16 - Risk shares: 62.5\%, 18.75\%, 18.75\%
 
-Example 2 (capital-to-risk decomposition): - Portfolio value INR
-1,00,000 with A/B/C allocations. - Compute weights, then risk
-contributions and shares exactly as in source. - Source output shows
-stock A largest risk budget usage.
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{equity-bond-commodity}
 
-Example 3 (risk budget from total risk): - Total risk 18\%; target
-shares 50/30/20 - Risk allocated: 9\%, 5.4\%, 3.6\%
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Risk contribution = weight x volatility
+  \item Equity: 0.50$\times$0.20=0.10
+  \item Bond: 0.30$\times$0.10=0.03
+  \item Commodity: 0.20$\times$0.15=0.03
+  \item Total risk=0.16
+  \item Risk shares: 62.5\%, 18.75\%, 18.75\%
+\end{itemize}
 
-Example 4 (target vs actual risk case): - Compare actual risk
-contribution against target budget. - Source recommendation: reduce
-equity exposure, increase bond/commodity weight.
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{capital-to-risk decomposition}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Portfolio value INR 1,00,000 with A/B/C allocations.
+  \item Compute weights, then risk contributions and shares exactly as in source.
+  \item Source output shows stock A largest risk budget usage.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{risk budget from total risk}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Total risk 18\%; target shares 50/30/20
+  \item Risk allocated: 9\%, 5.4\%, 3.6\%
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{target vs actual risk case}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Compare actual risk contribution against target budget.
+  \item Source recommendation: reduce equity exposure, increase bond/commodity weight.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -417,8 +562,11 @@ Meaning: - Equal capital is not equal risk. - Risk parity seeks more
 equal risk contributions. - Simplified method approximates this using
 inverse volatility weights.
 
-Formula: - Preliminary score: q\_i = 1/sigma\_i - Weight: w\_i = q\_i /
-sum(q\_j)
+\textbf{Formulas:}
+\[
+q_i = \frac{1}{\sigma_i}, \qquad w_i = \frac{q_i}{\sum_j q_j}
+\]
+Lower $\sigma_i$ $\Rightarrow$ larger $q_i$ $\Rightarrow$ larger weight.
 
 Interpretation: - Lower-risk assets (smaller sigma) get larger weights.
 - Higher-risk assets get reduced capital to avoid risk dominance.
@@ -427,26 +575,67 @@ Interpretation: - Lower-risk assets (smaller sigma) get larger weights.
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-2}}
 
-Example 1 (3-asset base case): - Given sigmas from source, compute
-inverse volatilities. - Normalize to get weights. - Source shows
-low-volatility asset receives highest weight.
 
-Example 2 (4-asset case study): - Equity 24\%, Bond 8\%, Commodity 16\%,
-Real Estate 12\% - Inverse-vol scores and normalized weights shown in
-OCR source. - Bond gets largest weight due to lowest sigma.
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{3-asset base case}
 
-Example 3 (3-asset investor case): - Stock index 20\%, Gov bonds 10\%,
-Gold 15\% - Inverse vol =\textgreater{} 5,10,6.67; normalized weights
-around 23.07\%, 46.15\%, 30.78\%
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Given sigmas from source, compute inverse volatilities.
+  \item Normalize to get weights.
+  \item Source shows low-volatility asset receives highest weight.
+\end{itemize}
 
-Example 4 (allocation in rupees): - Total capital INR 10,00,000 across 4
-assets. - Use risk-parity weights from source OCR to compute rupee
-allocations.
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{4-asset case study}
 
-Example 5 (equal-weight vs risk-parity comparison): - Risk parity lowers
-weight of highest-volatility stock and raises low-volatility stock
-weight. - Source interpretation: better risk diversification than equal
-weight.
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Equity 24\%, Bond 8\%, Commodity 16\%, Real Estate 12\%
+  \item Inverse-vol scores and normalized weights shown in OCR source.
+  \item Bond gets largest weight due to lowest sigma.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{3-asset investor case}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Stock index 20\%, Gov bonds 10\%, Gold 15\%
+  \item Inverse vol $\Rightarrow$ 5,10,6.67; normalized weights around 23.07\%, 46.15\%, 30.78\%
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{allocation in rupees}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Total capital INR 10,00,000 across 4 assets.
+  \item Use risk-parity weights from source OCR to compute rupee allocations.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 5}\enspace\textit{equal-weight vs risk-parity comparison}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Risk parity lowers weight of highest-volatility stock and raises low-volatility stock weight.
+  \item Source
+\end{itemize}
+
+\noindent\textbf{Interpretation:} better risk diversification than equal weight.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -458,9 +647,17 @@ Meaning: - Simplified RP uses only volatility. - Full RP uses covariance
 matrix (volatility + correlation structure). - Objective: equalize true
 risk contributions, not approximations.
 
-Core equations (as present in source/OCR): - Portfolio variance:
-sigma\_p\^{}2 = w\^{}T Sigma w - Risk contribution: RC\_i = w\_i (Sigma
-w)\_i - Target condition in full RP: RC\_1 = RC\_2 = \ldots{} = RC\_n
+\textbf{Core equations:}
+\[
+\sigma_p^2 = \mathbf{w}^\top \boldsymbol{\Sigma}\,\mathbf{w}
+\]
+\[
+\text{RC}_i = w_i\,(\boldsymbol{\Sigma}\mathbf{w})_i
+\]
+Target condition (full RP):
+\[
+\text{RC}_1 = \text{RC}_2 = \cdots = \text{RC}_n
+\]
 
 Why this matters: - Two low-vol assets can still jointly dominate risk
 if strongly correlated. - Full RP corrects hidden concentration.
@@ -469,19 +666,47 @@ if strongly correlated. - Full RP corrects hidden concentration.
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-3}}
 
-Example 1 (3-asset variance decomposition): - Use variance terms plus
-covariance cross-terms exactly as shown. - Sum yields portfolio
-variance, then sqrt gives sigma\_p. - Source interpretation:
-diversification reduces total risk below individual sigmas.
 
-Example 2 (equity-bond-commodity case): - Given weights, sigmas, and
-correlations. - Compute term-by-term variance and resulting sigma\_p. -
-Source interpretation: equities dominate risk share due to high sigma
-and weight.
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{3-asset variance decomposition}
 
-Example 3 (risk-contribution interpretation): - Using same case outputs,
-explain why equal capital is not equal risk. - Show why full RP decision
-variable must be risk contribution balance.
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Use variance terms plus covariance cross-terms exactly as shown.
+  \item Sum all terms $\Rightarrow$ portfolio variance; $\sigma_p = \sqrt{\sigma_p^2}$.
+  \item Source
+\end{itemize}
+
+\noindent\textbf{Interpretation:} diversification reduces total risk below individual sigmas.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{equity-bond-commodity case}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Given weights, sigmas, and correlations.
+  \item Compute each variance and cross-covariance term; sum $\Rightarrow \sigma_p$.
+  \item Source
+\end{itemize}
+
+\noindent\textbf{Interpretation:} equities dominate risk share due to high sigma and weight.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{risk-contribution interpretation}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Using same case outputs, explain why equal capital is not equal risk.
+  \item Show why full RP decision variable must be risk contribution balance.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -496,30 +721,93 @@ Windows}\label{covariance-estimation-brief-shrinkage-ewma-rolling-windows}}
 Problem addressed: - Sample covariance is noisy in finite samples. -
 High-dimensional portfolios amplify estimation error.
 
-Solution structure: - Blend sample matrix S with stable target T:
-Sigma\_shrink = lambda T + (1-lambda) S
+\textbf{Shrinkage formula:}
+\[
+\hat{\Sigma} = \lambda\, T + (1-\lambda)\, S
+\]
+where $S$ = sample covariance, $T$ = stable target matrix, $\lambda\in[0,1]$ = shrinkage intensity.
 
-Parameter meaning: - lambda close to 1: more stable, more biased toward
-target. - lambda close to 0: more data-driven, less shrinkage.
+\textbf{Parameter meaning:}
+\begin{itemize}\setlength{\itemsep}{2pt}
+  \item $\lambda \to 1$: highly stable, biased toward target $T$.
+  \item $\lambda \to 0$: data-driven, less shrinkage, noisier.
+\end{itemize}
 
 \hypertarget{solved-examples-source-based-4}{%
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-4}}
 
-Example 1: - S=0.10, T=0.06, lambda=0.2 - Estimate = 0.2x0.06 + 0.8x0.10
-= 0.092
 
-Example 2: - S=0.10, T=0.06, lambda=0.8 - Estimate = 0.8x0.06 + 0.2x0.10
-= 0.068
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{low shrinkage ($\lambda=0.2$)}
 
-Example 3: - S=0.12, T=0.05, lambda=0.3 - Estimate = 0.3x0.05 + 0.7x0.12
-= 0.099
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $S=0.10$, $T=0.06$, $\lambda=0.2$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\hat{\Sigma} = 0.2\times0.06 + 0.8\times0.10 = 0.012 + 0.080 = 0.092$
+\end{itemize}
 
-Example 4: - S=0.15, T=0.08 with lambda alternatives 0.2 and 0.7 from
-OCR. - Demonstrates stability increase as lambda rises.
+\noindent\textbf{Interpretation:} Low $\lambda$ keeps the estimate close to the sample matrix $S$.
 
-Interpretation rule: - Higher lambda reduces noise sensitivity but may
-increase model bias.
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{high shrinkage ($\lambda=0.8$)}
+
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $S=0.10$, $T=0.06$, $\lambda=0.8$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\hat{\Sigma} = 0.8\times0.06 + 0.2\times0.10 = 0.048 + 0.020 = 0.068$
+\end{itemize}
+
+\noindent\textbf{Interpretation:} High $\lambda$ pulls the estimate strongly toward the stable target $T$.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{intermediate shrinkage ($\lambda=0.3$)}
+
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $S=0.12$, $T=0.05$, $\lambda=0.3$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\hat{\Sigma} = 0.3\times0.05 + 0.7\times0.12 = 0.015 + 0.084 = 0.099$
+\end{itemize}
+
+\noindent\textbf{Interpretation:} Result lies between $T$ and $S$; nearer to $S$ because $\lambda$ is small.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{sensitivity to $\lambda$}
+
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $S=0.15$, $T=0.08$; compare $\lambda=0.2$ vs $\lambda=0.7$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\lambda=0.2$: $\hat{\Sigma} = 0.2\times0.08 + 0.8\times0.15 = 0.016+0.120 = 0.136$
+  \item $\lambda=0.7$: $\hat{\Sigma} = 0.7\times0.08 + 0.3\times0.15 = 0.056+0.045 = 0.101$
+\end{itemize}
+
+\noindent\textbf{Interpretation:} Higher $\lambda$ moves the estimate away from the noisy sample matrix.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -530,11 +818,15 @@ Average)}\label{b.-ewma-exponentially-weighted-moving-average}}
 Purpose: - Update variance/covariance with greater weight on recent
 observations.
 
-Variance update (source): - sigma\_t\^{}2 = lambda sigma\_\{t-1\}\^{}2 +
-(1-lambda) r\_\{t-1\}\^{}2
+\textbf{Variance update:}
+\[
+\sigma_t^2 = \lambda\,\sigma_{t-1}^2 + (1-\lambda)\,r_{t-1}^2
+\]
 
-Covariance update (source form): - Cov\_t = lambda Cov\_\{t-1\} +
-(1-lambda)(r\_\{A,t-1\} r\_\{B,t-1\})
+\textbf{Covariance update:}
+\[
+\text{Cov}_t = \lambda\,\text{Cov}_{t-1} + (1-\lambda)\,r_{A,t-1}\,r_{B,t-1}
+\]
 
 Why used in practice: - Fast adaptation to volatility clustering. -
 Standard in VaR and institutional risk systems.
@@ -546,22 +838,92 @@ full-history methods. - Reactive, not truly predictive.
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-5}}
 
-Example 1: - Previous variance 0.04, return 10\%, lambda 0.94 -
-sigma\_t\^{}2 = 0.94x0.04 + 0.06x0.01 = 0.0382
 
-Example 2: - Same inputs with lambda 0.80 - sigma\_t\^{}2 = 0.80x0.04 +
-0.20x0.01 = 0.034
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{variance update ($\lambda=0.94$)}
 
-Example 3: - Two-period update with initial variance 0.05 and returns
-8\%,12\% at lambda 0.90 - Source OCR gives final second-period variance
-around 0.0425
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\sigma_{t-1}^2=0.04$, $r_{t-1}=10\%$, $\lambda=0.94$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\sigma_t^2 = 0.94\times0.04 + 0.06\times(0.10)^2$
+  \item $= 0.0376 + 0.0006 = 0.0382$
+\end{itemize}
 
-Example 4: - Covariance update with previous covariance 0.02, returns
-10\% and 8\%, lambda 0.95 - New covariance = 0.0194
+\noindent\textbf{Interpretation:} The new variance is only slightly lower because most weight stays on the prior.
 
-Example 5 (portfolio risk case): - Update variance A, variance B,
-covariance AB using EWMA. - Then compute portfolio variance with weights
-0.6 and 0.4. - Source OCR gives final portfolio variance near 0.03185.
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{variance update ($\lambda=0.80$)}
+
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Same inputs as Example~1; $\lambda=0.80$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\sigma_t^2 = 0.80\times0.04 + 0.20\times(0.10)^2$
+  \item $= 0.0320 + 0.0020 = 0.034$
+\end{itemize}
+
+\noindent\textbf{Interpretation:} Lower $\lambda$ reacts more aggressively to the recent return.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{two-period update ($\lambda=0.90$)}
+
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\sigma_0^2=0.05$, $r_1=8\%$, $r_2=12\%$, $\lambda=0.90$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Period 1: $\sigma_1^2 = 0.90\times0.05 + 0.10\times(0.08)^2 = 0.0450+0.00064 = 0.04564$
+  \item Period 2: $\sigma_2^2 = 0.90\times0.04564 + 0.10\times(0.12)^2 \approx 0.04108+0.00144 = 0.0425$
+\end{itemize}
+
+\noindent\textbf{Interpretation:} Each period, the estimate blends the prior variance with the new squared return.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{covariance update ($\lambda=0.95$)}
+
+\noindent\textbf{Given:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\text{Cov}_{t-1}=0.02$, $r_A=10\%$, $r_B=8\%$, $\lambda=0.95$
+\end{itemize}
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item $\text{Cov}_t = 0.95\times0.02 + 0.05\times(0.10)(0.08)$
+  \item $= 0.019 + 0.0004 = 0.0194$
+\end{itemize}
+
+\noindent\textbf{Interpretation:} EWMA covariance tracks co-movement with more weight on recent joint returns.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 5}\enspace\textit{portfolio risk case}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Update variance A, variance B, covariance AB using EWMA.
+  \item Then compute portfolio variance with weights 0.6 and 0.4.
+  \item Source OCR gives final portfolio variance near 0.03185.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -584,6 +946,8 @@ smoother, but slower to detect regime shifts.
 \hypertarget{solved-examples-source-based-6}{%
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-6}}
+
+
 
 Example 1: - 3-day rolling covariance on days 1-3,2-4,3-5 with full
 table-based calculations shown.
@@ -683,27 +1047,86 @@ peaks. - Still vulnerable if crash jumps across rebalancing interval.
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-7}}
 
-Example 1 (basic allocation): - V=10,00,000; F=8,00,000; m=3 -
-C=2,00,000 - E=6,00,000; B=4,00,000
 
-Example 2 (after +10\% move): - New V=10,60,000 - C=2,60,000 -
-E=7,80,000; B=2,80,000
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{basic allocation}
 
-Example 3 (after -20\% move): - New V=8,80,000 - C=80,000 - E=2,40,000;
-B=6,40,000
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item V=10,00,000; F=8,00,000; m=3
+  \item C=2,00,000
+  \item E=6,00,000; B=4,00,000
+\end{itemize}
 
-Example 4 (drawdown floor): - Peak=12,00,000; max drawdown=25\% -
-Floor=9,00,000 - For current V=11,00,000 and m=4: C=2,00,000
-=\textgreater{} E=8,00,000; B=3,00,000
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{after +10\% move}
 
-Example 5 (multi-period CPPI case): - Source tracks period-by-period
-allocations and confirms no floor violation in first case.
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item New V=10,60,000
+  \item C=2,60,000
+  \item E=7,80,000; B=2,80,000
+\end{itemize}
 
-Example 6 (stress case with gap risk): - Aggressive multiplier and crash
-lead to floor breach and loss lock-in in safe assets.
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{after -20\% move}
 
-Example 7 (GBM-linked CPPI OCR case): - Downward random shock reduces
-risky sleeve and preserves floor margin.
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item New V=8,80,000
+  \item C=80,000
+  \item E=2,40,000; B=6,40,000
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{drawdown floor}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Peak=12,00,000; max drawdown=25\%
+  \item Floor=9,00,000
+  \item For current V=11,00,000 and m=4: C=2,00,000 $\Rightarrow$ E=8,00,000; B=3,00,000
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 5}\enspace\textit{multi-period CPPI case}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Source tracks period-by-period allocations and confirms no floor violation in first case.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 6}\enspace\textit{stress case with gap risk}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Aggressive multiplier and crash lead to floor breach and loss lock-in in safe assets.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 7}\enspace\textit{GBM-linked CPPI OCR case}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Downward random shock reduces risky sleeve and preserves floor margin.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -907,21 +1330,59 @@ differential return (alpha).
 \subparagraph{Solved examples
 (source-based)}\label{solved-examples-source-based-8}}
 
-Example 1 (Jensen ranking of 3 portfolios): - Source PDF computes
-expected returns using CAPM inputs and then differences from actual
-return. - Ranked based on alpha differential.
 
-Example 2 (Sharpe ranking across funds): - Source computes multiple
-Sharpe values and rank ordering.
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{Jensen ranking of 3 portfolios}
 
-Example 3 (Treynor ranking across funds): - Source computes Treynor
-values and ranks.
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Source PDF computes expected returns using CAPM inputs and then differences from actual return.
+  \item Ranked based on alpha differential.
+\end{itemize}
 
-Example 4 (Jensen for A/B/C/D funds): - Source page computes alpha
-values, including negative alpha cases.
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{Sharpe ranking across funds}
 
-Example 5 (additional OCR illustrations): - Multiple worked mutual fund
-comparisons in the numericals PDF.
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Source computes multiple Sharpe values and rank ordering.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{Treynor ranking across funds}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Source computes Treynor values and ranks.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{Jensen for A/B/C/D funds}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Source page computes alpha values, including negative alpha cases.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 5}\enspace\textit{additional OCR illustrations}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Multiple worked mutual fund comparisons in the numericals PDF.
+\end{itemize}
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
