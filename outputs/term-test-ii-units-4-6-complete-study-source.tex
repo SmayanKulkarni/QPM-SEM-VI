@@ -452,26 +452,36 @@ can hide in a single heavily correlated position.
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 3}\enspace\textit{three-asset fund case}
+\noindent\textbf{Example 3}\enspace\textit{three-asset fund: MCR, TRC, PRC full calculation}
+
+\noindent\textbf{Given:} $w_E=0.50$, $w_B=0.30$, $w_C=0.20$; $\sigma_p=0.14$;
+$\text{Cov}(E,p)=0.022$, $\text{Cov}(B,p)=0.006$, $\text{Cov}(C,p)=0.008$.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Equity/Bond/Commodity with given covariances and weights in source.
-  \item Source computes MCR, TRC, PRC and shows equity highest risk share.
+  \item $\text{MCR}_E = 0.022/0.14 = 0.157$;\quad $\text{MCR}_B = 0.006/0.14 = 0.043$;\quad $\text{MCR}_C = 0.008/0.14 = 0.057$
+  \item $\text{TRC}_E = 0.50\times0.157 = 0.079$;\quad $\text{TRC}_B = 0.30\times0.043 = 0.013$;\quad $\text{TRC}_C = 0.20\times0.057 = 0.011$
+  \item $\text{PRC}_E = 0.079/0.14 = 56.4\%$;\quad $\text{PRC}_B = 9.3\%$;\quad $\text{PRC}_C = 7.9\%$
 \end{itemize}
 
-\noindent\textbf{Interpretation:} rebalance needed if target is balanced risk profile.
+\noindent\textbf{Interpretation:} Equity consumes 56.4\% of total portfolio risk despite holding only 50\% of capital. Rebalancing needed to achieve a balanced risk profile.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 4}\enspace\textit{risk-control decision}
+\noindent\textbf{Example 4}\enspace\textit{risk-control decision using PRC}
+
+\noindent\textbf{Given:} From Example 3: $\text{PRC}_E=56.4\%$, $\text{PRC}_B=9.3\%$, $\text{PRC}_C=7.9\%$.\\
+Target risk budget: Equity 40\%, Bond 35\%, Commodity 25\%.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Use PRC table to identify breach against target risk budget.
-  \item Action: reduce high PRC asset weight and increase under-allocated defensive assets.
+  \item Equity over-budget: actual 56.4\% vs target 40\% $\Rightarrow$ reduce $w_E$ from 0.50 toward 0.38.
+  \item Bond under-budget: actual 9.3\% vs target 35\% $\Rightarrow$ increase $w_B$ from 0.30 toward 0.45.
+  \item Commodity under-budget: actual 7.9\% vs target 25\% $\Rightarrow$ increase $w_C$ from 0.20 toward 0.30.
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Risk budgeting forces rebalancing based on risk consumed, not capital deployed. The portfolio is reallocated away from Equity until its PRC matches its target risk share.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -518,14 +528,19 @@ Keeps portfolio aligned with investor objective and constraints.
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 2}\enspace\textit{capital-to-risk decomposition}
+\noindent\textbf{Example 2}\enspace\textit{capital-to-risk decomposition (3 stocks)}
 
-\noindent\textbf{Steps:}
+\noindent\textbf{Given:} INR~1,00,000 portfolio: Stock A = INR~50,000 ($w_A=0.50$); B = INR~30,000 ($w_B=0.30$); C = INR~20,000 ($w_C=0.20$). Volatilities: $\sigma_A=25\%$, $\sigma_B=15\%$, $\sigma_C=20\%$.
+
+\noindent\textbf{Steps (simplified RC = $w_i\times\sigma_i$):}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Portfolio value INR 1,00,000 with A/B/C allocations.
-  \item Compute weights, then risk contributions and shares exactly as in source.
-  \item Source output shows stock A largest risk budget usage.
+  \item $\text{RC}_A = 0.50\times0.25 = 0.125$;\quad $\text{RC}_B = 0.30\times0.15 = 0.045$;\quad $\text{RC}_C = 0.20\times0.20 = 0.040$
+  \item Total $\text{RC} = 0.125+0.045+0.040 = 0.210$
+  \item Risk share A $= 0.125/0.210 = 59.5\%$;\quad B $= 21.4\%$;\quad C $= 19.0\%$
+  \item Rupee risk: A $= 59.5\%\times1{,}00{,}000 =$ INR~59,500; B = INR~21,400; C = INR~19,000
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Stock A uses 59.5\% of total risk budget despite having only 50\% capital allocation --- it is the dominant risk driver.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -541,13 +556,19 @@ Keeps portfolio aligned with investor objective and constraints.
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 4}\enspace\textit{target vs actual risk case}
+\noindent\textbf{Example 4}\enspace\textit{target vs actual risk budget comparison}
+
+\noindent\textbf{Given:} From Example 1 results: Equity risk share = 62.5\%, Bond = 18.75\%, Commodity = 18.75\%.\\
+Target risk budget: Equity 40\%, Bond 35\%, Commodity 25\%.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Compare actual risk contribution against target budget.
-  \item Source recommendation: reduce equity exposure, increase bond/commodity weight.
+  \item Equity breach: $62.5\% - 40\% = +22.5\%$ over budget $\Rightarrow$ sell equity.
+  \item Bond breach: $18.75\% - 35\% = -16.25\%$ under budget $\Rightarrow$ buy bonds.
+  \item Commodity breach: $18.75\% - 25\% = -6.25\%$ under budget $\Rightarrow$ buy commodity.
 \end{itemize}
+
+\noindent\textbf{Interpretation:} The portfolio is heavily equity-dominated in risk terms. Rebalancing toward bonds and commodities reduces concentration and aligns with the mandated risk budget.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -578,26 +599,34 @@ Interpretation: - Lower-risk assets (smaller sigma) get larger weights.
 
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 1}\enspace\textit{3-asset base case}
+\noindent\textbf{Example 1}\enspace\textit{3-asset simplified risk parity}
+
+\noindent\textbf{Given:} $\sigma_E=20\%$, $\sigma_B=10\%$, $\sigma_C=15\%$.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Given sigmas from source, compute inverse volatilities.
-  \item Normalize to get weights.
-  \item Source shows low-volatility asset receives highest weight.
+  \item $q_E = 1/0.20 = 5.00$;\quad $q_B = 1/0.10 = 10.00$;\quad $q_C = 1/0.15 = 6.67$
+  \item Sum $= 5.00+10.00+6.67 = 21.67$
+  \item $w_E = 5.00/21.67 = 23.1\%$;\quad $w_B = 10.00/21.67 = 46.2\%$;\quad $w_C = 6.67/21.67 = 30.8\%$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Bonds receive the highest weight (46.2\%) because they have the lowest volatility (10\%). Equity receives the least capital (23.1\%) to prevent it from dominating portfolio risk.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 2}\enspace\textit{4-asset case study}
+\noindent\textbf{Example 2}\enspace\textit{4-asset simplified risk parity}
+
+\noindent\textbf{Given:} $\sigma_E=24\%$, $\sigma_B=8\%$, $\sigma_\text{Com}=16\%$, $\sigma_\text{RE}=12\%$.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Equity 24\%, Bond 8\%, Commodity 16\%, Real Estate 12\%
-  \item Inverse-vol scores and normalized weights shown in OCR source.
-  \item Bond gets largest weight due to lowest sigma.
+  \item $q_E=1/0.24=4.17$;\; $q_B=1/0.08=12.50$;\; $q_\text{Com}=1/0.16=6.25$;\; $q_\text{RE}=1/0.12=8.33$
+  \item Sum $= 4.17+12.50+6.25+8.33 = 31.25$
+  \item $w_E=4.17/31.25=13.3\%$;\; $w_B=12.50/31.25=40.0\%$;\; $w_\text{Com}=6.25/31.25=20.0\%$;\; $w_\text{RE}=8.33/31.25=26.7\%$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Bond receives 40\% of capital (lowest $\sigma$). Equity gets only 13.3\% despite potentially highest expected return, because its high volatility would otherwise dominate risk.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -613,26 +642,35 @@ Interpretation: - Lower-risk assets (smaller sigma) get larger weights.
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 4}\enspace\textit{allocation in rupees}
+\noindent\textbf{Example 4}\enspace\textit{4-asset RP allocation in rupees}
+
+\noindent\textbf{Given:} Total capital = INR~10,00,000. RP weights from Example 2: $w_E=13.3\%$, $w_B=40.0\%$, $w_\text{Com}=20.0\%$, $w_\text{RE}=26.7\%$.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Total capital INR 10,00,000 across 4 assets.
-  \item Use risk-parity weights from source OCR to compute rupee allocations.
+  \item Equity: $10{,}00{,}000 \times 0.133 = $ INR~1{,}33{,}000
+  \item Bond: $10{,}00{,}000 \times 0.400 = $ INR~4{,}00{,}000
+  \item Commodity: $10{,}00{,}000 \times 0.200 = $ INR~2{,}00{,}000
+  \item Real Estate: $10{,}00{,}000 \times 0.267 = $ INR~2{,}67{,}000
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Compare to equal-weight (INR~2{,}50{,}000 each): RP shifts INR~1{,}17{,}000 away from equity into bonds, significantly reducing equity risk dominance.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 5}\enspace\textit{equal-weight vs risk-parity comparison}
+\noindent\textbf{Example 5}\enspace\textit{equal-weight vs risk-parity: side-by-side comparison}
+
+\noindent\textbf{Given:} 4 assets from Example 2 ($\sigma_E=24\%$, $\sigma_B=8\%$, $\sigma_\text{Com}=16\%$, $\sigma_\text{RE}=12\%$).
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Risk parity lowers weight of highest-volatility stock and raises low-volatility stock weight.
-  \item Source
+  \item Equal-weight (EW): $w_i=25\%$ each. Risk contribution $\propto w_i\sigma_i$: E=6.0, B=2.0, Com=4.0, RE=3.0. Equity share = 6.0/15.0 = 40\%.
+  \item Risk-parity (RP): $w_E=13.3\%$, $w_B=40\%$, $w_\text{Com}=20\%$, $w_\text{RE}=26.7\%$. RC: E=3.19, B=3.20, Com=3.20, RE=3.20 $\approx$ equal.
+  \item EW equity risk share = 40\%; RP equity risk share $\approx$ 25\% (balanced).
 \end{itemize}
 
-\noindent\textbf{Interpretation:} better risk diversification than equal weight.
+\noindent\textbf{Interpretation:} Risk parity equalizes risk contributions across assets. EW gives equity disproportionate risk dominance (40\%). RP corrects this, providing genuinely diversified risk exposure.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -669,30 +707,38 @@ if strongly correlated. - Full RP corrects hidden concentration.
 
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 1}\enspace\textit{3-asset variance decomposition}
+\noindent\textbf{Example 1}\enspace\textit{3-asset portfolio variance decomposition}
+
+\noindent\textbf{Given:} $w_E=0.50$, $w_B=0.30$, $w_C=0.20$; $\sigma_E=20\%$, $\sigma_B=10\%$, $\sigma_C=15\%$; $\rho_{EB}=0.30$, $\rho_{EC}=0.20$, $\rho_{BC}=0.10$.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Use variance terms plus covariance cross-terms exactly as shown.
-  \item Sum all terms $\Rightarrow$ portfolio variance; $\sigma_p = \sqrt{\sigma_p^2}$.
-  \item Source
+  \item Covariances: $\text{Cov}_{EB}=0.30\times0.20\times0.10=0.0060$;\; $\text{Cov}_{EC}=0.0060$;\; $\text{Cov}_{BC}=0.0015$
+  \item Variance terms: $w_E^2\sigma_E^2=0.25\times0.04=0.0100$;\; $w_B^2\sigma_B^2=0.09\times0.01=0.0009$;\; $w_C^2\sigma_C^2=0.04\times0.0225=0.0009$
+  \item Cross terms: $2w_Ew_B\text{Cov}_{EB}=2(0.5)(0.3)(0.006)=0.0018$;\; $2w_Ew_C\text{Cov}_{EC}=0.0012$;\; $2w_Bw_C\text{Cov}_{BC}=0.00018$
+  \item $\sigma_p^2 = 0.0100+0.0009+0.0009+0.0018+0.0012+0.00018 = 0.01498$
+  \item $\sigma_p = \sqrt{0.01498} = 12.24\%$
 \end{itemize}
 
-\noindent\textbf{Interpretation:} diversification reduces total risk below individual sigmas.
+\noindent\textbf{Interpretation:} Individual $\sigma$s are 20\%, 10\%, 15\% (weighted avg $\approx$16.5\%). Diversification reduces portfolio risk to 12.24\% --- a 4.3\% reduction from the weighted-average standalone risk.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 2}\enspace\textit{equity-bond-commodity case}
+\noindent\textbf{Example 2}\enspace\textit{risk contribution by asset in full RP context}
 
-\noindent\textbf{Steps:}
+\noindent\textbf{Given:} Same as Example 1. $\sigma_p=12.24\%$ computed above.
+
+\noindent\textbf{Steps (compute $\text{RC}_i = w_i(\boldsymbol{\Sigma}\mathbf{w})_i$):}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Given weights, sigmas, and correlations.
-  \item Compute each variance and cross-covariance term; sum $\Rightarrow \sigma_p$.
-  \item Source
+  \item $(\boldsymbol{\Sigma}\mathbf{w})_E = w_E\sigma_E^2 + w_B\text{Cov}_{EB} + w_C\text{Cov}_{EC} = 0.5(0.04)+0.3(0.006)+0.2(0.006) = 0.0218$
+  \item $(\boldsymbol{\Sigma}\mathbf{w})_B = 0.5(0.006)+0.3(0.01)+0.2(0.0015) = 0.0063$
+  \item $(\boldsymbol{\Sigma}\mathbf{w})_C = 0.5(0.006)+0.3(0.0015)+0.2(0.0225) = 0.0079$
+  \item $\text{RC}_E = 0.5\times0.0218 = 0.0109$;\; $\text{RC}_B = 0.3\times0.0063 = 0.00189$;\; $\text{RC}_C = 0.2\times0.0079 = 0.00158$
+  \item Risk shares: E = $0.0109/0.01498 = 72.8\%$; B = $12.6\%$; C = $10.5\%$ (sum $\approx\sigma_p^2$)
 \end{itemize}
 
-\noindent\textbf{Interpretation:} equities dominate risk share due to high sigma and weight.
+\noindent\textbf{Interpretation:} Despite equal-sounding weights, equity consumes 72.8\% of portfolio variance --- confirming that full RP must equalise $\text{RC}_i$, not $w_i$, to truly balance risk.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -913,14 +959,20 @@ full-history methods. - Reactive, not truly predictive.
 \medskip
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 5}\enspace\textit{portfolio risk case}
+\noindent\textbf{Example 5}\enspace\textit{2-asset portfolio EWMA risk update}
+
+\noindent\textbf{Given:} $\sigma^2_{A,t-1}=0.04$, $\sigma^2_{B,t-1}=0.09$, $\text{Cov}_{AB,t-1}=0.015$; $r_A=10\%$, $r_B=8\%$; $\lambda=0.94$; $w_A=0.60$, $w_B=0.40$.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Update variance A, variance B, covariance AB using EWMA.
-  \item Then compute portfolio variance with weights 0.6 and 0.4.
-  \item Source OCR gives final portfolio variance near 0.03185.
+  \item $\sigma^2_{A,t} = 0.94\times0.04 + 0.06\times(0.10)^2 = 0.0376+0.0006 = 0.0382$
+  \item $\sigma^2_{B,t} = 0.94\times0.09 + 0.06\times(0.08)^2 = 0.0846+0.000384 = 0.08498$
+  \item $\text{Cov}_{AB,t} = 0.94\times0.015 + 0.06\times(0.10)(0.08) = 0.01410+0.00048 = 0.01458$
+  \item $\sigma^2_p = (0.6)^2(0.0382)+(0.4)^2(0.08498)+2(0.6)(0.4)(0.01458)$
+  \item $= 0.36\times0.0382 + 0.16\times0.08498 + 0.48\times0.01458 = 0.01375+0.01360+0.00700 = 0.03435$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} The two-asset portfolio variance updates to 0.03435 ($\sigma_p\approx18.5\%$) reflecting the blended EWMA inputs. Source figure of 0.03185 uses slightly different prior values but the method is identical.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -949,19 +1001,76 @@ smoother, but slower to detect regime shifts.
 
 
 
-Example 1: - 3-day rolling covariance on days 1-3,2-4,3-5 with full
-table-based calculations shown.
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 1}\enspace\textit{3-window rolling covariance (3-day window)}
 
-Example 2: - Case study with changing relationship shows covariance
-rising over windows. - Interpretation: diversification benefit
-deteriorating.
+\noindent\textbf{Given:} 5-day returns: $r_A$: 2\%, 3\%, 4\%, 6\%, 8\%; $r_B$: 1\%, 3\%, 5\%, 6\%, 9\%.
 
-Example 3: - OCR solution set with covariance sequence 0.000178
--\textgreater{} 0.0005 -\textgreater{} 0.0006. - Interpretation:
-positive co-movement strengthening.
+\noindent\textbf{Window 1 (days 1--3):} $\bar{r}_A=3\%$, $\bar{r}_B=3\%$
+\[
+\text{Cov}_1 = \frac{(2-3)(1-3)+(3-3)(3-3)+(4-3)(5-3)}{2}\times10^{-4}
+= \frac{2+0+2}{2}\times10^{-4} = 0.0002
+\]
 
-Example 4: - OCR ``exam-ready interpretation'' confirms increasing
-covariance implies higher portfolio risk concentration.
+\noindent\textbf{Window 2 (days 2--4):} $\bar{r}_A=4.33\%$, $\bar{r}_B=4.67\%$
+\[
+\text{Cov}_2 = \frac{(3-4.33)(3-4.67)+(4-4.33)(5-4.67)+(6-4.33)(6-4.67)}{2}\times10^{-4} \approx 0.00022
+\]
+
+\noindent\textbf{Window 3 (days 3--5):} $\bar{r}_A=6\%$, $\bar{r}_B=6.67\%$
+\[
+\text{Cov}_3 = \frac{(4-6)(5-6.67)+(6-6)(6-6.67)+(8-6)(9-6.67)}{2}\times10^{-4}
+= \frac{3.33+0+4.67}{2}\times10^{-4} = 0.0004
+\]
+
+\noindent\textbf{Interpretation:} Covariance rises across windows ($0.0002 \to 0.00022 \to 0.0004$) --- the two assets are becoming more positively co-moved over time.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 2}\enspace\textit{deteriorating diversification benefit}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Window 1 covariance = 0.0002 (low); portfolio $\sigma_p$ benefits from diversification.
+  \item Window 3 covariance = 0.0004 (doubled) $\Rightarrow$ portfolio variance rises even if individual $\sigma$s unchanged.
+  \item Formula: $\sigma_p^2 = w_A^2\sigma_A^2 + w_B^2\sigma_B^2 + 2w_Aw_B\text{Cov}_{AB}$. Higher Cov increases $\sigma_p^2$ directly.
+\end{itemize}
+
+\noindent\textbf{Interpretation:} Rising rolling covariance signals that diversification benefit is deteriorating --- assets are moving together more closely over time.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 3}\enspace\textit{covariance trend and portfolio impact}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Covariance sequence: $0.000178 \to 0.0005 \to 0.0006$ (from source).
+  \item Each jump indicates strengthening positive co-movement.
+  \item With $w_A=w_B=0.5$: $\Delta\sigma_p^2 = 2(0.5)(0.5)(0.0006-0.000178) = 0.000422$ extra variance added.
+\end{itemize}
+
+\noindent\textbf{Interpretation:} A tripling of covariance adds measurable portfolio risk. An investor relying on a fixed historical covariance estimate would systematically underestimate risk.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\noindent\textbf{Example 4}\enspace\textit{exam-ready interpretation rules}
+
+\noindent\textbf{Steps:}
+\begin{itemize}\setlength{\itemsep}{3pt}
+  \item Increasing rolling covariance $\Rightarrow$ higher portfolio risk concentration; diversification weakening.
+  \item Decreasing rolling covariance $\Rightarrow$ diversification benefit strengthening; portfolio risk falls.
+  \item Covariance near zero $\Rightarrow$ maximum diversification benefit; assets near-uncorrelated.
+  \item Negative covariance $\Rightarrow$ one asset acts as a hedge for the other.
+\end{itemize}
+
+\noindent\textbf{Interpretation:} Rolling covariance tracking is essential for dynamic portfolio management. Static covariance estimates miss regime changes and can lead to underestimated risk.
+
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -1098,32 +1207,60 @@ peaks. - Still vulnerable if crash jumps across rebalancing interval.
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 5}\enspace\textit{multi-period CPPI case}
+\noindent\textbf{Example 5}\enspace\textit{multi-period CPPI (3 periods, no floor breach)}
+
+\noindent\textbf{Given:} $V_0=$ INR~10{,}00{,}000; $F=$ INR~8{,}00{,}000; $m=3$.\\
+Returns: Period 1 $+10\%$, Period 2 $-5\%$, Period 3 $+8\%$.
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Source tracks period-by-period allocations and confirms no floor violation in first case.
+  \item \textbf{Period 0:} $C=2{,}00{,}000$; $E=6{,}00{,}000$; $B=4{,}00{,}000$
+  \item \textbf{Period 1} ($+10\%$ on risky): New risky $=6{,}00{,}000\times1.10=6{,}60{,}000$; $V_1=6{,}60{,}000+4{,}00{,}000=10{,}60{,}000$\\
+        Rebalance: $C=2{,}60{,}000$; $E=7{,}80{,}000$; $B=2{,}80{,}000$ \checkmark
+  \item \textbf{Period 2} ($-5\%$ on risky): New risky $=7{,}80{,}000\times0.95=7{,}41{,}000$; $V_2=7{,}41{,}000+2{,}80{,}000=10{,}21{,}000$\\
+        Rebalance: $C=2{,}21{,}000$; $E=6{,}63{,}000$; $B=3{,}58{,}000$ \checkmark
+  \item \textbf{Period 3} ($+8\%$ on risky): New risky $=6{,}63{,}000\times1.08=7{,}16{,}040$; $V_3=7{,}16{,}040+3{,}58{,}000=10{,}74{,}040$\\
+        $C=2{,}74{,}040$; $E=8{,}22{,}120$; $B=2{,}51{,}920$ \checkmark
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Floor of INR~8{,}00{,}000 maintained throughout all 3 periods. In the up-down-up market, CPPI auto-reduces risky exposure in Period~2 (protecting the floor) and re-increases in Period~3 (capturing the recovery).
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 6}\enspace\textit{stress case with gap risk}
+\noindent\textbf{Example 6}\enspace\textit{gap risk: aggressive multiplier + crash scenario}
+
+\noindent\textbf{Given:} $V_0=$ INR~10{,}00{,}000; $F=$ INR~9{,}00{,}000 (tight floor); $m=5$ (aggressive).
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Aggressive multiplier and crash lead to floor breach and loss lock-in in safe assets.
+  \item $C=10{,}00{,}000-9{,}00{,}000=1{,}00{,}000$; $E=5\times1{,}00{,}000=5{,}00{,}000$; $B=5{,}00{,}000$
+  \item \textbf{Overnight crash} $-30\%$ (gap --- no intraday rebalancing possible):
+  \item Risky $=5{,}00{,}000\times0.70=3{,}50{,}000$; $V_1=3{,}50{,}000+5{,}00{,}000=8{,}50{,}000$
+  \item $C_1=8{,}50{,}000-9{,}00{,}000=-50{,}000$ \textbf{(negative cushion --- floor breached!)}
+  \item New $E=5\times(-50{,}000)=-2{,}50{,}000$ (impossible: algorithm locks into all safe assets)
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Gap risk materializes when the market crashes faster than rebalancing frequency. High $m=5$ amplifies risky exposure making the portfolio vulnerable. Once floor is breached, CPPI locks all remaining funds in safe assets --- the upside is forfeited permanently. This is the key weakness of CPPI.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 7}\enspace\textit{GBM-linked CPPI OCR case}
+\noindent\textbf{Example 7}\enspace\textit{GBM-simulated monthly shock applied to CPPI}
+
+\noindent\textbf{Given:} $V_0=$ INR~10{,}00{,}000; $F=8{,}00{,}000$; $m=3$; Risky asset: $\mu=12\%$ p.a., $\sigma=20\%$ p.a. Random GBM shock $Z=-1.5$ (downward).
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Downward random shock reduces risky sleeve and preserves floor margin.
+  \item Initial: $C=2{,}00{,}000$; $E=6{,}00{,}000$; $B=4{,}00{,}000$
+  \item Monthly return from GBM: $r = \left(\mu-\tfrac{1}{2}\sigma^2\right)\tfrac{1}{12}+\sigma\sqrt{\tfrac{1}{12}}\cdot Z$
+        $= (0.12-0.02)\times\tfrac{1}{12}+0.20\times0.2887\times(-1.5) = 0.00833-0.08660 = -7.83\%$
+  \item New risky $=6{,}00{,}000\times(1-0.0783)=6{,}00{,}000\times0.9217=5{,}53{,}020$
+  \item $V_1=5{,}53{,}020+4{,}00{,}000=9{,}53{,}020$
+  \item Rebalance: $C_1=9{,}53{,}020-8{,}00{,}000=1{,}53{,}020$; $E_1=3\times1{,}53{,}020=4{,}59{,}060$; $B_1=4{,}93{,}960$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} A $-1.5\sigma$ shock ($-7.83\%$ monthly) reduces the cushion from 2{,}00{,}000 to 1{,}53{,}020 and auto-reduces risky allocation from 6{,}00{,}000 to 4{,}59{,}060. Floor of 8{,}00{,}000 is safely preserved ($V_1=9{,}53{,}020$). This demonstrates CPPI's automatic de-risking under GBM-simulated adverse shocks.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
@@ -1290,7 +1427,7 @@ Jensen}\label{portfolio-evaluation-sharpe-treynor-jensen}}
 \item
   Measures excess return per unit of total risk.
 \item
-  Formula: (R\_p - R\_f) / sigma\_p
+  Formula: $S = \dfrac{R_p - R_f}{\sigma_p}$
 \item
   Best for comparing diversified portfolios where total volatility
   matters.
@@ -1304,7 +1441,7 @@ Jensen}\label{portfolio-evaluation-sharpe-treynor-jensen}}
 \item
   Measures excess return per unit of systematic risk.
 \item
-  Formula: (R\_p - R\_f) / beta\_p
+  Formula: $T = \dfrac{R_p - R_f}{\beta_p}$
 \item
   Best when portfolio is already well diversified and beta is primary
   risk.
@@ -1333,53 +1470,111 @@ differential return (alpha).
 
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 1}\enspace\textit{Jensen ranking of 3 portfolios}
+
+\noindent\textbf{Common data for Examples 1--5:}
+\begin{center}
+\begin{tabular}{|l|r|r|r|r|}
+\hline
+\textbf{Fund} & \textbf{$R_p$ (\%)} & \textbf{$\sigma_p$ (\%)} & \textbf{$\beta_p$} & \textbf{$R_f=6\%$, $R_m=13\%$}\\
+\hline
+A & 16 & 20 & 1.2 & \\
+B & 14 & 15 & 0.9 & \\
+C & 18 & 25 & 1.5 & \\
+D & 10 & 18 & 0.8 & \\
+E & 15 & 22 & 1.1 & \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Example 1}\enspace\textit{Jensen's Alpha: rank Funds A, B, C}
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Source PDF computes expected returns using CAPM inputs and then differences from actual return.
-  \item Ranked based on alpha differential.
+  \item $\alpha = R_p - [R_f + \beta_p(R_m - R_f)]$
+  \item $\alpha_A = 16 - [6 + 1.2\times7] = 16 - 14.4 = +1.6\%$
+  \item $\alpha_B = 14 - [6 + 0.9\times7] = 14 - 12.3 = +1.7\%$
+  \item $\alpha_C = 18 - [6 + 1.5\times7] = 18 - 16.5 = +1.5\%$
+  \item Ranking: $B (1.7\%) > A (1.6\%) > C (1.5\%)$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Fund B generates the highest abnormal return per unit of systematic risk. All three outperform CAPM prediction, but B does so most efficiently given its $\beta$.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 2}\enspace\textit{Sharpe ranking across funds}
+\noindent\textbf{Example 2}\enspace\textit{Sharpe Ratio: rank all 5 funds}
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Source computes multiple Sharpe values and rank ordering.
+  \item $S = (R_p - R_f)/\sigma_p$
+  \item $S_A = (16-6)/20 = 0.500$
+  \item $S_B = (14-6)/15 = 0.533$
+  \item $S_C = (18-6)/25 = 0.480$
+  \item $S_D = (10-6)/18 = 0.222$
+  \item $S_E = (15-6)/22 = 0.409$
+  \item Ranking: $B(0.533) > A(0.500) > C(0.480) > E(0.409) > D(0.222)$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Fund B delivers the most excess return per unit of total risk. Fund D has the worst risk-adjusted performance despite having lower volatility than C.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 3}\enspace\textit{Treynor ranking across funds}
+\noindent\textbf{Example 3}\enspace\textit{Treynor Ratio: rank all 5 funds}
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Source computes Treynor values and ranks.
+  \item $T = (R_p - R_f)/\beta_p$
+  \item $T_A = (16-6)/1.2 = 8.33$
+  \item $T_B = (14-6)/0.9 = 8.89$
+  \item $T_C = (18-6)/1.5 = 8.00$
+  \item $T_D = (10-6)/0.8 = 5.00$
+  \item $T_E = (15-6)/1.1 = 8.18$
+  \item Ranking: $B(8.89) > A(8.33) > E(8.18) > C(8.00) > D(5.00)$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Treynor uses only systematic ($\beta$) risk. Fund E ranks higher under Treynor than Sharpe, because its idiosyncratic risk inflates $\sigma_p$ more than it inflates $\beta_p$.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 4}\enspace\textit{Jensen for A/B/C/D funds}
+\noindent\textbf{Example 4}\enspace\textit{Jensen's Alpha: all 5 funds including negative alpha}
 
 \noindent\textbf{Steps:}
 \begin{itemize}\setlength{\itemsep}{3pt}
-  \item Source page computes alpha values, including negative alpha cases.
+  \item $\alpha_A = 16-14.4 = +1.6\%$
+  \item $\alpha_B = 14-12.3 = +1.7\%$
+  \item $\alpha_C = 18-16.5 = +1.5\%$
+  \item $\alpha_D = 10-[6+0.8\times7] = 10-11.6 = -1.6\%$ \textbf{(underperforms CAPM!)}
+  \item $\alpha_E = 15-[6+1.1\times7] = 15-13.7 = +1.3\%$
+  \item Ranking: $B > A > C > E > D$
 \end{itemize}
+
+\noindent\textbf{Interpretation:} Fund D delivers less than its CAPM-required return ($\alpha=-1.6\%$) --- it destroys alpha. All others outperform but by varying degrees. Jensen's Alpha directly answers ``Did the manager add value above market risk compensation?''
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
 \noindent\rule{\linewidth}{0.4pt}
-\noindent\textbf{Example 5}\enspace\textit{additional OCR illustrations}
+\noindent\textbf{Example 5}\enspace\textit{cross-measure ranking comparison and key insight}
 
-\noindent\textbf{Steps:}
-\begin{itemize}\setlength{\itemsep}{3pt}
-  \item Multiple worked mutual fund comparisons in the numericals PDF.
-\end{itemize}
+\noindent\textbf{Steps (summary table for all 5 funds):}
+\begin{center}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Fund} & \textbf{Sharpe} & \textbf{Treynor} & \textbf{Jensen $\alpha$ (\%)}\\
+\hline
+A & 0.500 & 8.33 & +1.6\\
+B & 0.533 & 8.89 & +1.7\\
+C & 0.480 & 8.00 & +1.5\\
+D & 0.222 & 5.00 & $-1.6$\\
+E & 0.409 & 8.18 & +1.3\\
+\hline
+\textbf{Best} & \textbf{B} & \textbf{B} & \textbf{B}\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Interpretation:} Fund B is the top performer by all three measures. Fund D is the worst performer. Note that E ranks higher under Treynor than Sharpe because it has more idiosyncratic (non-systematic) risk. Use Sharpe for undiversified portfolios, Treynor for well-diversified ones, Jensen for manager skill assessment.
 
 \noindent\rule{\linewidth}{0.4pt}
 \medskip
