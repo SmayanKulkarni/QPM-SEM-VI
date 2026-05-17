@@ -1,0 +1,2715 @@
+
+============================================================
+FILE: Module 3.pdf
+============================================================
+
+
+--- Page 1 ---
+
+Module 5: Prediction
+1. Using prediction in estimating
+When using prediction to estimate time series data, you typically follow a series of
+steps to build a model that captures patterns and trends in historical observations
+and can then be used to forecast future values. Here is a step-by-step guide:
+1. Define the Problem:
+ Clearly articulate the goal of your time series prediction. Are you forecasting
+sales, stock prices, temperature, or some other variable? Define the time
+horizon for your predictions (e.g., predicting values for the next week, month,
+or year).
+2. Data Collection and Exploration:
+ Gather historical time series data relevant to your problem. Explore the data to
+understand its patterns, seasonality, and any trends present. Visualizations,
+such as time plots and autocorrelation plots, can be helpful for this step.
+3. Data Preprocessing:
+ Handle missing values, outliers, and any other data quality issues. If needed,
+transform the data to make it stationary (constant mean and variance)
+through techniques like differencing or log transformations.
+4. Train-Test Split:
+ Split the dataset into training and testing sets. The training set is used to build
+the model, and the testing set is reserved for evaluating its performance on
+unseen data.
+5. Feature Engineering:
+ Extract relevant features from the time series data. This can include lag values,
+rolling averages, or other domain-specific features that may help the model
+capture patterns.
+6. Choose a Prediction Model:
+ Select a suitable prediction model based on the characteristics of your data
+and the problem at hand. This could be a traditional time series model like
+ARIMA or SARIMA, a machine learning model like linear regression or random
+forests, or a deep learning model like LSTM or GRU.
+7. Model Training:
+ Train your selected model on the training dataset. Adjust model
+hyperparameters as needed. For machine learning and deep learning models,
+this often involves an iterative process of training, evaluating on the validation
+set, and adjusting hyperparameters.
+8. Model Evaluation:
+ Evaluate the model's performance on the testing set using appropriate
+evaluation metrics such as Mean Absolute Error (MAE), Mean Squared Error
+(MSE), or Root Mean Squared Error (RMSE). Compare the model's predictions
+to the actual values.
+
+--- Page 2 ---
+
+9. Fine-Tuning:
+ If necessary, refine your model based on the evaluation results. This may
+involve adjusting hyperparameters, adding features, or trying different
+algorithms.
+10. Prediction and Monitoring:
+ Once you are satisfied with the model's performance on the testing set, use it
+to make predictions on new, unseen data. Monitor the model's performance
+over time and update it as needed.
+11. Consideration of External Factors:
+ Depending on the nature of your time series data, consider incorporating
+external factors that may impact the variable you are predicting. This could
+include economic indicators, holidays, or other relevant external events.
+2. Forecasting for autoregressive processes / forecasting for ARMA in
+time series analysis
+Autoregressive processes, often denoted as AR(p), are an essential component of
+time series analysis. These processes model a variable as a linear combination of its
+past values, with "p" representing the order of the autoregressive model. Forecasting
+for autoregressive processes involves predicting future values of the time series
+based on its historical data.
+Equation of AR Model:
+Equation of ARMA Model:
+Here are the general steps for forecasting in autoregressive processes:
+1. Model Identification:
+ Determine the order of the autoregressive process (p). This can be done through
+methods like autocorrelation function (ACF) and partial autocorrelation function
+(PACF) plots.
+2. Estimation:
+ Use historical data to estimate the parameters of the autoregressive model. Common
+methods include the method of moments or maximum likelihood estimation.
+3. Model Diagnostics:
+ Check the residuals of the model. Diagnostic tests such as examining whether there
+is significant evidence for non-zero correlations at lags using autocorrelation in
+residuals can be used.
+
+--- Page 3 ---
+
+4. Forecasting:
+ Once the model is identified, estimated, and validated, use it to make forecasts for
+future time points.
+5. Prediction Intervals:
+ Quantify the uncertainty of the forecasts by calculating prediction intervals. These
+intervals provide a range within which future observations are likely to fall.
+6. Monitoring and Updating:
+ Continuously monitor the model's performance and update it as more data becomes
+available. This helps to adapt the model to changes in the underlying data patterns.
+3. Forecasting for general time series using infinite past
+Forecasting a time series using an "infinite past" refers to using all available historical
+data to make predictions about future values. In practice, however, it's not possible
+to use an infinite amount of past data, as we are always limited by the data available
+to us. Therefore, we typically use a subset of the historical data for training and
+validation.
+Here's a general process for forecasting time series data:
+1. Data Collection: Collect historical time series data. This could be anything from
+stock prices and weather patterns to sales figures and website traffic.
+2. Data Exploration and Preprocessing: Analyze the data to understand its
+characteristics. This may involve handling missing values, dealing with outliers, and
+transforming the data to make it suitable for modeling.
+3. Train-Test Split: Split the data into training and testing sets. The training set is used
+to train the forecasting model, and the testing set is used to evaluate its
+performance.
+4. Model Selection: Choose a forecasting model based on the nature of your data.
+Common models include:
+ Autoregressive Integrated Moving Average (ARIMA): Suitable for
+univariate time series data with a clear trend and seasonality.
+ Exponential Smoothing State Space Models (ETS): Useful for time series
+data with trend and seasonality.
+ Long Short-Term Memory (LSTM) Networks: A type of neural network that
+can capture long-term dependencies in time series data.
+ Prophet: Developed by Facebook, Prophet is designed for forecasting with
+daily observations that display patterns on different time scales.
+
+--- Page 4 ---
+
+5. Model Training: Use the training set to train the selected model. Adjust model
+parameters as needed to optimize performance.
+6. Model Evaluation: Evaluate the model using the testing set. Common evaluation
+metrics include Mean Absolute Error (MAE), Mean Squared Error (MSE), and Root
+Mean Squared Error (RMSE).
+7. Forecasting: Once the model is trained and evaluated, use it to make predictions on
+future values of the time series.
+8. Iterate and Refine: If the model performance is not satisfactory, iterate on the
+process by adjusting parameters, trying different models, or incorporating additional
+features.
+4. One-step ahead predictors based on the finite past: Levinson -
+Durbin algorithm
+The Levinson-Durbin algorithm is a mathematical algorithm used in signal processing
+and statistics, particularly in the context of linear prediction. It is named after Norman
+Levinson and James Durbin, who independently developed the algorithm.
+The Levinson-Durbin algorithm is primarily used for autoregressive (AR) modeling of
+time series data. Autoregressive models are a class of models where the current
+value of a variable is modeled as a linear combination of its past values. In the
+context of linear prediction, this algorithm is used to find the coefficients of an
+autoregressive model that minimizes the mean square error of prediction.
+Here's a basic overview of the Levinson-Durbin algorithm:
+1. Input:
+ Time series data (finite past values).
+ Order of the autoregressive model (the number of past values to consider).
+2. Initialization:
+ Start with the first coefficient of the autoregressive model set to the ratio of
+the covariance of the first and second data points.
+3. Iteration:
+ At each step, compute a set of reflection that describe the relationship
+between the current residual and the previous residuals.
+ Update the autoregressive coefficients using the reflection coefficients.
+ Repeat until all coefficients are computed.
+4. Output:
+ The final set of autoregressive coefficients.
+The Levinson-Durbin algorithm is computationally efficient and provides a way to
+recursively compute the autoregressive coefficients, making it suitable for real-time
+applications.
+
+--- Page 5 ---
+
+Linear prediction using the Levinson-Durbin algorithm is often applied in fields such
+as speech and audio processing, where modeling and predicting future values based
+on past observations are crucial.
+In summary, the Levinson-Durbin algorithm is a powerful tool for estimating
+autoregressive parameters from time series data, making it useful for predicting
+future values based on a finite past.
+5. The Kalman filter
+The Kalman filter is a mathematical algorithm used for estimating the state of a linear
+dynamic system from a series of noisy measurements. It was developed by Rudolf E.
+Kálmán in the 1960s and has found applications in various fields, including control
+systems, signal processing, navigation, and time series analysis.
+In the context of time series analysis, the Kalman filter is particularly useful for
+tracking and predicting the evolution of a system over time, even when the
+measurements are subject to noise. The basic idea behind the Kalman filter is to
+iteratively update an estimate of the true state of the system based on the current
+measurement and the system's dynamics.
+Here's a simplified overview of how the Kalman filter works:
+1. State Prediction:
+ Predict the next state of the system based on the current state and the system
+dynamics.
+2. Error Prediction:
+ Predict the error covariance associated with the state prediction.
+3. Measurement Update:
+ Obtain a measurement and calculate the Kalman gain, which determines how
+much weight to give to the measurement compared to the predicted state.
+ Update the state estimate based on the measurement and the Kalman gain.
+4. Error Update:
+ Update the error covariance based on the Kalman gain and the prediction
+error.
+5. Repeat:
+ Repeat the process for each new measurement.
+The Kalman filter assumes that the system dynamics and measurement errors are
+linear and that the noise is Gaussian and has a constant covariance. While many real-
+world systems are not strictly linear, the Kalman filter is often used as an effective
+approximation.
+
+--- Page 6 ---
+
+In the context of time series analysis, the Kalman filter can be applied to various
+problems, such as tracking the position of an object over time, predicting future
+values of a time series, or even in financial modeling to estimate hidden variables.
+It's important to note that there are variations of the Kalman filter, such as the
+Extended Kalman Filter (EKF) and the Unscented Kalman Filter (UKF), which can
+handle nonlinear systems to some extent. These variations are especially useful when
+dealing with systems that cannot be accurately represented by linear models.
+
+============================================================
+FILE: Module 3_2.pdf
+============================================================
+
+
+--- Page 1 ---
+
+Automated Forecasting Systems
+Auto-ARIMA | Auto Prophet | AutoML for Time Series | AutoML + Feature Hashing
+1. Time Series & Automated Forecasting — Overview
+A time series is a sequence of data points collected at equally spaced time intervals, where order matters
+and past values influence future ones. Automated forecasting replaces manual model selection,
+parameter tuning, and stationarity testing with algorithmic pipelines.
+Key advantage of automation: one reproducible pipeline can handle hundreds of series
+simultaneously, reducing expert time from days to minutes.
+1.1 Time Series Components
+• Trend: Long-term increase or decrease (e.g., rising annual sales).
+• Seasonality: Fixed-period repeating cycles — daily, weekly, yearly (e.g., holiday spikes).
+• Cyclicity: Irregular long-period fluctuations tied to economic cycles.
+• Noise: Random, unexplained residual variation.
+Decomposition: Y(t) = Trend + Seasonality + Cyclicity + Noise
+2. Auto-ARIMA
+2.1 ARIMA — Classical Foundation
+ARIMA (AutoRegressive Integrated Moving Average) is the standard statistical model for univariate time
+series.
+• AR (p): Uses past p observations — captures autocorrelation.
+• I (d): Differencing applied d times to make series stationary.
+• MA (q): Uses past q forecast errors to smooth predictions.
+ARIMA(p, d, q) — AR order p · Differencing d · MA order q
+Manual selection of (p, d, q) requires reading ACF/PACF plots, running ADF/KPSS stationarity tests, and
+subjective expert judgment — slow and error-prone.
+2.2 How Auto-ARIMA Works
+Auto-ARIMA (via the pmdarima library in Python) automates the entire model selection process:
+• Run stationarity test (ADF/KPSS) to determine the differencing order d.Step 1:
+• Define search space for p and q (e.g., 0 to 5).Step 2:
+
+[TABLE]
+ |  | 
+ | Key advantage of automation: one reproducible pipeline can handle hundreds of series | 
+ | simultaneously, reducing expert time from days to minutes. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Decomposition: Y(t) = Trend + Seasonality + Cyclicity + Noise | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | ARIMA(p, d, q) — AR order p · Differencing d · MA order q | 
+ |  | 
+
+--- Page 2 ---
+
+• Fit all candidate ARIMA(p, d, q) models.Step 3:
+• Evaluate each using AIC or BIC — select the model with the lowest score.Step 4:
+• Optionally test seasonal extensions (SARIMA) if m is specified.Step 5:
+• Return best model with confidence intervals.Step 6:
+2.3 AIC & BIC — Model Selection Criteria
+AIC = 2k − 2 ln(L̂) | BIC = k · ln(n) − 2 · ln(L̂)
+• k = number of parameters; L̂ = maximised likelihood; n = sample size.
+• Lower AIC/BIC = better model (penalises unnecessary complexity).
+• BIC penalises more heavily on large datasets → prefers simpler models.
+2.4 SARIMA — Seasonal Extension
+Basic ARIMA cannot model seasonal data. SARIMA adds seasonal components:
+SARIMA(p, d, q)(P, D, Q)_m where m = seasonal period
+• P, D, Q: Seasonal AR, differencing, and MA orders.
+• m: Period — 12 for monthly, 7 for weekly, 4 for quarterly, 24 for hourly.
+• Example: SARIMA(1,1,1)(1,1,1)₁ ₂ — monthly data with yearly seasonality.
+When to use: 1–50 univariate series with classic linear trend patterns. Fastest inference among
+all automated methods.
+3. Auto Prophet
+3.1 What is Prophet?
+Prophet is an open-source forecasting tool released by Meta (Facebook) in 2017. It is designed for
+business analysts — not statisticians — and handles business time series with strong seasonality,
+holidays, and trend changes.
+3.2 Prophet's Decomposition Model
+y(t) = g(t) + s(t) + h(t) + ε(t)
+• Long-term, non-periodic changes. Supports piecewise linear or logistic (S-curve)
+growth.g(t) — Growth/Trend:
+• Periodic cycles modelled using Fourier series. Handles daily, weekly, and yearly
+patterns simultaneously.s(t) — Seasonality:
+
+[TABLE]
+ |  | 
+ | AIC = 2k − 2 ln(L̂) | BIC = k · ln(n) − 2 · ln(L̂) | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | SARIMA(p, d, q)(P, D, Q)_m where m = seasonal period | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | When to use: 1–50 univariate series with classic linear trend patterns. Fastest inference among | 
+ | all automated methods. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | y(t) = g(t) + s(t) + h(t) + ε(t) | 
+ |  | 
+
+--- Page 3 ---
+
+• Effect of known irregular events. Each holiday gets a separate coefficient with a
+configurable window.h(t) — Holidays:
+• Unexplained residual, assumed to follow a Laplace distribution (Bayesian
+framework).ε(t) — Noise:
+3.3 Key Features
+• Changepoint Detection: Automatically identifies trend shifts using a sparsity prior. Configurable
+via n_changepoints (default = 25) and changepoint_prior_scale.
+• Multiple Seasonality: Yearly, weekly, daily — all handled simultaneously with Fourier series.
+• Holiday Effects: User specifies a holiday DataFrame with optional lower/upper windows.
+• Additive vs Multiplicative Seasonality: Additive (default) — amplitude is constant. Multiplicative
+— amplitude grows with trend (use for exponential growth).
+• Uncertainty Quantification: Built-in confidence intervals using Monte Carlo simulation.
+3.4 Automating Prophet — Grid Search + Cross-Validation
+Hyperparameter tuning for Prophet is automated using grid search over key parameters:
+• changepoint_prior_scale: Controls trend flexibility (0.001 to 0.5).
+• seasonality_prior_scale: Controls amplitude of seasonal terms.
+• seasonality_mode: 'additive' or 'multiplicative'.
+Walk-forward cross-validation is used for evaluation — standard k-fold is invalid for time series as it leaks
+future data into training. Prophet's built-in cross_validation() and performance_metrics() functions
+automate this, returning MAE, RMSE, and MAPE per forecast horizon.
+When to use: Business data with clear seasonality, known holidays, and stakeholder-
+interpretable outputs.
+4. AutoML for Time Series Forecasting
+4.1 Why Machine Learning for Forecasting?
+Traditional statistical models (ARIMA, Prophet) assume linear relationships and specific data structures.
+Machine learning overcomes these limitations:
+• Captures non-linear interactions and complex feature relationships.
+• Supports exogenous (external) variables natively — promotions, weather, economic indicators.
+• Gradient Boosting models (LightGBM, XGBoost) consistently outperform ARIMA on many real-
+world datasets.
+• Handles millions of rows efficiently; supports ensembling for better accuracy.
+• Limitation: ML does not natively understand time — temporal structure must be injected through
+feature engineering.
+4.2 Converting Time Series to Tabular Format
+
+[TABLE]
+ |  | 
+ | When to use: Business data with clear seasonality, known holidays, and stakeholder- | 
+ | interpretable outputs. | 
+ |  | 
+
+--- Page 4 ---
+
+ML models expect a row-per-prediction table. The time series is transformed by creating features from
+its own structure:
+• Lag Features: lag_1, lag_2, ..., lag_n — value n periods ago; captures autocorrelation.
+• Rolling Statistics: Rolling mean (7d, 14d, 30d), rolling std (volatility), rolling min/max.
+• Date/Time Features: Day of week, month, quarter, year, is_weekend, week of year.
+• Exogenous Variables: Price, promotions, weather, holidays, competitor activity.
+4.3 AutoML Pipeline
+The automated pipeline eliminates manual model selection and tuning:
+• Raw Data → Feature Engineering → Model Search → Hyperparameter Tuning → Ensemble &
+Stack → Best Model.
+Hyperparameter search strategies:
+• Grid Search: Exhaustive; covers all combinations but exponentially slow — O(nᵈ).
+• Random Search: 2–4× faster, similar accuracy; no learning from past trials.
+• Bayesian Optimisation: Learns from prior trials; most efficient for expensive models.
+4.4 AutoML Frameworks for Forecasting
+• Fast, lightweight; supports LightGBM, XGBoost, and time series.FLAML (Microsoft):
+• Purpose-built for time series; 20+ models with multi-series support.AutoTS:
+• Low-code; compare_models() for fast EDA + model selection.PyCaret:
+• Ultra-fast AutoARIMA, AutoETS — 100× faster than statsmodels.StatsForecast (Nixtla):
+Walk-forward CV is mandatory: always split time series chronologically — never randomly. Use
+TimeSeriesSplit (sklearn) or Prophet's cross_validation().
+4.5 Evaluation Metrics
+Common metrics for assessing forecast accuracy:
+• Average absolute deviation; outliers weighted equally.MAE (Mean Absolute Error):
+• Penalises large errors heavily; same units as target.RMSE (Root Mean Squared Error):
+• Scale-free; useful for comparing across datasets. Undefined when actual = 0.MAPE
+(Mean Absolute % Error):
+• Symmetric MAPE; avoids division-by-zero issues.SMAPE:
+• MAE divided by naive baseline MAE; unitless and dataset-agnostic.MASE:
+5. AutoML + Feature Hashing for Multi-Series Forecasting
+5.1 The Multi-Series Scalability Problem
+
+[TABLE]
+ |  | 
+ | Walk-forward CV is mandatory: always split time series chronologically — never randomly. Use | 
+ | TimeSeriesSplit (sklearn) or Prophet's cross_validation(). | 
+ |  | 
+
+--- Page 5 ---
+
+Real-world forecasting often involves massive numbers of series — Amazon forecasts demand for 500K+
+SKUs, energy grids manage 1M+ smart meter series. Training one model per series (local approach)
+fails at this scale:
+• Compute Explosion: 500K ARIMA models = days of computation.
+• Cold Start: New products/stores have no history — local models fail immediately.
+• No Cross-Learning: Similar series (same category/region) share patterns, but local models
+cannot learn this shared structure.
+5.2 Local vs Global Models
+• One model per series. Fully customised but does not scale beyond ~1,000 series.
+Cannot handle cold start.Local Model:
+• One model trained across ALL series simultaneously. Scales to millions; learns shared
+seasonal/trend patterns; handles cold start via features. Requires rich feature
+representation of series identity.Global Model:
+5.3 The High-Cardinality Encoding Problem
+To build a global model, each series must be identified to the model. Store/product IDs are high-
+cardinality categorical variables with potentially millions of unique values. Standard encoding methods
+fail:
+• One-Hot Encoding: 1M categories → 1M columns — memory infeasible.
+• Label Encoding: Implies false ordinal relationship (store_1 ≠ 'less than' store_2).
+5.4 Feature Hashing (The Hashing Trick)
+Feature hashing maps any string identifier to a fixed-size vector of K dimensions using a hash function:
+Hash: Series ID → h(x) mod N → Fixed-Size Vector [0, ..., N] →
+ML Model Input
+• Output size K is fixed regardless of vocabulary size — no growing dictionary.Memory
+Efficient:
+• New categories (new stores/products) are handled at inference without retraining the
+encoder.No Pre-training:
+• Same input always maps to the same hash bucket — no randomness.Deterministic:
+• Multiple IDs may map to the same bucket — usually a minor accuracy trade-off,
+controlled by choosing K (e.g., 128, 256, 512).Collisions:
+In Python, sklearn's FeatureHasher(n_features=256, input_type='string') implements this natively and
+integrates directly with any ML pipeline.
+5.5 Full AutoML + Hashing Pipeline
+• Collect all series data in a single DataFrame (millions of rows).Step 1:
+• Engineer lag, rolling, and date features per series.Step 2:
+
+[TABLE]
+ |  | 
+ | Hash: Series ID → h(x) mod N → Fixed-Size Vector [0, ..., N] → | 
+ | ML Model Input | 
+ |  | 
+
+--- Page 6 ---
+
+• Apply FeatureHasher to series identity columns (store_id, item_id, etc.) → K-
+dimensional hash vector.Step 3:
+• Concatenate numeric features + hash vector.Step 4:
+• AutoML search across LightGBM/XGBoost/CatBoost configurations.Step 5:
+• One global model produces forecasts for all series simultaneously.Step 6:
+5.6 Cross-Series Learning
+A global model trained on all series simultaneously learns shared structure implicitly. Series in the same
+category share seasonal patterns — the model learns these jointly. Practically, LightGBM trained on 10M
+rows across 100K series can outperform 100K individually tuned local models, while being 100–1000×
+faster to train.
+When to use: 100K+ series, cold-start requirements, operational scale deployments, or when
+categories share seasonal/trend patterns.
+6. Comparison of Methods
+Criterion Auto-ARIMA Prophet AutoML AutoML+Hash
+Scalability Low Low Medium High ✓
+Interpretability High ✓ High ✓ Medium Low
+Handles Seasonality SARIMA Built-in ✓✓ Via features Via features
+Handles Holidays Manual Built-in ✓ Via features Via features
+Multi-Series 1 per series 1 per series 1 per series 1 global ✓
+Cold Start ✗ ✗ Limited Via hashing ✓
+Exogenous Vars Limited Regressors Native ✓✓ Native ✓✓
+Best For Univariate Business+Events Multi-feature High-cardinality
+7. Decision Guide & Key Takeaways
+7.1 Choosing the Right Method
+• 1–50 series, linear trend, classic patterns → Auto-ARIMA (SARIMA if seasonal).
+• Business data with known holidays and strong seasonality → Prophet.
+• Many exogenous features, non-linear relationships, moderate scale → AutoML
+(LightGBM/XGBoost).
+• 100K+ series, cold start needed, operational scale → AutoML + Feature Hashing.
+• When in doubt: baseline with naive seasonal model, then Auto-ARIMA, then LightGBM AutoML.
+• Always validate using walk-forward cross-validation — never random splits.
+
+[TABLE]
+ |  | 
+ | When to use: 100K+ series, cold-start requirements, operational scale deployments, or when | 
+ | categories share seasonal/trend patterns. | 
+ |  | 
+
+[TABLE]
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Criterion |  |  | Auto-ARIMA |  |  | Prophet |  |  | AutoML |  |  | AutoML+Hash | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Scalability |  |  | Low |  |  | Low |  |  | Medium |  |  | High ✓ | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Interpretability |  |  | High ✓ |  |  | High ✓ |  |  | Medium |  |  | Low | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Handles Seasonality |  |  | SARIMA |  |  | Built-in ✓✓ |  |  | Via features |  |  | Via features | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Handles Holidays |  |  | Manual |  |  | Built-in ✓ |  |  | Via features |  |  | Via features | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Multi-Series |  |  | 1 per series |  |  | 1 per series |  |  | 1 per series |  |  | 1 global ✓ | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Cold Start |  |  | ✗ |  |  | ✗ |  |  | Limited |  |  | Via hashing ✓ | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Exogenous Vars |  |  | Limited |  |  | Regressors |  |  | Native ✓✓ |  |  | Native ✓✓ | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Best For |  |  | Univariate |  |  | Business+Events |  |  | Multi-feature |  |  | High-cardinality | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+
+--- Page 7 ---
+
+7.2 Key Takeaways for Exam
+• Automated forecasting removes the need for manual ACF/PACF reading and (p,d,q) selection.
+• Auto-ARIMA uses AIC/BIC to select the best ARIMA/SARIMA configuration algorithmically.
+• Prophet decomposes time series into trend, seasonality, holidays, and noise using a Bayesian
+additive model.
+• AutoML transforms time series into tabular data via feature engineering and then searches
+across ML models.
+• Feature Hashing encodes high-cardinality series IDs into a fixed-size vector, enabling one
+global ML model to forecast millions of series scalably.
+• Walk-forward CV is the only valid cross-validation strategy for time series — future data must
+never leak into training.
+
+============================================================
+FILE: Module 3.pdf
+============================================================
+
+
+--- Page 1 ---
+
+AUTOMATED
+FORECASTING
+SYSTEMS
+Auto-ARIMA · Auto Prophet · AutoML · AutoML + Feature Hashing
+Shivam Musterya - 2025 Batch Alumni
+
+[TABLE]
+AUTOMATED
+FORECASTING
+SYSTEMS
+
+
+[TABLE]
+AUTOMATED
+
+FORECASTING
+
+SYSTEMS
+
+[TABLE]
+Auto-ARIMA · Auto Prophet · AutoML · AutoML + Feature Hashing
+Shivam Musterya - 2025 Batch Alumni
+
+--- Page 2 ---
+
+AGENDA
+Time Series Fundamentals Hashing + AutoML
+01 05
+Components, patterns & data types Scalable multi-series forecasting
+Auto-ARIMA Comparison & Use Cases
+02 06
+Automated ARIMA parameter selection Which method to choose?
+Prophet Demo & Exercises
+03 07
+Meta's flexible forecasting tool Hands-on code examples
+AutoML for Forecasting
+04
+Machine learning automation pipeline
+
+[TABLE]
+AGENDA
+Time Series Fundamentals Hashing + AutoML
+01 05
+Components, patterns & data types Scalable multi-series forecasting
+Auto-ARIMA Comparison & Use Cases
+02 06
+Automated ARIMA parameter selection Which method to choose?
+Prophet Demo & Exercises
+03 07
+Meta's flexible forecasting tool Hands-on code examples
+AutoML for Forecasting
+04
+Machine learning automation pipeline
+
+[TABLE]
+ | Time Series Fundamentals
+Components, patterns & data types
+01 | 
+ | 
+
+[TABLE]
+ | Hashing + AutoML
+Scalable multi-series forecasting
+05 | 
+ | 
+
+[TABLE]
+Time Series Fundamentals
+Components, patterns & data types
+
+[TABLE]
+Hashing + AutoML
+Scalable multi-series forecasting
+
+[TABLE]
+ | Auto-ARIMA
+Automated ARIMA parameter selection
+02 | 
+ | 
+
+[TABLE]
+ | Comparison & Use Cases
+Which method to choose?
+06 | 
+ | 
+
+[TABLE]
+Auto-ARIMA
+Automated ARIMA parameter selection
+
+[TABLE]
+Comparison & Use Cases
+Which method to choose?
+
+[TABLE]
+ | Prophet
+Meta's flexible forecasting tool
+03 | 
+ | 
+
+[TABLE]
+ | Demo & Exercises
+Hands-on code examples
+07 | 
+ | 
+
+[TABLE]
+Prophet
+Meta's flexible forecasting tool
+
+[TABLE]
+Demo & Exercises
+Hands-on code examples
+
+[TABLE]
+ | AutoML for Forecasting
+Machine learning automation pipeline
+04 | 
+ | 
+
+[TABLE]
+AutoML for Forecasting
+Machine learning automation pipeline
+
+--- Page 3 ---
+
+Why Forecasting Matters
+Accurate predictions power decisions across every major industry
+Amazon Netflix Banks Hospitals
+~35% $1B+ 30–50% 20%
+of revenue driven by saved annually by reduction in credit loss reduction in patient wait
+ML-based demand predicting viewing with predictive risk times via demand
+forecasting behavior models forecasting
+
+[TABLE]
+Why Forecasting Matters
+
+Accurate predictions power decisions across every major industry
+
+[TABLE]
+
+Amazon
+~35%
+of revenue driven by
+ML-based demand
+forecasting
+
+[TABLE]
+
+Netflix
+$1B+
+saved annually by
+predicting viewing
+behavior
+
+[TABLE]
+
+Banks
+30–50%
+reduction in credit loss
+with predictive risk
+models
+
+[TABLE]
+ | 
+ | 
+Hospitals
+20%
+reduction in patient wait
+times via demand
+forecasting | Hospitals
+ | 20%
+
+[TABLE]
+
+Amazon
+~35%
+
+[TABLE]
+
+Netflix
+$1B+
+
+[TABLE]
+
+Banks
+30–50%
+
+--- Page 4 ---
+
+What is a Time Series?
+A time series is a sequence of data points indexed in chronological order, collected at successive equally-spaced
+points in time.
+📈 💹 🌦 🫀
+Sales Stock Prices Weather Health
+Daily / weekly / monthly Intra-day & end-of-day
+Temperature, rainfall, wind Heart rate, glucose, steps
+revenue prices
+Key Properties:
+Ordered — sequence matters Temporal Dependency — past influences future Regularity — fixed interval collection
+
+[TABLE]
+What is a Time Series?
+A time series is a sequence of data points indexed in chronological order, collected at successive equally-spaced
+points in time.
+📈 💹 🌦 🫀
+Sales Stock Prices Weather Health
+Daily / weekly / monthly Intra-day & end-of-day
+Temperature, rainfall, wind Heart rate, glucose, steps
+revenue prices
+Key Properties:
+Ordered — sequence matters Temporal Dependency — past influences future Regularity — fixed interval collection
+
+[TABLE]
+
+📈
+Sales
+Daily / weekly / monthly
+revenue
+
+[TABLE]
+
+💹
+Stock Prices
+Intra-day & end-of-day
+prices
+
+[TABLE]
+
+🌦
+Weather
+Temperature, rainfall, wind
+
+[TABLE]
+
+🫀
+Health
+Heart rate, glucose, steps
+
+[TABLE]
+📈
+
+Sales
+Daily / weekly / monthly
+revenue
+
+[TABLE]
+💹
+
+Stock Prices
+Intra-day & end-of-day
+prices
+
+[TABLE]
+🌦
+
+Weather
+Temperature, rainfall, wind
+
+[TABLE]
+🫀
+
+Health
+Heart rate, glucose, steps
+
+[TABLE]
+Key Properties:
+
+
+--- Page 5 ---
+
+Time Series Components
+Trend Seasonality
+Long-term increase or decrease in the data. Captured by Regular, predictable cycles repeated at fixed intervals —
+↗ 〜
+the overall direction of the series over time. daily, weekly, yearly.
+e.g. Rising annual sales, Population growth e.g. Holiday spikes, summer tourism peaks
+Cyclicity Noise
+Irregular fluctuations over longer periods, not fixed Random, irregular variation that cannot be attributed to
+⊘
+⟳
+frequency. Often tied to economic or business cycles. the other components.
+e.g. Recession cycles, housing market waves e.g. Unexpected events, measurement errors
+Decomposition: Y(t) = Trend + Seasonality + Cyclicity + Noise
+
+[TABLE]
+Time Series Components
+Trend Seasonality
+Long-term increase or decrease in the data. Captured by Regular, predictable cycles repeated at fixed intervals —
+↗ 〜
+the overall direction of the series over time. daily, weekly, yearly.
+e.g. Rising annual sales, Population growth e.g. Holiday spikes, summer tourism peaks
+Cyclicity Noise
+Irregular fluctuations over longer periods, not fixed Random, irregular variation that cannot be attributed to
+⊘
+⟳
+frequency. Often tied to economic or business cycles. the other components.
+e.g. Recession cycles, housing market waves e.g. Unexpected events, measurement errors
+Decomposition: Y(t) = Trend + Seasonality + Cyclicity + Noise
+
+[TABLE]
+ | Trend
+Long-term increase or decrease in the data. Captured by
+the overall direction of the series over time.
+e.g. Rising annual sales, Population growth
+↗ | 
+ | 
+
+[TABLE]
+ | Seasonality
+Regular, predictable cycles repeated at fixed intervals —
+daily, weekly, yearly.
+e.g. Holiday spikes, summer tourism peaks
+〜 | 
+ | 
+
+[TABLE]
+Trend
+Long-term increase or decrease in the data. Captured by
+the overall direction of the series over time.
+e.g. Rising annual sales, Population growth
+
+[TABLE]
+Seasonality
+Regular, predictable cycles repeated at fixed intervals —
+daily, weekly, yearly.
+e.g. Holiday spikes, summer tourism peaks
+
+[TABLE]
+ | Cyclicity
+Irregular fluctuations over longer periods, not fixed
+frequency. Often tied to economic or business cycles.
+e.g. Recession cycles, housing market waves
+⟳ | 
+ | 
+ | 
+
+[TABLE]
+ | Noise
+Random, irregular variation that cannot be attributed to
+the other components.
+e.g. Unexpected events, measurement errors
+⊘ | 
+ | 
+ | 
+
+[TABLE]
+Cyclicity
+Irregular fluctuations over longer periods, not fixed
+frequency. Often tied to economic or business cycles.
+e.g. Recession cycles, housing market waves
+
+[TABLE]
+Noise
+Random, irregular variation that cannot be attributed to
+the other components.
+e.g. Unexpected events, measurement errors
+
+--- Page 6 ---
+
+Traditional vs Automated Forecasting
+Aspect Traditional (Manual) Automated
+Model Selection Expert manually tests models Algorithmic search across models
+Parameter Tuning Grid search by hand (slow) Automated AIC/BIC optimization
+Scalability One model per analyst Hundreds of series simultaneously
+Speed Days to weeks Minutes to hours
+Expertise Required High — statistician needed Moderate — practitioner level
+Reproducibility Varies by analyst Fully reproducible pipeline
+Adaptability Manual re-training Automatic retraining triggers
+
+[TABLE]
+Traditional vs Automated Forecasting
+Aspect Traditional (Manual) Automated
+Model Selection Expert manually tests models Algorithmic search across models
+Parameter Tuning Grid search by hand (slow) Automated AIC/BIC optimization
+Scalability One model per analyst Hundreds of series simultaneously
+Speed Days to weeks Minutes to hours
+Expertise Required High — statistician needed Moderate — practitioner level
+Reproducibility Varies by analyst Fully reproducible pipeline
+Adaptability Manual re-training Automatic retraining triggers
+
+[TABLE]
+Aspect | Traditional (Manual) | Automated
+Model Selection | Expert manually tests models | Algorithmic search across models
+Parameter Tuning | Grid search by hand (slow) | Automated AIC/BIC optimization
+Scalability | One model per analyst | Hundreds of series simultaneously
+Speed | Days to weeks | Minutes to hours
+Expertise Required | High — statistician needed | Moderate — practitioner level
+Reproducibility | Varies by analyst | Fully reproducible pipeline
+Adaptability | Manual re-training | Automatic retraining triggers
+
+--- Page 7 ---
+
+
+--- Page 8 ---
+
+ARIMA: The Classic Forecasting Model
+AR I MA
+AutoRegressive Integrated Moving Average
+Uses past values of the variable to Makes the series stationary by
+Uses past forecast errors in the model.
+predict future values. differencing.
+Smooths out short-term fluctuations.
+Correlation between observations. Removes trends and unit roots.
+Xt = φ₁Xₙ₋₁ + φ₂Xₙ₋₂ + ... + Xt = εt + θ₁εₙ₋₁ + θ₂εₙ₋₂ +
+∆Xt = Xt − Xₙ₋₁
+εt ...
+Formula Formula Formula
+ARIMA(p, d, q) — Combined model: AR order p · Differencing d · MA order q
+
+[TABLE]
+ARIMA: The Classic Forecasting Model
+AR I MA
+AutoRegressive Integrated Moving Average
+Uses past values of the variable to Makes the series stationary by
+Uses past forecast errors in the model.
+predict future values. differencing.
+Smooths out short-term fluctuations.
+Correlation between observations. Removes trends and unit roots.
+Xt = φ₁Xₙ₋₁ + φ₂Xₙ₋₂ + ... + Xt = εt + θ₁εₙ₋₁ + θ₂εₙ₋₂ +
+∆Xt = Xt − Xₙ₋₁
+εt ...
+Formula Formula Formula
+ARIMA(p, d, q) — Combined model: AR order p · Differencing d · MA order q
+
+[TABLE]
+ | AR |  | AutoRegressive
+ |  |  | AutoRegressive
+Uses past values of the variable to
+predict future values.
+Correlation between observations.
+Xt = φ₁Xₙ₋₁ + φ₂Xₙ₋₂ + ... +
+εt
+Formula |  |  | 
+
+[TABLE]
+ | I |  | Integrated
+ |  |  | Integrated
+Makes the series stationary by
+differencing.
+Removes trends and unit roots.
+∆Xt = Xt − Xₙ₋₁
+Formula |  |  | 
+
+[TABLE]
+ | MA |  | Moving Average
+ |  |  | Moving Average
+Uses past forecast errors in the model.
+Smooths out short-term fluctuations.
+Xt = εt + θ₁εₙ₋₁ + θ₂εₙ₋₂ +
+...
+Formula |  |  | 
+
+[TABLE]
+Xt = φ₁Xₙ₋₁ + φ₂Xₙ₋₂ + ... +
+εt
+Formula
+
+[TABLE]
+∆Xt = Xt − Xₙ₋₁
+Formula
+
+[TABLE]
+Xt = εt + θ₁εₙ₋₁ + θ₂εₙ₋₂ +
+...
+Formula
+
+--- Page 9 ---
+
+ARIMA Parameters: p, d, q
+p d q
+AR Order Differencing Order MA Order
+Number of lag observations Number of times to difference the
+Number of lagged forecast errors.
+(lookback window). series.
+→ Identified via ACF plot cutoff.
+→ Identified via PACF plot cutoff. → d=0: already stationary
+→ Controls smoothness of
+→ Too high: overfitting; Too low: → d=1: removes linear trend
+prediction.
+misses patterns → d=2: removes quadratic trend
+Diagnostic: PACF (Partial Autocorrelation
+Diagnostic: ADF / KPSS stationarity test Diagnostic: ACF (Autocorrelation Function)
+Function)
+
+[TABLE]
+ARIMA Parameters: p, d, q
+p d q
+AR Order Differencing Order MA Order
+Number of lag observations Number of times to difference the
+Number of lagged forecast errors.
+(lookback window). series.
+→ Identified via ACF plot cutoff.
+→ Identified via PACF plot cutoff. → d=0: already stationary
+→ Controls smoothness of
+→ Too high: overfitting; Too low: → d=1: removes linear trend
+prediction.
+misses patterns → d=2: removes quadratic trend
+Diagnostic: PACF (Partial Autocorrelation
+Diagnostic: ADF / KPSS stationarity test Diagnostic: ACF (Autocorrelation Function)
+Function)
+
+[TABLE]
+
+p
+
+[TABLE]
+
+d
+
+[TABLE]
+
+q
+
+--- Page 10 ---
+
+Manual ARIMA: Challenges & Limitations
+• 🔬 Expert knowledge required — must interpret ACF/PACF plots correctly
+• ⏱ Time-consuming — testing each (p,d,q) combination manually is slow
+• 📉 Subjective — different analysts may choose different parameters
+• 🔁 Not scalable — impractical for hundreds or thousands of time series
+• 🔄 No automated retraining — must be manually updated when patterns change
+• ⚠ Stationarity testing — requires manual ADF/KPSS interpretation
+• 🧩 Seasonality ignored — basic ARIMA cannot handle seasonal patterns (needs SARIMA extension)
+• 💸 Cost — intensive analyst time = high operational cost for large-scale forecasting
+
+[TABLE]
+Manual ARIMA: Challenges & Limitations
+• 🔬 Expert knowledge required — must interpret ACF/PACF plots correctly
+• ⏱ Time-consuming — testing each (p,d,q) combination manually is slow
+• 📉 Subjective — different analysts may choose different parameters
+• 🔁 Not scalable — impractical for hundreds or thousands of time series
+• 🔄 No automated retraining — must be manually updated when patterns change
+• ⚠ Stationarity testing — requires manual ADF/KPSS interpretation
+• 🧩 Seasonality ignored — basic ARIMA cannot handle seasonal patterns (needs SARIMA extension)
+• 💸 Cost — intensive analyst time = high operational cost for large-scale forecasting
+
+--- Page 11 ---
+
+Auto-ARIMA: Automated Parameter Selection
+How Auto-ARIMA Works Key Benefits
+1. Run stationarity test (ADF/KPSS) to determine d
+✓ No manual ACF/PACF reading
+2. Define search space for p and q (e.g. 0–5)
+✓ Handles stationarity automatically
+3. Fit all candidate ARIMA(p,d,q) models
+✓ Explores full search space
+4. Evaluate each using AIC or BIC criterion
+✓ Consistent, reproducible results
+5. Select model with lowest AIC/BIC score
+✓ Supports parallel fitting
+6. Optionally test seasonal extensions (SARIMA)
+7. Return best model + confidence intervals ✓ Works with pmdarima library
+
+[TABLE]
+Auto-ARIMA: Automated Parameter Selection
+How Auto-ARIMA Works Key Benefits
+1. Run stationarity test (ADF/KPSS) to determine d
+✓ No manual ACF/PACF reading
+2. Define search space for p and q (e.g. 0–5)
+✓ Handles stationarity automatically
+3. Fit all candidate ARIMA(p,d,q) models
+✓ Explores full search space
+4. Evaluate each using AIC or BIC criterion
+✓ Consistent, reproducible results
+5. Select model with lowest AIC/BIC score
+✓ Supports parallel fitting
+6. Optionally test seasonal extensions (SARIMA)
+7. Return best model + confidence intervals ✓ Works with pmdarima library
+
+--- Page 12 ---
+
+AIC: Akaike Information Criterion
+AIC = 2k − 2 ln(L̂ )
+k = number of model parameters L̂ = maximized value of likelihood function
+Penalizes Complexity Lower is Better BIC Alternative
+Adding more parameters always
+The model with the lowest AIC score Bayesian Information Criterion (BIC =
+improves model fit. AIC adds a penalty
+wins. Auto-ARIMA tries all k·ln(n) − 2·ln(L̂)) applies a heavier
+term 2k to prevent overfitting — more
+combinations of (p,d,q) and picks the penalty for parameters, favoring
+complex models must substantially
+configuration with minimal AIC. simpler models on large datasets.
+improve fit to be selected.
+
+[TABLE]
+AIC: Akaike Information Criterion
+AIC = 2k − 2 ln(L̂ )
+k = number of model parameters L̂ = maximized value of likelihood function
+Penalizes Complexity Lower is Better BIC Alternative
+Adding more parameters always
+The model with the lowest AIC score Bayesian Information Criterion (BIC =
+improves model fit. AIC adds a penalty
+wins. Auto-ARIMA tries all k·ln(n) − 2·ln(L̂)) applies a heavier
+term 2k to prevent overfitting — more
+combinations of (p,d,q) and picks the penalty for parameters, favoring
+complex models must substantially
+configuration with minimal AIC. simpler models on large datasets.
+improve fit to be selected.
+
+[TABLE]
+
+AIC = 2k − 2 ln(L̂ )
+
+
+[TABLE]
+
+Penalizes Complexity
+Adding more parameters always
+improves model fit. AIC adds a penalty
+term 2k to prevent overfitting — more
+complex models must substantially
+improve fit to be selected.
+
+[TABLE]
+
+Lower is Better
+The model with the lowest AIC score
+wins. Auto-ARIMA tries all
+combinations of (p,d,q) and picks the
+configuration with minimal AIC.
+
+[TABLE]
+
+BIC Alternative
+Bayesian Information Criterion (BIC =
+k·ln(n) − 2·ln(L̂)) applies a heavier
+penalty for parameters, favoring
+simpler models on large datasets.
+
+--- Page 13 ---
+
+SARIMA: Seasonal Extension of ARIMA
+SARIMA(p, d, q)(P, D, Q)ₙ where m = seasonal period
+Seasonal AR order Seasonal Differencing
+P D
+Seasonal autoregressive lags at multiples of m Seasonal difference to remove seasonal unit root
+Seasonal MA order Seasonal Period
+Q m
+Seasonal moving average terms at multiples of m 12 = monthly, 4 = quarterly, 7 = weekly, 24 = hourly
+Example: SARIMA(1,1,1)(1,1,1)₁₂ → Monthly data with yearly seasonality
+
+[TABLE]
+SARIMA: Seasonal Extension of ARIMA
+SARIMA(p, d, q)(P, D, Q)ₙ where m = seasonal period
+Seasonal AR order Seasonal Differencing
+P D
+Seasonal autoregressive lags at multiples of m Seasonal difference to remove seasonal unit root
+Seasonal MA order Seasonal Period
+Q m
+Seasonal moving average terms at multiples of m 12 = monthly, 4 = quarterly, 7 = weekly, 24 = hourly
+Example: SARIMA(1,1,1)(1,1,1)₁₂ → Monthly data with yearly seasonality
+
+[TABLE]
+
+SARIMA(p, d, q)(P, D, Q)ₙ where m = seasonal period
+
+
+--- Page 14 ---
+
+Auto-ARIMA: Forecast Output Example
+Model Info
+Best Model:
+SARIMA(1,1,1)(1,0,0)₁₂
+AIC Score: 284.3
+RMSE (CV): 8.7
+MAPE: 4.2%
+Confidence: 95% CI
+Horizon: 3 months
+
+[TABLE]
+Auto-ARIMA: Forecast Output Example
+Model Info
+Best Model:
+SARIMA(1,1,1)(1,0,0)₁₂
+AIC Score: 284.3
+RMSE (CV): 8.7
+MAPE: 4.2%
+Confidence: 95% CI
+Horizon: 3 months
+
+--- Page 15 ---
+
+SECTION 03
+Prophet
+Meta's open-source tool for forecasting time series with strong seasonal patterns
+
+[TABLE]
+SECTION 03
+Prophet
+Meta's open-source tool for forecasting time series with strong seasonal patterns
+
+--- Page 16 ---
+
+Prophet: Facebook's Forecasting Tool
+Released by Meta (Facebook) in 2017 — designed for business analysts, not just statisticians
+Handles Holidays Multiple Seasonality Changepoints
+📅 📊 🔀
+Manually specify custom Automatically detects trend
+Daily, weekly, yearly — all
+holidays and events with changes without manual
+handled simultaneously
+variable windows intervention
+Uncertainty
+Fast & Scalable Python & R
+Quantification
+⚡ 🐍 🧮
+Built-in confidence intervals
+Stan-based backend — runs Simple API, minimal data
+using Monte Carlo
+in seconds for most datasets preprocessing required
+simulation
+
+[TABLE]
+Prophet: Facebook's Forecasting Tool
+Released by Meta (Facebook) in 2017 — designed for business analysts, not just statisticians
+Handles Holidays Multiple Seasonality Changepoints
+📅 📊 🔀
+Manually specify custom Automatically detects trend
+Daily, weekly, yearly — all
+holidays and events with changes without manual
+handled simultaneously
+variable windows intervention
+Uncertainty
+Fast & Scalable Python & R
+Quantification
+⚡ 🐍 🧮
+Built-in confidence intervals
+Stan-based backend — runs Simple API, minimal data
+using Monte Carlo
+in seconds for most datasets preprocessing required
+simulation
+
+[TABLE]
+📅 | Handles Holidays
+ | Manually specify custom
+holidays and events with
+variable windows
+
+[TABLE]
+📊 | Multiple Seasonality
+ | Daily, weekly, yearly — all
+handled simultaneously
+
+[TABLE]
+🔀 | Changepoints
+ | Automatically detects trend
+changes without manual
+intervention
+
+[TABLE]
+⚡ | Fast & Scalable
+ | Stan-based backend — runs
+in seconds for most datasets
+
+[TABLE]
+🐍 | Python & R
+ | Simple API, minimal data
+preprocessing required
+
+[TABLE]
+🧮 | Uncertainty
+Quantification
+ | Built-in confidence intervals
+using Monte Carlo
+simulation
+
+--- Page 17 ---
+
+The Bakery Analogy — Understanding Prophet
+Think of Prophet like a bakery forecasting daily bread demand:
+🥖 Overall sales growing as neighbourhood → Piecewise linear or logistic growth with
+📈 Trend g(t)
+expands automatic changepoints
+🥖 More bread sold on weekends; spikes before → Fourier series captures multiple
+🌀 Seasonality s(t)
+Christmas overlapping seasonal cycles
+🥖 Valentine's Day, Eid, Christmas cause special → User-specified holiday list with window
+🎉 Holidays h(t)
+demand spikes around each date
+🥖 Unexpected weather, supplier shortage — → Modeled as Laplace noise in Bayesian
+🌫 Noise ε(t)
+unpredictable framework
+
+[TABLE]
+The Bakery Analogy — Understanding Prophet
+Think of Prophet like a bakery forecasting daily bread demand:
+🥖 Overall sales growing as neighbourhood → Piecewise linear or logistic growth with
+📈 Trend g(t)
+expands automatic changepoints
+🥖 More bread sold on weekends; spikes before → Fourier series captures multiple
+🌀 Seasonality s(t)
+Christmas overlapping seasonal cycles
+🥖 Valentine's Day, Eid, Christmas cause special → User-specified holiday list with window
+🎉 Holidays h(t)
+demand spikes around each date
+🥖 Unexpected weather, supplier shortage — → Modeled as Laplace noise in Bayesian
+🌫 Noise ε(t)
+unpredictable framework
+
+[TABLE]
+ | 🥖 Overall sales growing as neighbourhood → Piecewise linear or logistic growth with
+📈 Trend g(t)
+expands automatic changepoints
+
+[TABLE]
+ | 🥖 More bread sold on weekends; spikes before → Fourier series captures multiple
+🌀 Seasonality s(t)
+Christmas overlapping seasonal cycles
+
+[TABLE]
+ | 🥖 Valentine's Day, Eid, Christmas cause special → User-specified holiday list with window
+🎉 Holidays h(t)
+demand spikes around each date
+
+[TABLE]
+ | 🥖 Unexpected weather, supplier shortage — → Modeled as Laplace noise in Bayesian
+🌫 Noise ε(t)
+unpredictable framework
+
+--- Page 18 ---
+
+Prophet's Decomposition Formula
+y(t) = g(t) + s(t) + h(t) + ε(t)
+g(t) s(t) h(t) ε(t)
+Growth / Trend Seasonality Holiday Effects Error / Noise
+Captures long-term
+Periodic effects modeled with Effect of known irregular
+non-periodic changes. Unexplained variance.
+Fourier series. events.
+Two options: Assumed to follow a Laplace
+Can include: Each holiday gets its own
+• Linear: for unbounded distribution.
+• Weekly (period=7) coefficient.
+growth Prophet provides credible
+• Yearly (period=365.25) Window parameter controls
+• Logistic: for growth with intervals for uncertainty.
+• Custom periods days before/after.
+saturation limit (S-curve)
+
+[TABLE]
+
+y(t) = g(t) + s(t) + h(t) + ε(t)
+
+
+[TABLE]
+g(t)
+Growth / Trend
+Captures long-term
+non-periodic changes.
+Two options:
+• Linear: for unbounded
+growth
+• Logistic: for growth with
+saturation limit (S-curve)
+
+[TABLE]
+s(t)
+Seasonality
+Periodic effects modeled with
+Fourier series.
+Can include:
+• Weekly (period=7)
+• Yearly (period=365.25)
+• Custom periods
+
+[TABLE]
+h(t)
+Holiday Effects
+Effect of known irregular
+events.
+Each holiday gets its own
+coefficient.
+Window parameter controls
+days before/after.
+
+[TABLE]
+ε(t)
+Error / Noise
+Unexplained variance.
+Assumed to follow a Laplace
+distribution.
+Prophet provides credible
+intervals for uncertainty.
+
+--- Page 19 ---
+
+Changepoint Detection in Prophet
+Key Settings
+• n_changepoints (default=25)
+• Number of potential change locations
+• changepoint_range (default=0.8)
+• Search in first 80% of data
+• changepoint_prior_scale
+• Controls flexibility — higher = more
+changepoints
+• Manual override possible:
+• model.changepoints = ['2023-01-01']
+
+[TABLE]
+Changepoint Detection in Prophet
+Key Settings
+• n_changepoints (default=25)
+• Number of potential change locations
+• changepoint_range (default=0.8)
+• Search in first 80% of data
+• changepoint_prior_scale
+• Controls flexibility — higher = more
+changepoints
+• Manual override possible:
+• model.changepoints = ['2023-01-01']
+
+--- Page 20 ---
+
+Additive vs Multiplicative Seasonality
+Additive Seasonality Multiplicative Seasonality
+• Seasonal amplitude stays CONSTANT over time • Seasonal amplitude GROWS proportionally with
+trend
+• Formula: y(t) = T + S + ε
+• Formula: y(t) = T × S × ε
+• Use when: seasonal fluctuations don't scale with
+trend level • Use when: higher baseline means larger seasonal
+swings
+• Example: Temperature cycles — ±5°C regardless
+of base temp • Example: E-commerce sales — holiday spike is %
+of monthly base
+• Prophet default: additive for yearly / weekly
+seasonality • Set in Prophet: model =
+Prophet(seasonality_mode='multiplicative')
+• Fourier series: s(t) = Σ [aₙ cos(2πnt/P) + bₙ
+sin(2πnt/P)] • Better for exponentially growing time series
+
+[TABLE]
+Additive vs Multiplicative Seasonality
+Additive Seasonality Multiplicative Seasonality
+• Seasonal amplitude stays CONSTANT over time • Seasonal amplitude GROWS proportionally with
+trend
+• Formula: y(t) = T + S + ε
+• Formula: y(t) = T × S × ε
+• Use when: seasonal fluctuations don't scale with
+trend level • Use when: higher baseline means larger seasonal
+swings
+• Example: Temperature cycles — ±5°C regardless
+of base temp • Example: E-commerce sales — holiday spike is %
+of monthly base
+• Prophet default: additive for yearly / weekly
+seasonality • Set in Prophet: model =
+Prophet(seasonality_mode='multiplicative')
+• Fourier series: s(t) = Σ [aₙ cos(2πnt/P) + bₙ
+sin(2πnt/P)] • Better for exponentially growing time series
+
+--- Page 21 ---
+
+Prophet Hyperparameters
+• changepoint_prior_scale (default=0.05) — Controls trend flexibility. Higher → more overfitting,
+Lower → underfitting
+• seasonality_prior_scale (default=10) — Controls amplitude of seasonal terms. Higher → stronger
+seasonality
+• holidays_prior_scale (default=10) — Flexibility for holiday effect estimates
+• seasonality_mode — 'additive' (default) or 'multiplicative'
+• yearly_seasonality, weekly_seasonality, daily_seasonality — True/False/integer (Fourier order)
+• n_changepoints (default=25) — Number of potential trend change points to consider
+• changepoint_range (default=0.8) — Proportion of history where changepoints are placed
+• interval_width (default=0.8) — Width of confidence interval for uncertainty estimation
+
+[TABLE]
+Prophet Hyperparameters
+• changepoint_prior_scale (default=0.05) — Controls trend flexibility. Higher → more overfitting,
+Lower → underfitting
+• seasonality_prior_scale (default=10) — Controls amplitude of seasonal terms. Higher → stronger
+seasonality
+• holidays_prior_scale (default=10) — Flexibility for holiday effect estimates
+• seasonality_mode — 'additive' (default) or 'multiplicative'
+• yearly_seasonality, weekly_seasonality, daily_seasonality — True/False/integer (Fourier order)
+• n_changepoints (default=25) — Number of potential trend change points to consider
+• changepoint_range (default=0.8) — Proportion of history where changepoints are placed
+• interval_width (default=0.8) — Width of confidence interval for uncertainty estimation
+
+--- Page 22 ---
+
+Automating Prophet: Grid Search + Cross Validation
+• Define hyperparameter grid: changepoint_prior_scale × seasonality_prior_scale ×
+seasonality_mode
+• Use Prophet's built-in cross_validation() for walk-forward evaluation
+• Compute performance metrics: performance_metrics() returns MAE, RMSE, MAPE per horizon
+• Select best configuration based on average RMSE across all CV windows
+• Parallelise with joblib.Parallel or multiprocessing for faster search
+• Typical grid size: 3×3×2 = 18 configurations, each evaluated across multiple windows
+• Libraries: prophet, itertools.product, pandas, joblib
+• Result: fully automated Prophet model selection with zero manual tuning
+
+[TABLE]
+Automating Prophet: Grid Search + Cross Validation
+• Define hyperparameter grid: changepoint_prior_scale × seasonality_prior_scale ×
+seasonality_mode
+• Use Prophet's built-in cross_validation() for walk-forward evaluation
+• Compute performance metrics: performance_metrics() returns MAE, RMSE, MAPE per horizon
+• Select best configuration based on average RMSE across all CV windows
+• Parallelise with joblib.Parallel or multiprocessing for faster search
+• Typical grid size: 3×3×2 = 18 configurations, each evaluated across multiple windows
+• Libraries: prophet, itertools.product, pandas, joblib
+• Result: fully automated Prophet model selection with zero manual tuning
+
+--- Page 23 ---
+
+Walk-Forward Cross Validation
+Traditional k-fold CV is invalid for time series — data must not leak future into past
+Fold 1
+Fold 2
+Fold 3
+Fold 4
+Training Validation / Test Unused
+
+[TABLE]
+Walk-Forward Cross Validation
+Traditional k-fold CV is invalid for time series — data must not leak future into past
+Fold 1
+Fold 2
+Fold 3
+Fold 4
+
+[TABLE]
+ |  |  |  |  |  |  |  |  |  |  |  | 
+
+[TABLE]
+ |  |  |  |  |  |  |  |  |  |  |  | 
+
+[TABLE]
+ |  |  |  |  |  |  |  |  |  |  |  | 
+
+[TABLE]
+ |  |  |  |  |  |  |  |  |  |  |  | 
+
+[TABLE]
+
+
+
+[TABLE]
+
+Training
+
+[TABLE]
+
+
+
+[TABLE]
+
+Validation / Test
+
+[TABLE]
+
+Unused
+
+--- Page 24 ---
+
+SECTION 04
+AutoML for Forecasting
+Applying machine learning automation to time series prediction pipelines
+
+[TABLE]
+SECTION 04
+AutoML for Forecasting
+Applying machine learning automation to time series prediction pipelines
+
+--- Page 25 ---
+
+Why Use Machine Learning for Forecasting?
+• Traditional statistical models (ARIMA/Prophet) assume linear relationships and specific data
+structures
+• ML models can capture non-linear interactions, complex feature relationships, and multi-variate
+inputs
+• Gradient Boosting (LightGBM, XGBoost) consistently outperforms ARIMA on many real-world
+datasets
+• ML excels when exogenous variables matter — promotions, weather, economic indicators
+• Handles large datasets efficiently — millions of rows without memory issues
+• Supports ensembling — combine multiple models for better accuracy than any single model
+• Feature importance: understand which lag features or covariates drive predictions
+• Limitation: ML does NOT natively understand time — requires feature engineering to inject
+temporal structure
+
+[TABLE]
+Why Use Machine Learning for Forecasting?
+• Traditional statistical models (ARIMA/Prophet) assume linear relationships and specific data
+structures
+• ML models can capture non-linear interactions, complex feature relationships, and multi-variate
+inputs
+• Gradient Boosting (LightGBM, XGBoost) consistently outperforms ARIMA on many real-world
+datasets
+• ML excels when exogenous variables matter — promotions, weather, economic indicators
+• Handles large datasets efficiently — millions of rows without memory issues
+• Supports ensembling — combine multiple models for better accuracy than any single model
+• Feature importance: understand which lag features or covariates drive predictions
+• Limitation: ML does NOT natively understand time — requires feature engineering to inject
+temporal structure
+
+--- Page 26 ---
+
+Converting Time Series to Tabular Format
+ML models expect a row-per-prediction table. We create features from time series structure.
+Input: Raw Time Series Output: ML Feature Table
+Date Sales lag_1 lag_2 roll_3 dow Target
+2024-01-01 120 120 — — 3 135
+2024-01-02 135 135 120 — 4 128
+→
+2024-01-03 128 128 135 128 5 142
+2024-01-04 142 142 128 130 6 155
+2024-01-05 155 155 142 142 0 167
+lag_n = value n periods ago · roll_n = rolling mean n periods · dow = day of week
+
+[TABLE]
+Converting Time Series to Tabular Format
+ML models expect a row-per-prediction table. We create features from time series structure.
+Input: Raw Time Series Output: ML Feature Table
+Date Sales lag_1 lag_2 roll_3 dow Target
+2024-01-01 120 120 — — 3 135
+2024-01-02 135 135 120 — 4 128
+→
+2024-01-03 128 128 135 128 5 142
+2024-01-04 142 142 128 130 6 155
+2024-01-05 155 155 142 142 0 167
+lag_n = value n periods ago · roll_n = rolling mean n periods · dow = day of week
+
+[TABLE]
+Date | Sales
+2024-01-01 | 120
+2024-01-02 | 135
+2024-01-03 | 128
+2024-01-04 | 142
+2024-01-05 | 155
+
+[TABLE]
+lag_1 | lag_2 | roll_3 | dow | Target
+120 | — | — | 3 | 135
+135 | 120 | — | 4 | 128
+128 | 135 | 128 | 5 | 142
+142 | 128 | 130 | 6 | 155
+155 | 142 | 142 | 0 | 167
+
+--- Page 27 ---
+
+Feature Engineering for ML Forecasting
+Lag Features Rolling Statistics Date/Time Features
+• lag_1, lag_2, ..., lag_n
+• Rolling mean (7d, 14d, 30d) • Day of week (0–6)
+• lag_7 (weekly), lag_365 (yearly)
+• Rolling std — measures volatility • Month, quarter, year
+• Captures autocorrelation in the
+• Rolling min/max, rolling median • Hour, week of year, is_weekend
+series
+Exogenous Variables Target Encoding Interaction Features
+• Price, promotions, weather • Mean target by category • lag × day_of_week
+• Economic indicators • Smoothed category encodings • rolling_mean × price
+• Competitor activity, holidays • Leave-one-out to prevent leakage • Seasonal × trend interaction
+
+[TABLE]
+Feature Engineering for ML Forecasting
+Lag Features Rolling Statistics Date/Time Features
+• lag_1, lag_2, ..., lag_n
+• Rolling mean (7d, 14d, 30d) • Day of week (0–6)
+• lag_7 (weekly), lag_365 (yearly)
+• Rolling std — measures volatility • Month, quarter, year
+• Captures autocorrelation in the
+• Rolling min/max, rolling median • Hour, week of year, is_weekend
+series
+Exogenous Variables Target Encoding Interaction Features
+• Price, promotions, weather • Mean target by category • lag × day_of_week
+• Economic indicators • Smoothed category encodings • rolling_mean × price
+• Competitor activity, holidays • Leave-one-out to prevent leakage • Seasonal × trend interaction
+
+[TABLE]
+Lag Features
+• lag_1, lag_2, ..., lag_n
+• lag_7 (weekly), lag_365 (yearly)
+• Captures autocorrelation in the
+series
+
+[TABLE]
+Rolling Statistics
+• Rolling mean (7d, 14d, 30d)
+• Rolling std — measures volatility
+• Rolling min/max, rolling median
+
+[TABLE]
+Date/Time Features
+• Day of week (0–6)
+• Month, quarter, year
+• Hour, week of year, is_weekend
+
+[TABLE]
+Exogenous Variables
+• Price, promotions, weather
+• Economic indicators
+• Competitor activity, holidays
+
+[TABLE]
+Target Encoding
+• Mean target by category
+• Smoothed category encodings
+• Leave-one-out to prevent leakage
+
+[TABLE]
+Interaction Features
+• lag × day_of_week
+• rolling_mean × price
+• Seasonal × trend interaction
+
+--- Page 28 ---
+
+AutoML Pipeline for Forecasting
+📥 ⚙ 🔍 🎛 🏗 ✅
+→ → → → →
+Raw Feature Model Hyper- Ensemble Best
+Data Engineering Search param Tune & Stack Model
+
+[TABLE]
+
+📥
+
+Raw
+Data
+
+
+[TABLE]
+
+⚙
+
+Feature
+Engineering
+
+
+[TABLE]
+
+🔍
+
+Model
+Search
+
+
+[TABLE]
+
+🎛
+
+Hyper-
+param Tune
+
+
+[TABLE]
+
+🏗
+
+Ensemble
+& Stack
+
+
+[TABLE]
+
+✅
+
+Best
+Model
+
+
+--- Page 29 ---
+
+Hyperparameter Search Methods
+Grid Search Random Search Bayesian Optimization
+✓ Exhaustive — covers all
+✓ 2–4× faster, similar accuracy ✓ Learns from past trials, efficient
+combinations
+✗ Slow: O(n^d) — exponential in ✗ No learning — may miss optimal
+✗ Sequential — harder to parallelize
+dimensions regions
+Best for: Small, well-defined search Best for: Medium search spaces, limited Best for: Expensive models, many
+spaces budget parameters
+Complexity: O(n^d) Complexity: O(n) Complexity: O(n log n)
+
+[TABLE]
+Hyperparameter Search Methods
+Grid Search Random Search Bayesian Optimization
+✓ Exhaustive — covers all
+✓ 2–4× faster, similar accuracy ✓ Learns from past trials, efficient
+combinations
+✗ Slow: O(n^d) — exponential in ✗ No learning — may miss optimal
+✗ Sequential — harder to parallelize
+dimensions regions
+Best for: Small, well-defined search Best for: Medium search spaces, limited Best for: Expensive models, many
+spaces budget parameters
+Complexity: O(n^d) Complexity: O(n) Complexity: O(n log n)
+
+[TABLE]
+Grid Search
+✓ Exhaustive — covers all
+combinations
+✗ Slow: O(n^d) — exponential in
+dimensions
+Best for: Small, well-defined search
+spaces
+Complexity: O(n^d)
+
+[TABLE]
+Random Search
+✓ 2–4× faster, similar accuracy
+✗ No learning — may miss optimal
+regions
+Best for: Medium search spaces, limited
+budget
+Complexity: O(n)
+
+[TABLE]
+Bayesian Optimization
+✓ Learns from past trials, efficient
+✗ Sequential — harder to parallelize
+Best for: Expensive models, many
+parameters
+Complexity: O(n log n)
+
+[TABLE]
+ | Best for: Small, well-defined search
+spaces | 
+
+[TABLE]
+ | Best for: Medium search spaces, limited
+budget | 
+
+[TABLE]
+ | Best for: Expensive models, many
+parameters | 
+
+--- Page 30 ---
+
+Walk-Forward Validation for AutoML
+• Standard k-fold cross-validation shuffles data — invalid for time series (future leaks into past)
+• Walk-forward CV: expand training window forward in time, always predict future only
+• Minimum initial training size: depends on data frequency and desired stability
+• Step size: how many periods to advance each fold (1 = rolling, n = blocked)
+• Gap period: add buffer between train and test to avoid leakage from autocorrelation
+• Aggregate metrics: average MAE/RMSE across all folds — more reliable than single split
+• TimeSeriesSplit (sklearn): implements walk-forward for any ML model
+• Prophet: cross_validation(model, initial='365 days', period='30 days', horizon='90 days')
+
+[TABLE]
+Walk-Forward Validation for AutoML
+• Standard k-fold cross-validation shuffles data — invalid for time series (future leaks into past)
+• Walk-forward CV: expand training window forward in time, always predict future only
+• Minimum initial training size: depends on data frequency and desired stability
+• Step size: how many periods to advance each fold (1 = rolling, n = blocked)
+• Gap period: add buffer between train and test to avoid leakage from autocorrelation
+• Aggregate metrics: average MAE/RMSE across all folds — more reliable than single split
+• TimeSeriesSplit (sklearn): implements walk-forward for any ML model
+• Prophet: cross_validation(model, initial='365 days', period='30 days', horizon='90 days')
+
+--- Page 31 ---
+
+AutoML Forecasting Frameworks
+FLAML AutoTS PyCaret
+Fast, Lightweight AutoML by Microsoft. Purpose-built for time series. Supports 20+ Low-code ML library. Time series module with
+Supports LightGBM, XGBoost, time series. models including ensembles. Excellent compare_models(). Great for EDA + model
+Efficient search with minimal tuning. multi-series support. selection in one workflow.
+pip install flaml[ts] pip install autots pip install pycaret[time_series]
+Auto-sklearn NeuralForecast StatsForecast
+Bayesian optimization for sklearn pipelines. Deep learning-based AutoML for forecasting. Ultra-fast statistical forecasting. AutoARIMA,
+Strong meta-learning component that NBEATS, NHITS, TFT architectures with AutoETS, AutoTheta. 100× faster than
+transfers from prior experiments. automatic tuning. statsmodels.
+pip install auto-sklearn pip install neuralforecast pip install statsforecast
+
+[TABLE]
+AutoML Forecasting Frameworks
+FLAML AutoTS PyCaret
+Fast, Lightweight AutoML by Microsoft. Purpose-built for time series. Supports 20+ Low-code ML library. Time series module with
+Supports LightGBM, XGBoost, time series. models including ensembles. Excellent compare_models(). Great for EDA + model
+Efficient search with minimal tuning. multi-series support. selection in one workflow.
+pip install flaml[ts] pip install autots pip install pycaret[time_series]
+Auto-sklearn NeuralForecast StatsForecast
+Bayesian optimization for sklearn pipelines. Deep learning-based AutoML for forecasting. Ultra-fast statistical forecasting. AutoARIMA,
+Strong meta-learning component that NBEATS, NHITS, TFT architectures with AutoETS, AutoTheta. 100× faster than
+transfers from prior experiments. automatic tuning. statsmodels.
+pip install auto-sklearn pip install neuralforecast pip install statsforecast
+
+[TABLE]
+FLAML
+Fast, Lightweight AutoML by Microsoft.
+Supports LightGBM, XGBoost, time series.
+Efficient search with minimal tuning.
+pip install flaml[ts]
+
+[TABLE]
+AutoTS
+Purpose-built for time series. Supports 20+
+models including ensembles. Excellent
+multi-series support.
+pip install autots
+
+[TABLE]
+PyCaret
+Low-code ML library. Time series module with
+compare_models(). Great for EDA + model
+selection in one workflow.
+pip install pycaret[time_series]
+
+[TABLE]
+Fast, Lightweight AutoML by Microsoft.
+Supports LightGBM, XGBoost, time series.
+Efficient search with minimal tuning.
+pip install flaml[ts]
+
+[TABLE]
+Purpose-built for time series. Supports 20+
+models including ensembles. Excellent
+multi-series support.
+pip install autots
+
+[TABLE]
+Low-code ML library. Time series module with
+compare_models(). Great for EDA + model
+selection in one workflow.
+pip install pycaret[time_series]
+
+[TABLE]
+Auto-sklearn
+Bayesian optimization for sklearn pipelines.
+Strong meta-learning component that
+transfers from prior experiments.
+pip install auto-sklearn
+
+[TABLE]
+NeuralForecast
+Deep learning-based AutoML for forecasting.
+NBEATS, NHITS, TFT architectures with
+automatic tuning.
+pip install neuralforecast
+
+[TABLE]
+StatsForecast
+Ultra-fast statistical forecasting. AutoARIMA,
+AutoETS, AutoTheta. 100× faster than
+statsmodels.
+pip install statsforecast
+
+[TABLE]
+Bayesian optimization for sklearn pipelines.
+Strong meta-learning component that
+transfers from prior experiments.
+pip install auto-sklearn
+
+[TABLE]
+Deep learning-based AutoML for forecasting.
+NBEATS, NHITS, TFT architectures with
+automatic tuning.
+pip install neuralforecast
+
+[TABLE]
+Ultra-fast statistical forecasting. AutoARIMA,
+AutoETS, AutoTheta. 100× faster than
+statsmodels.
+pip install statsforecast
+
+--- Page 32 ---
+
+Evaluation Metrics for Forecasting
+Metric Formula Units Best When
+MAE mean(|yᵢ − ŷᵢ|) Same as target Outliers need equal weight
+RMSE √mean((yᵢ−ŷᵢ)²) Same as target Large errors must be penalised
+MAPE mean(|yᵢ−ŷᵢ|/yᵢ)×100 Percentage Scale-free comparison needed
+SMAPE mean(2|yᵢ−ŷᵢ|/(|yᵢ|+|ŷᵢ|)) Percentage Avoid division by zero in MAPE
+MASE MAE / MAE(naïve) Unitless Comparing across datasets
+
+[TABLE]
+Evaluation Metrics for Forecasting
+Metric Formula Units Best When
+MAE mean(|yᵢ − ŷᵢ|) Same as target Outliers need equal weight
+RMSE √mean((yᵢ−ŷᵢ)²) Same as target Large errors must be penalised
+MAPE mean(|yᵢ−ŷᵢ|/yᵢ)×100 Percentage Scale-free comparison needed
+SMAPE mean(2|yᵢ−ŷᵢ|/(|yᵢ|+|ŷᵢ|)) Percentage Avoid division by zero in MAPE
+MASE MAE / MAE(naïve) Unitless Comparing across datasets
+
+[TABLE]
+Metric | Formula | Units | Best When
+MAE | mean(|yᵢ − ŷᵢ|) | Same as target | Outliers need equal weight
+RMSE | √mean((yᵢ−ŷᵢ)²) | Same as target | Large errors must be penalised
+MAPE | mean(|yᵢ−ŷᵢ|/yᵢ)×100 | Percentage | Scale-free comparison needed
+SMAPE | mean(2|yᵢ−ŷᵢ|/(|yᵢ|+|ŷᵢ|)) | Percentage | Avoid division by zero in MAPE
+MASE | MAE / MAE(naïve) | Unitless | Comparing across datasets
+
+--- Page 33 ---
+
+SECTION 05
+AutoML + Feature Hashing
+Solving the multi-series scalability problem with hashing-based global models
+
+[TABLE]
+SECTION 05
+AutoML + Feature Hashing
+Solving the multi-series scalability problem with hashing-based global models
+
+--- Page 34 ---
+
+SECTION 05
+AutoML + Feature Hashing
+Solving the multi-series scalability problem with hashing-based global models
+
+[TABLE]
+SECTION 05
+AutoML + Feature Hashing
+Solving the multi-series scalability problem with hashing-based global models
+
+--- Page 35 ---
+
+The Multi-Series Scalability Problem
+500K+ 10M+ 1M+ 100K+
+Amazon Retail Chain Energy Grid Ad Platform
+SKUs requiring demand Store × SKU combinations
+Smart meter time series Campaign performance series
+forecasting weekly
+Why Local Models Fail at Scale:
+✗ Local Model ✗ Cold Start ✗ Feature Sharing
+Train one ARIMA/Prophet per series. New products / stores have no history. Similar series (same category/region)
+500K models = days of compute. Memory Local models fail immediately. Requires share patterns but local models can't
+explosion. Impossible to maintain. special handling. learn this cross-series structure.
+
+[TABLE]
+500K+
+
+Amazon
+SKUs requiring demand
+forecasting
+
+[TABLE]
+10M+
+
+Retail Chain
+Store × SKU combinations
+weekly
+
+[TABLE]
+1M+
+
+Energy Grid
+Smart meter time series
+
+[TABLE]
+100K+
+
+Ad Platform
+Campaign performance series
+
+--- Page 36 ---
+
+Local vs Global Forecasting Models
+🔴 Local Models 🟢 Global Models
+• One model per time series • One model trained across ALL series
+• ✓ Fully customized to each series • ✓ Scales to millions of series
+• ✓ No interference between series • ✓ Learns shared patterns globally
+• ✗ Doesn't scale beyond ~1,000 series • ✓ Handles cold start via features
+• ✗ Cold start problem for new series • ✗ Requires rich feature representation
+• ✗ Cannot learn cross-series patterns • ✗ Risks series-interference if not handled
+• Examples: ARIMA, Prophet (per series) • Examples: LightGBM + lag features
+
+[TABLE]
+Local vs Global Forecasting Models
+🔴 Local Models 🟢 Global Models
+• One model per time series • One model trained across ALL series
+• ✓ Fully customized to each series • ✓ Scales to millions of series
+• ✓ No interference between series • ✓ Learns shared patterns globally
+• ✗ Doesn't scale beyond ~1,000 series • ✓ Handles cold start via features
+• ✗ Cold start problem for new series • ✗ Requires rich feature representation
+• ✗ Cannot learn cross-series patterns • ✗ Risks series-interference if not handled
+• Examples: ARIMA, Prophet (per series) • Examples: LightGBM + lag features
+
+--- Page 37 ---
+
+Feature Hashing (The Hashing Trick)
+Series ID Hash
+→ → Fixed-Size → ML Model
+'store_42 Function
+Vector [0,...,N] Input
+item_789' h(x) mod N
+Memory Efficient No Pre-training
+⚡ 🚀
+Fixed output size regardless of cardinality. No growing New categories handled at inference without re-fitting
+vocabulary dict. the feature encoder.
+Deterministic Handles Collisions
+🔒 📦
+Same input always produces same hash. No Multiple inputs may map to same hash bucket —
+randomness in encoding. usually minor performance impact.
+
+[TABLE]
+Feature Hashing (The Hashing Trick)
+Series ID Hash
+→ → Fixed-Size → ML Model
+'store_42 Function
+Vector [0,...,N] Input
+item_789' h(x) mod N
+Memory Efficient No Pre-training
+⚡ 🚀
+Fixed output size regardless of cardinality. No growing New categories handled at inference without re-fitting
+vocabulary dict. the feature encoder.
+Deterministic Handles Collisions
+🔒 📦
+Same input always produces same hash. No Multiple inputs may map to same hash bucket —
+randomness in encoding. usually minor performance impact.
+
+[TABLE]
+
+Series ID
+'store_42
+item_789'
+
+
+[TABLE]
+
+Hash
+Function
+h(x) mod N
+
+
+[TABLE]
+
+Fixed-Size
+Vector [0,...,N]
+
+
+[TABLE]
+
+ML Model
+Input
+
+
+[TABLE]
+Memory Efficient
+Fixed output size regardless of cardinality. No growing
+vocabulary dict.
+
+[TABLE]
+No Pre-training
+New categories handled at inference without re-fitting
+the feature encoder.
+
+[TABLE]
+Deterministic
+Same input always produces same hash. No
+randomness in encoding.
+
+[TABLE]
+Handles Collisions
+Multiple inputs may map to same hash bucket —
+usually minor performance impact.
+
+--- Page 38 ---
+
+Why Feature Hashing for Multi-Series?
+• Problem: Store/product IDs are high-cardinality categorical variables (millions of unique values)
+• One-hot encoding: 1M categories → 1M columns — memory and compute infeasible
+• Label encoding: ordinal structure misleads the model (store_1 ≠ 'less than' store_2)
+• Feature hashing: maps any string ID to a fixed-size vector of K dimensions using hash functions
+• K is user-defined (e.g. K=128, 256, 512) — controls trade-off between accuracy and memory
+• Sklearn: FeatureHasher(n_features=256, input_type='string') — supports string inputs natively
+• Enables one global LightGBM/XGBoost model for all series — trained once, infers for all
+• Combined with lag/rolling features per series → powerful global forecasting architecture
+
+[TABLE]
+Why Feature Hashing for Multi-Series?
+• Problem: Store/product IDs are high-cardinality categorical variables (millions of unique values)
+• One-hot encoding: 1M categories → 1M columns — memory and compute infeasible
+• Label encoding: ordinal structure misleads the model (store_1 ≠ 'less than' store_2)
+• Feature hashing: maps any string ID to a fixed-size vector of K dimensions using hash functions
+• K is user-defined (e.g. K=128, 256, 512) — controls trade-off between accuracy and memory
+• Sklearn: FeatureHasher(n_features=256, input_type='string') — supports string inputs natively
+• Enables one global LightGBM/XGBoost model for all series — trained once, infers for all
+• Combined with lag/rolling features per series → powerful global forecasting architecture
+
+--- Page 39 ---
+
+AutoML + Hashing: Full Pipeline
+1 2 3 4 5 6
+All Series → Feature → Hashing → Concat → AutoML → Global
+Data Engineering Encoder Features Search Forecast
+Millions of rows Lag, rolling, date ID → vector K=256 Numeric + hash LGB/XGB/CB All series at once
+Sample Code
+from sklearn.feature_extraction import FeatureHasher
+from lightgbm import LGBMRegressor
+import pandas as pd
+# Hash categorical series IDs
+hasher = FeatureHasher(n_features=256, input_type='string')
+hashed = hasher.transform(df[['store_id','item_id']].astype(str).to_dict('records'))
+# Combine with lag/rolling features
+X = pd.concat([df[lag_cols], pd.DataFrame(hashed.toarray())], axis=1)
+model = LGBMRegressor(n_estimators=500).fit(X_train, y_train)
+
+[TABLE]
+ | 1 | 
+All Series
+Data |  | 
+ |  | 
+Millions of rows |  | 
+ |  | 
+
+[TABLE]
+ | 2 | 
+Feature
+Engineering |  | 
+ |  | 
+Lag, rolling, date |  | 
+ |  | 
+
+[TABLE]
+ | 3 | 
+Hashing
+Encoder |  | 
+ |  | 
+ID → vector K=256 |  | 
+ |  | 
+
+[TABLE]
+ | 4 | 
+Concat
+Features |  | 
+ |  | 
+Numeric + hash |  | 
+ |  | 
+
+[TABLE]
+ | 5 | 
+AutoML
+Search |  | 
+ |  | 
+LGB/XGB/CB |  | 
+ |  | 
+
+[TABLE]
+ | 6 | 
+Global
+Forecast |  | 
+ |  | 
+All series at once |  | 
+ |  | 
+
+[TABLE]
+Sample Code
+from sklearn.feature_extraction import FeatureHasher
+from lightgbm import LGBMRegressor
+import pandas as pd
+# Hash categorical series IDs
+hasher = FeatureHasher(n_features=256, input_type='string')
+hashed = hasher.transform(df[['store_id','item_id']].astype(str).to_dict('records'))
+# Combine with lag/rolling features
+X = pd.concat([df[lag_cols], pd.DataFrame(hashed.toarray())], axis=1)
+model = LGBMRegressor(n_estimators=500).fit(X_train, y_train)
+
+--- Page 40 ---
+
+Cross-Series Learning with Global Models
+• A global model trained on ALL series simultaneously learns shared structure across the dataset
+• Series in the same category share seasonal patterns — the global model learns these jointly
+• Regularization prevents overfitting to high-variance individual series
+• Practically: LightGBM trained on 10M rows (across 100K series) outperforms 100K local models
+• Transfer: a new series with zero history gets predictions from global model via its hashed features
+• Meta-learning: the model implicitly learns 'what kind of series has what kind of pattern'
+• Critical requirement: the global model must receive series identity as a feature (via hashing)
+• Result: 100–1000× faster training time vs local approach with competitive accuracy
+
+[TABLE]
+Cross-Series Learning with Global Models
+• A global model trained on ALL series simultaneously learns shared structure across the dataset
+• Series in the same category share seasonal patterns — the global model learns these jointly
+• Regularization prevents overfitting to high-variance individual series
+• Practically: LightGBM trained on 10M rows (across 100K series) outperforms 100K local models
+• Transfer: a new series with zero history gets predictions from global model via its hashed features
+• Meta-learning: the model implicitly learns 'what kind of series has what kind of pattern'
+• Critical requirement: the global model must receive series identity as a feature (via hashing)
+• Result: 100–1000× faster training time vs local approach with competitive accuracy
+
+--- Page 41 ---
+
+SECTION 06
+Comparison & Decision Guide
+Choosing the right method for your forecasting problem
+
+[TABLE]
+SECTION 06
+Comparison & Decision Guide
+Choosing the right method for your forecasting problem
+
+--- Page 42 ---
+
+Full Method Comparison
+Criterion Auto-ARIMA Prophet AutoML AutoML+Hash
+Scalability Low Low Medium High ✓
+Interpretability High ✓ High ✓ Medium Low
+Handles seasonality ✓ (SARIMA) ✓✓ Built-in Via features Via features
+Handles holidays Manual ✓ Built-in Via features Via features
+Multi-series 1 model/series 1 model/series 1 model/series 1 global model ✓
+Cold start ✗ Needs history ✗ Needs history Limited ✓ Via hashing
+Exogenous vars Limited ✓ Regressors ✓✓ Native ✓✓ Native
+Setup complexity Low Low Medium High
+Best for Univariate, small Business w/ events Multi-feature ML High-cardinality
+
+[TABLE]
+Full Method Comparison
+Criterion Auto-ARIMA Prophet AutoML AutoML+Hash
+Scalability Low Low Medium High ✓
+Interpretability High ✓ High ✓ Medium Low
+Handles seasonality ✓ (SARIMA) ✓✓ Built-in Via features Via features
+Handles holidays Manual ✓ Built-in Via features Via features
+Multi-series 1 model/series 1 model/series 1 model/series 1 global model ✓
+Cold start ✗ Needs history ✗ Needs history Limited ✓ Via hashing
+Exogenous vars Limited ✓ Regressors ✓✓ Native ✓✓ Native
+Setup complexity Low Low Medium High
+Best for Univariate, small Business w/ events Multi-feature ML High-cardinality
+
+[TABLE]
+Criterion | Auto-ARIMA | Prophet | AutoML | AutoML+Hash
+Scalability | Low | Low | Medium | High ✓
+Interpretability | High ✓ | High ✓ | Medium | Low
+Handles seasonality | ✓ (SARIMA) | ✓✓ Built-in | Via features | Via features
+Handles holidays | Manual | ✓ Built-in | Via features | Via features
+Multi-series | 1 model/series | 1 model/series | 1 model/series | 1 global model ✓
+Cold start | ✗ Needs history | ✗ Needs history | Limited | ✓ Via hashing
+Exogenous vars | Limited | ✓ Regressors | ✓✓ Native | ✓✓ Native
+Setup complexity | Low | Low | Medium | High
+Best for | Univariate, small | Business w/ events | Multi-feature ML | High-cardinality
+
+--- Page 43 ---
+
+Decision Guide: Matching Problem to Method
+• 📊 1–50 series, classic patterns, linear trend → Auto-ARIMA (SARIMA if seasonal)
+• 🎉 Business data with known holidays, clear seasonality, stakeholder-friendly → Prophet
+• 🤖 Many exogenous features, non-linear relationships, medium series count → AutoML
+(LightGBM/XGBoost)
+• 🏭 100K+ series, cold-start needed, operational scale → AutoML + Feature Hashing
+• 🔁 When in doubt: baseline with Auto-ARIMA, then try Prophet, compare with LightGBM AutoML
+• ⚡ Latency requirements matter: ARIMA fastest inference, neural models slowest
+• 📈 Always validate with walk-forward CV — never split randomly for time series
+• 🔬 Start simple: naive seasonal baseline first, then add complexity only when justified
+
+[TABLE]
+Decision Guide: Matching Problem to Method
+• 📊 1–50 series, classic patterns, linear trend → Auto-ARIMA (SARIMA if seasonal)
+• 🎉 Business data with known holidays, clear seasonality, stakeholder-friendly → Prophet
+• 🤖 Many exogenous features, non-linear relationships, medium series count → AutoML
+(LightGBM/XGBoost)
+• 🏭 100K+ series, cold-start needed, operational scale → AutoML + Feature Hashing
+• 🔁 When in doubt: baseline with Auto-ARIMA, then try Prophet, compare with LightGBM AutoML
+• ⚡ Latency requirements matter: ARIMA fastest inference, neural models slowest
+• 📈 Always validate with walk-forward CV — never split randomly for time series
+• 🔬 Start simple: naive seasonal baseline first, then add complexity only when justified
+
+--- Page 44 ---
+
+Industry Use Cases
+🛒 Retail 💻 Technology 📈 Finance ⚡ Energy
+• Demand forecasting
+• Server capacity • Credit risk score • Electricity demand
+per SKU & store
+planning trends forecasting
+• Inventory
+• API traffic • Fraud pattern • Renewable
+optimization
+forecasting detection generation
+prediction
+• Markdown /
+• CI/CD pipeline queue • Revenue & cost
+promotional
+prediction forecasting • Grid load balancing
+planning
+• User engagement • Options pricing • Fuel consumption
+• Supply chain
+trend analysis (volatility) planning
+scheduling
+
+[TABLE]
+🛒 Retail
+• Demand forecasting
+per SKU & store
+• Inventory
+optimization
+• Markdown /
+promotional
+planning
+• Supply chain
+scheduling
+
+[TABLE]
+💻 Technology
+• Server capacity
+planning
+• API traffic
+forecasting
+• CI/CD pipeline queue
+prediction
+• User engagement
+trend analysis
+
+[TABLE]
+📈 Finance
+• Credit risk score
+trends
+• Fraud pattern
+detection
+• Revenue & cost
+forecasting
+• Options pricing
+(volatility)
+
+[TABLE]
+⚡ Energy
+• Electricity demand
+forecasting
+• Renewable
+generation
+prediction
+• Grid load balancing
+• Fuel consumption
+planning
+
+--- Page 45 ---
+
+Key Takeaways
+1 Automated forecasting removes the need for manual model selection — machines search the parameter space
+faster and more consistently than experts
+2 Auto-ARIMA excels for univariate statistical forecasting; Prophet excels for business data with seasonality and
+holidays; choose based on your data characteristics
+3 AutoML transforms time series into tabular problems through feature engineering — lag features, rolling statistics,
+and date features are essential
+4 Feature Hashing solves the cardinality problem for global models — enabling one model to forecast millions of
+series at operational scale
+5 Always validate with walk-forward cross-validation and compare against a naive seasonal baseline before declaring a
+model 'good'
+
+[TABLE]
+Key Takeaways
+1 Automated forecasting removes the need for manual model selection — machines search the parameter space
+faster and more consistently than experts
+2 Auto-ARIMA excels for univariate statistical forecasting; Prophet excels for business data with seasonality and
+holidays; choose based on your data characteristics
+3 AutoML transforms time series into tabular problems through feature engineering — lag features, rolling statistics,
+and date features are essential
+4 Feature Hashing solves the cardinality problem for global models — enabling one model to forecast millions of
+series at operational scale
+5 Always validate with walk-forward cross-validation and compare against a naive seasonal baseline before declaring a
+model 'good'
+
+--- Page 46 ---
+
+Exercises: Hands-On Practice
+Auto-ARIMA Exploration
+• Load the airline passengers dataset (classic monthly series from 1949–1960)
+01
+• Apply pmdarima.auto_arima() with seasonal=True and m=12
+• Compare best model AIC against manually selected SARIMA(1,1,1)(1,1,1)₁₂
+• Plot 12-month forecast with 95% confidence intervals
+Prophet with Holidays
+• Use the M5 Walmart daily sales dataset (or any daily retail dataset)
+02
+• Fit Prophet with US holidays and weekly seasonality
+• Tune changepoint_prior_scale via grid search over [0.001, 0.01, 0.1, 0.5]
+• Evaluate MAPE on a 28-day holdout set, plot component decomposition
+Global LightGBM + Hashing
+• Simulate 500 time series with different patterns (use random seeds)
+03
+• Apply FeatureHasher(n_features=64) on series IDs
+• Create lag_1, lag_7, rolling_7 features for each series
+• Train one global LightGBM — compare RMSE vs 500 local ARIMA models
+
+[TABLE]
+Exercises: Hands-On Practice
+Auto-ARIMA Exploration
+• Load the airline passengers dataset (classic monthly series from 1949–1960)
+01
+• Apply pmdarima.auto_arima() with seasonal=True and m=12
+• Compare best model AIC against manually selected SARIMA(1,1,1)(1,1,1)₁₂
+• Plot 12-month forecast with 95% confidence intervals
+Prophet with Holidays
+• Use the M5 Walmart daily sales dataset (or any daily retail dataset)
+02
+• Fit Prophet with US holidays and weekly seasonality
+• Tune changepoint_prior_scale via grid search over [0.001, 0.01, 0.1, 0.5]
+• Evaluate MAPE on a 28-day holdout set, plot component decomposition
+Global LightGBM + Hashing
+• Simulate 500 time series with different patterns (use random seeds)
+03
+• Apply FeatureHasher(n_features=64) on series IDs
+• Create lag_1, lag_7, rolling_7 features for each series
+• Train one global LightGBM — compare RMSE vs 500 local ARIMA models
+
+[TABLE]
+ | Auto-ARIMA Exploration
+• Load the airline passengers dataset (classic monthly series from 1949–1960)
+• Apply pmdarima.auto_arima() with seasonal=True and m=12
+• Compare best model AIC against manually selected SARIMA(1,1,1)(1,1,1)₁₂
+• Plot 12-month forecast with 95% confidence intervals
+01 | 
+ | 
+
+[TABLE]
+Auto-ARIMA Exploration
+• Load the airline passengers dataset (classic monthly series from 1949–1960)
+• Apply pmdarima.auto_arima() with seasonal=True and m=12
+• Compare best model AIC against manually selected SARIMA(1,1,1)(1,1,1)₁₂
+
+[TABLE]
+ | Prophet with Holidays
+• Use the M5 Walmart daily sales dataset (or any daily retail dataset)
+• Fit Prophet with US holidays and weekly seasonality
+• Tune changepoint_prior_scale via grid search over [0.001, 0.01, 0.1, 0.5]
+• Evaluate MAPE on a 28-day holdout set, plot component decomposition
+02 | 
+ | 
+
+[TABLE]
+Prophet with Holidays
+• Use the M5 Walmart daily sales dataset (or any daily retail dataset)
+• Fit Prophet with US holidays and weekly seasonality
+• Tune changepoint_prior_scale via grid search over [0.001, 0.01, 0.1, 0.5]
+
+[TABLE]
+ | Global LightGBM + Hashing
+• Simulate 500 time series with different patterns (use random seeds)
+• Apply FeatureHasher(n_features=64) on series IDs
+• Create lag_1, lag_7, rolling_7 features for each series
+• Train one global LightGBM — compare RMSE vs 500 local ARIMA models
+03 | 
+ | 
+
+[TABLE]
+Global LightGBM + Hashing
+• Simulate 500 time series with different patterns (use random seeds)
+• Apply FeatureHasher(n_features=64) on series IDs
+• Create lag_1, lag_7, rolling_7 features for each series
+
+--- Page 47 ---
+
+References
+• Hyndman & Athanasopoulos — Forecasting: Principles and Practice (3rd ed.) — otexts.com/fpp3
+• Taylor & Letham (2018) — Forecasting at Scale — Meta Prophet paper
+• pmdarima docs — Auto-ARIMA in Python — alkaline-ml.com/pmdarima
+• Microsoft FLAML — fast-automl.readthedocs.io
+• Nixtla StatsForecast & NeuralForecast — github.com/Nixtla
+• sklearn FeatureHasher — scikit-learn.org/stable/modules/feature_extraction.html
+
+[TABLE]
+References
+• Hyndman & Athanasopoulos — Forecasting: Principles and Practice (3rd ed.) — otexts.com/fpp3
+• Taylor & Letham (2018) — Forecasting at Scale — Meta Prophet paper
+• pmdarima docs — Auto-ARIMA in Python — alkaline-ml.com/pmdarima
+• Microsoft FLAML — fast-automl.readthedocs.io
+• Nixtla StatsForecast & NeuralForecast — github.com/Nixtla
+• sklearn FeatureHasher — scikit-learn.org/stable/modules/feature_extraction.html
+
+
+============================================================
+FILE: Module 3.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Time Series Analysis
+
+--- Slide 2 ---
+
+Using prediction in estimating
+Suppose we want to predict monthly sales of a company.”
+Goal: Predict next 3 months salesData: Past 5 years monthly sales
+When using prediction to estimate time series data, you typically follow a series of steps to build a model that captures patterns and trends in historical observations and can then be used to forecast future values
+
+--- Slide 3 ---
+
+Step 1: Define the Problem
+
+Before building model, we must clarify:
+What are we predicting?
+How far ahead?
+Why are we predicting?
+Step 2: Data Collection & Exploration
+Time plot
+ACF plot
+Trend?
+Seasonality?
+Cycles?
+Stationarity?
+
+“If data is not stationary, AR model assumptions fail.”
+Step 4: Train-Test Split 
+
+“Can we randomly shuffle time series data?”
+
+chronological split:
+Train: 2018–2022Test: 2023
+
+No data leakage
+Respect time order
+
+--- Slide 4 ---
+
+Step 6: Choose Prediction Model
+
+ARIMA assumes linear structure
+ML models need feature engineering
+
+--- Slide 5 ---
+
+Step 7: Model Training
+
+Estimate parameters
+Optimize loss function
+
+For ARIMA:
+Maximum Likelihood
+
+For ML:
+Gradient descent
+
+Hyperparameters :
+AR order (p)
+Tree depth
+Learning rate
+
+--- Slide 6 ---
+
+Step 9: Fine-Tuning
+
+Adjust p,d,q
+Add seasonal terms
+Change ML hyperparameters
+
+
+Modeling is iterative.
+Step 10: Prediction & Monitoring
+Very important for real-world.
+
+Model performance may degrade
+Concept drift
+Need retraining
+
+Example:COVID changed sales patterns.
+
+--- Slide 7 ---
+
+
+--- Slide 8 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+
+--- Slide 9 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+
+--- Slide 10 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+
+--- Slide 11 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+Steps in AR Forecasting
+
+Check stationarity
+Estimate AR coefficients
+Use recursive forecasting formula
+Compute forecast error variance
+Construct confidence intervals
+
+--- Slide 12 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+
+--- Slide 13 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+
+--- Slide 14 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+
+--- Slide 15 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+
+--- Slide 16 ---
+
+Forecasting for Autoregressive Processes (AR Models)
+Solution:

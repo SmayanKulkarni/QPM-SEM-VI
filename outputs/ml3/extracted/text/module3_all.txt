@@ -1,0 +1,1058 @@
+
+============================================================
+FILE: Full_RL_Module3.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+MODULE 3
+Full Reinforcement
+Learning
+Agents · Environment · Goals · Rewards · Returns · Policy · Tasks
+Based on Sutton & Barto — Reinforcement Learning: An Introduction
+
+--- Slide 2 ---
+
+Module Contents
+Full Reinforcement Learning
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+2
+01
+Full RL vs Immediate RL
+Key differences in reward horizon & complexity
+02
+Agent & Environment
+Interface, states, actions, and interaction loop
+03
+Goals & Rewards
+Reward hypothesis and reward characteristics
+04
+Returns & Discounting
+Cumulative rewards, γ discount factor
+05
+Policy in Full RL
+Deterministic & stochastic policies, optimal policy
+06
+Episodic & Continuing Tasks
+Task types, unified notation, examples
+
+--- Slide 3 ---
+
+What is Full Reinforcement Learning?
+Introduction
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+3
+"The agent aims to maximize the cumulative reward over the long term — considering not only immediate rewards but also future rewards that result from its actions."
+Three Defining Characteristics
+→  Sequence of Actions
+Agent takes a chain of decisions — each action affects the future state of the environment.
+⏱  Delayed Reward
+Feedback isn't immediate. The agent must connect past actions to future outcomes (credit assignment).
+∞  State Dependency
+The next problem (state) depends on previous actions — earlier decisions shape later opportunities.
+
+--- Slide 4 ---
+
+Full RL vs Immediate RL
+Key Differences
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+4
+
+--- Slide 5 ---
+
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+5
+Teaching Point
+The Credit Assignment Problem
+When the agent finally receives a reward, which past action deserves the credit?
+← Which action gets the credit for the +4 reward?
+▶  The action at S₁ (going left) opened access to high-reward states
+▶  The final action at S₂ directly produced the reward — but the earlier choice enabled it
+▶  TD-Learning & Q-Learning propagate credit backwards through time steps
+▶  Sutton & Barto (Ch. 1): 'The ability to credit assignment over time is a central challenge of RL'
+
+--- Slide 6 ---
+
+Agent–Environment Interface
+Sutton & Barto, Chapter 3
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+6
+AGENT
+(Learner & Decision-Maker)
+ENVIRONMENT
+(Everything outside agent)
+Aₜ  Action
+Rₜ₊₁  Reward  &  Sₜ₊₁  State
+Sₜ
+State at time t — agent's representation of the environment
+Aₜ
+Action chosen by the agent in state Sₜ
+Rₜ₊₁
+Scalar reward received after taking action Aₜ
+Sₜ₊₁
+New state agent transitions into after action Aₜ
+
+--- Slide 7 ---
+
+The Interaction Loop
+Discrete Time Steps
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+7
+At each time step t = 0, 1, 2, 3, …
+Time t
+Agent observes
+Sₜ ∈ S
+State
+→
+Time t
+Agent selects
+Aₜ ∈ A(Sₜ)
+Action
+→
+Time t+1
+Environment gives
+Rₜ₊₁ ∈ R
+Reward
+→
+Time t+1
+Agent observes
+Sₜ₊₁
+New State
+Formal Notation  (Sutton & Barto, Eq. 3.1)
+S₀, A₀, R₁, S₁, A₁, R₂, S₂, A₂, R₃, S₃, …
+This trajectory is the complete history of the agent–environment interaction
+
+--- Slide 8 ---
+
+Goals & Rewards
+The Reward Hypothesis
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+8
+The Reward Hypothesis  (Sutton & Barto)
+"All of what we mean by goals and purposes can be well thought of as the maximisation of the expected value of the cumulative sum of a received scalar signal (reward)."
+Characteristics of a Reward Signal
+#
+Scalar
+A single number — not a vector. Simple for learning algorithms to process.
+⊗
+Outside Agent's Control
+The agent cannot manipulate the reward signal itself. Forces honest behaviour.
+≤
+Bounded
+Rewards are finite. Prevents value estimates from diverging to ±∞.
+
+--- Slide 9 ---
+
+Reward Examples & the Reward Hypothesis
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+9
+Why the Goal is NOT to Maximise Immediate Reward
+♟ Chess
+Reward Signal
++1 win / −1 lose / 0 draw
+⚠ Trap
+Sacrificing a piece is −1 now but may lead to +1 (win) later
+✓ Correct Behaviour
+Agent must plan far ahead — not just capture every piece
+🤖 Robot Maze
+Reward Signal
++1 on exit / 0 otherwise
+⚠ Trap
+No reward for first N steps — pure temporal delay
+✓ Correct Behaviour
+TD-learning propagates reward signal backward through steps
+🚗 Autonomous Car
+Reward Signal
++1 safe mile / −100 crash
+⚠ Trap
+Myopic agent may brake suddenly to avoid one risk, causing another
+✓ Correct Behaviour
+Farsighted (γ≈1) agent balances safety across full journey
+Key Insight: The reward signal tells the agent WHAT to achieve, not HOW. The agent must discover effective behaviour on its own.
+
+--- Slide 10 ---
+
+Returns
+Cumulative Reward — Sutton & Barto §3.3
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+10
+The agent seeks to maximise the expected return, Gₜ
+Simple (Episodic) Return
+Gₜ = Rₜ₊₁ + Rₜ₊₂ + Rₜ₊₃ + … + R_T
+where T is the final time step
+Discounted Return (Continuing Tasks)
+Gₜ = Rₜ₊₁ + γRₜ₊₂ + γ²Rₜ₊₃ + …
+= Σ γᵏ Rₜ₊ₖ₊₁  (k=0 to ∞)
+Effect of Discount Factor γ
+
+--- Slide 11 ---
+
+Discounted Returns — Deep Dive
+Sutton & Barto §3.3
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+11
+Recursive form (key identity for DP & TD):   Gₜ = Rₜ₊₁ + γGₜ₊₁
+γ < 1 guarantees convergence
+If rewards are bounded, the infinite sum is finite. This keeps value estimates stable throughout learning.
+γ = 0 : Myopic agent
+Agent only maximises Rₜ₊₁. Ignores all future. Works only if actions have no future consequences.
+γ → 1 : Farsighted agent
+Treats distant future rewards almost as valuable as immediate ones. Required for long-horizon games and robotics.
+Intuition: present value of money
+£100 today > £100 in a year. γ encodes how much the agent "discounts" future rewards relative to current ones.
+
+--- Slide 12 ---
+
+Policy in Full RL
+π : S → A
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+12
+A policy π is a mapping from states to actions. It defines the agent's behaviour — what it does in every state.
+Deterministic Policy
+π(s) = a
+Maps each state to exactly one action. Simple and easy to analyse.
+Example: Always turn LEFT at junction A.
+Stochastic Policy
+π(a|s) = P(Aₜ=a | Sₜ=s)
+Returns a probability distribution over actions. Useful for exploration.
+Example: 70% turn LEFT, 30% turn RIGHT at junction A.
+
+--- Slide 13 ---
+
+Optimal Policy & Policy Evaluation
+The Goal of RL
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+13
+The Goal of RL is to find the Optimal Policy π*
+Example: Robot navigating to target (x, y) in a room
+π₁
+Random Wander
+Robot wanders randomly until it accidentally finds the goal
+Expected Return
+Very Low
+π₂
+Wall Follower
+Robot follows walls as a heuristic to navigate the room
+Expected Return
+Medium
+π₃
+Optimal Route
+Robot plans the direct route and goes straight to the goal
+Expected Return
+Maximum
+π* = argmax_π E[Gₜ | π]   —   The optimal policy maximises expected return from every state
+
+--- Slide 14 ---
+
+Episodic Tasks
+Tasks with a Natural Terminal State
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+14
+An episodic task naturally breaks into episodes — finite sequences that each end at a terminal state, after which the environment resets.
+Structure of an Episode
+S₀
+Start
+→
+A₀, R₁
+→
+S₁
+→
+A₁, R₂
+→
+S₂
+→
+…
+→
+S_T
+Terminal
+Characteristics & Examples
+♟
+Chess / Go
+Each game = 1 episode. Terminal state = checkmate or draw.
+🎮
+Car Racing Game
+Start (initial state) → finish line or crash (terminal state). Each new game = new episode.
+🌀
+Maze Solving
+Each attempt to solve the maze is an episode. Ends at exit or timeout.
+🏋
+Pole Balancing
+Episode ends when pole falls past threshold angle. Reset to vertical = new episode.
+
+--- Slide 15 ---
+
+Continuing Tasks
+No Terminal State — Runs Forever
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+15
+A continuing task has no terminal state. The agent–environment interaction goes on indefinitely — rewards must be discounted to keep the return finite.
+Infinite Interaction Stream
+S₀
+→
+A₀, R₁
+→
+S₁
+→
+A₁, R₂
+→
+S₂
+→
+A₂, R₃
+→
+…  ∞
+Why Discounting is Essential for Continuing Tasks
+Without γ
+Gₜ = Rₜ₊₁ + Rₜ₊₂ + … diverges to ∞ if rewards > 0 forever
+With γ < 1
+Gₜ = Σ γᵏRₜ₊ₖ₊₁ is finite — infinite sum converges
+Personal Assistant Robot
+No end goal. Keeps helping user indefinitely → continuing task
+Process Control
+Factory machine continuously optimises output — no episode boundary
+
+--- Slide 16 ---
+
+Episodic vs Continuing Tasks — Comparison
+Unified View
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+16
+
+--- Slide 17 ---
+
+Unified Notation for Episodic & Continuing Tasks
+Sutton & Barto §3.4
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+17
+We need a single notation that covers BOTH task types
+Episodic  (finite T)
+Gₜ = Σ γᵏ Rₜ₊ₖ₊₁  (k=0 to T-t-1)
+γ = 1 allowed when T is finite
+Continuing  (T = ∞)
+Gₜ = Σ γᵏ Rₜ₊ₖ₊₁  (k=0 to ∞)
+γ < 1 required for convergence
+The Absorbing State Trick
+To unify both types: model episode termination as entering a special absorbing state that only transitions to itself with R=0. Now both tasks use the exact same formula.
+Unified:  Gₜ = Σ γᵏ Rₜ₊ₖ₊₁   (k=0 to ∞)   with  T=∞ or γ=1  (but NOT both simultaneously)
+
+--- Slide 18 ---
+
+The Markov Property
+Foundation of RL State Representation
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+18
+"Future is independent of the past, given the present"
+P(Sₜ₊₁ | Sₜ, Aₜ) = P(Sₜ₊₁ | S₀, A₀, …, Sₜ, Aₜ)
+What it means
+The next state Sₜ₊₁ depends ONLY on (Sₜ, Aₜ). The full history before t is irrelevant if Sₜ summarises everything needed.
+Why it matters for RL
+Allows algorithms to use one-step transitions for learning. No need to store and process the full history of past states.
+Conditional Independence
+Sₜ₊₁ ⊥ {S₀,A₀,...,Sₜ₋₁,Aₜ₋₁} | Sₜ, Aₜ. Simplifies both modelling and computation enormously.
+Violations & Partial Observability
+If the state doesn't capture enough info, the Markov property fails. → Leads to POMDPs (Partially Observable MDPs).
+
+--- Slide 19 ---
+
+Worked Example: Pole Balancing
+Episodic vs Continuing Formulation
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+19
+Classic control task from Sutton & Barto — illustrates both task types
+Task: Apply forces to a cart on a track to keep a hinged pole upright. Failure = pole tips past threshold angle OR cart leaves track.
+Formulation 1: Episodic
+• Each attempt to balance = 1 episode
+• Episode ends when pole falls (failure)
+• Reward = +1 for each time step without failure
+• Return = total steps before failure
+• Goal: maximise episode length
+Formulation 2: Continuing
+• Single continuous interaction (no resets)
+• Reward = −1 on failure, 0 otherwise
+• Return = Σ γᵏ Rₜ₊ₖ₊₁ with appropriate γ
+• K = steps before failure; related to −γᴷ/(1−γ)
+• Goal: minimise frequency of failures forever
+Key Insight: Both formulations lead to the same optimal behaviour — balance as long as possible. They differ only in reward shaping and notation.
+
+--- Slide 20 ---
+
+MODULE 3 · VALUE FUNCTIONS
+Relation Between
+State Value &
+Action Value
+Function
+V_π(s)  ·  Q_π(s,a)  ·  Bellman Equations  ·  Policy Optimisation
+Based on Sutton & Barto — Reinforcement Learning: An Introduction
+
+--- Slide 21 ---
+
+Module Contents
+State Value & Action Value Functions
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+2
+01
+State Value Function V_π(s)
+Expected return from a state following policy π
+02
+Action Value Function Q_π(s,a)
+Expected return for a specific action in a state
+03
+Simple 3-State Example
+V(0) computed under 4 different policies
+04
+Adding Future Consequences
+4-state world — why long-term thinking matters
+05
+The Key Relationship
+V_π(s) = Σ π(a|s) · Q_π(s,a) — formal proof
+06
+From Q to Optimal Policy
+π*(s) = argmax_a Q*(s,a) — practical use
+
+--- Slide 22 ---
+
+State Value Function — V_π(s)
+How good is it to be in a state?
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+3
+v_π(s)  =  𝔼_π[Gₜ | Sₜ = s]  =  𝔼_π[ Σ γᵏ Rₜ₊ₖ₊₁ | Sₜ = s ]
+Breaking it down:
+s
+State s
+The specific state the agent is currently in. V measures the value of this state.
+π
+Policy π
+The strategy the agent follows. V is always calculated with respect to a specific policy.
+Gₜ
+Return Gₜ
+The total discounted reward from time t onwards: Σ γᵏ Rₜ₊ₖ₊₁
+𝔼
+Expectation 𝔼_π
+Average over all possible futures — different random outcomes the environment may produce.
+
+--- Slide 23 ---
+
+Action Value Function — Q_π(s, a)
+How good is taking a specific action?
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+4
+q_π(s,a)  =  𝔼_π[Gₜ | Sₜ = s, Aₜ = a]  =  𝔼_π[ Σ γᵏ Rₜ₊ₖ₊₁ | Sₜ = s, Aₜ = a ]
+V vs Q — Side by Side
+
+--- Slide 24 ---
+
+Building Intuition — 3-State Example
+Computing V(0) under different policies
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+5
+Setup: Agent starts at State 0 and chooses to go left or right
+1
+0
+2
+← go left   r = +1
+go right →   r = +2
+Episode ends after one action. γ = 1 (no discounting needed for single step)
+Q-values (fixed, not policy-dependent)
+Q(0, left)  = +1.0
+Q(0, right) = +2.0
+These are the same regardless of policy
+V(0) depends on policy
+V(0) = 1.0
+Always Left (π=1,0)
+V(0) = 2.0
+Always Right (π=0,1)
+V(0) = 1.5
+50/50 (π=0.5,0.5)
+V(0) = 1.8
+20/80 (π=0.2,0.8)
+
+--- Slide 25 ---
+
+Computing V(0) — Step by Step
+Applying the formula under each policy
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+6
+Formula:  V_π(0) = π(left|0) × Q(0,left) + π(right|0) × Q(0,right)
+Policy 1: Always Left  (π_left=1.0, π_right=0.0)
+V(0) = 1.0 × Q(0,left)  +  0.0 × Q(0,right)
+= 1.0 × (+1.0)  +  0.0 × (+2.0)
+= +1.0  +  0.0  =  +1.0
+V(0) = +1.0
+Policy 2: Always Right  (π_left=0.0, π_right=1.0)
+V(0) = 0.0 × Q(0,left)  +  1.0 × Q(0,right)
+= 0.0 × (+1.0)  +  1.0 × (+2.0)
+= 0.0  +  2.0  =  +2.0
+V(0) = +2.0
+Policy 3: 50/50  (π_left=0.5, π_right=0.5)
+V(0) = 0.5 × Q(0,left)  +  0.5 × Q(0,right)
+= 0.5 × (+1.0)  +  0.5 × (+2.0)
+= 0.5  +  1.0  =  +1.5
+V(0) = +1.5
+Policy 4: 20% Left / 80% Right  (π_left=0.2, π_right=0.8)
+V(0) = 0.2 × Q(0,left)  +  0.8 × Q(0,right)
+= 0.2 × (+1.0)  +  0.8 × (+2.0)
+= 0.2  +  1.6  =  +1.8
+V(0) = +1.8
+
+--- Slide 26 ---
+
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+7
+Why V(s) Changes With Policy
+"The value of a state is not a fixed property of the state — it is a property of the state AND the policy."
+V(0) = 1
+Always
+Left
+V(0) = 1.5
+50/50
+V(0) = 1.8
+20/80
+V(0) = 2
+Always
+Right
+Same state (State 0), same Q-values — but V(0) ranges from 1.0 to 2.0 purely because of policy.
+
+--- Slide 27 ---
+
+Adding Future Consequences — 4-State World
+Why long-term thinking matters
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+8
+We add State 3: going right from State 2 gives r = −10
+1
+0
+2
+3
+← r=+1
+r=+2 →
+r=−10 →
+Updated Q-values
+Q(0, left)  = +1.0  (unchanged)
+Q(0, right) = +2 + (−10) = −8.0
+Future consequence changes action value!
+Updated V(0) under each policy
++1.0
+Always Left  (1.0, 0.0)
+1.0×1.0 + 0.0×(−8.0)
+−8.0
+Always Right  (0.0, 1.0)
+0.0×1.0 + 1.0×(−8.0)
+−3.5
+50/50  (0.5, 0.5)
+0.5×1.0 + 0.5×(−8.0)
+−6.2
+20/80  (0.2, 0.8)
+0.2×1.0 + 0.8×(−8.0)
+
+--- Slide 28 ---
+
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+9
+Critical Insight
+Greedy ≠ Good
+Maximising immediate reward can destroy long-term return
+✗
+In 2-state world:
+Q(0,right)=+2 > Q(0,left)=+1
+→ 'Always Right' looks like the best policy
+✓
+In 4-state world:
+Q(0,right)=−8 < Q(0,left)=+1
+→ 'Always Right' is catastrophic! (−8 vs +1)
+!
+Immediate reward is misleading:
+Going right gives +2 immediately but −10 later.
+Full RL accounts for the whole future trajectory.
+→
+This is exactly why we need Full RL:
+TD-learning and Q-learning discover that Q(0,right)=−8
+by propagating future penalties backward in time.
+
+--- Slide 29 ---
+
+The Formal Relationship — V from Q
+Sutton & Barto §3.5
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+10
+The Key Identity
+V_π(s)  =  Σₐ  π(a|s)  ·  Q_π(s, a)
+where Σₐ π(a|s) = 1   (probabilities sum to 1)
+π(a|s)
+Policy probability
+The chance the policy π chooses action a when in state s. All probabilities from s sum to 1.
+Q_π(s,a)
+Action value
+The expected return for specifically taking action a from state s, then following π.
+Σₐ  ×
+Weighted sum
+Multiply each Q-value by how likely that action is, then add them all up to get V.
+
+--- Slide 30 ---
+
+Verification — Formula Matches Our Examples
+Connecting theory to numbers
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+11
+Let's verify V_π(s) = Σₐ π(a|s) · Q_π(s,a) using the 4-state world
+Q(0,left) = +1.0   |   Q(0,right) = −8.0
+✓  Every single row matches perfectly. The formula V_π(s) = Σₐ π(a|s)·Q_π(s,a) is verified across all four policies.
+
+--- Slide 31 ---
+
+From Q-Values to the Optimal Policy
+π*(s) = argmax_a Q*(s, a)
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+12
+π*(s) = argmax_a  Q*(s, a)   — choose the action with the highest Q-value
+Applying to our 4-state example:
+Q-values at State 0
+Q*(0, left)  =  +1.0
+Q*(0, right) =  −8.0
+argmax → Choose LEFT (+1.0 > −8.0)
+Why Q is Preferred Over V
+▶  To use V alone, you need the transition model P(s'|s,a) — often unknown
+▶  Q directly gives you the action to take — no model needed
+▶  Q-learning estimates Q* purely from experience
+▶  DQN (Deep Q-Networks) uses a neural net to approximate Q*
+▶  SARSA, Double DQN, Dueling DQN — all built on Q
+
+--- Slide 32 ---
+
+The Core Idea in One Line
+"The value of where you are = what you get right now + the discounted value of where you'll end up.“
+
+It's a recursive decomposition of value — it says any long-term expectation can be broken into an immediate part and a future part.
+Bellman Equation helps us to find optimal policies and value functions. 
+We know that our policy changes with experience so we will have different value functions according to different policies. 
+The optimal value function is one that gives maximum value compared to all other value functions.
+Bellman Equation states that value function can be decomposed into two parts:
+Immediate Reward, R[t+1]
+Discounted value of successor states,
+
+--- Slide 33 ---
+
+
+--- Slide 34 ---
+
+What is the Bellman Equation?
+V(s)  =  max  [ R(s, a)  +  γ · V(s') ]
+a
+V(s)
+Value of current state — expected total future reward
+R(s,a)
+Immediate reward for taking action a in state s
+γ · V(s')
+Discounted value of the next state we land in
+💡  Core Insight: The value of a state = immediate reward + discounted future value of next state
+Bellman Equation
+
+--- Slide 35 ---
+
+Backup Diagram
+How value propagates backward from future to present
+s
+Current State
+a₁
+a₂
+a₃
+Actions
+s'₁
+R=+5
+s'₂
+R=+2
+s'₃
+R=-1
+Next States (s')
+How the Backup Works
+①
+Start at current state s
+②
+Consider all possible actions a
+③
+For each action, observe reward R(s,a) and next state s'
+④
+Look up the value V(s') of each next state
+⑤
+Add discounted value: R + γ·V(s')
+⑥
+Pick the action with MAXIMUM total value
+⑦
+"Backup" this max value to V(s)
+Bellman Equation
+
+--- Slide 36 ---
+
+Two Versions of the Equation
+Expectation Equation
+Evaluates a FIXED policy π
+Vᵖ(s) = R(s,π(s)) + γ·Vᵖ(s')
+Follows a specific, fixed policy π
+Tells us how GOOD a policy is
+Used in Policy Evaluation step
+Doesn't search for best action
+Optimality Equation
+Finds the BEST policy π*
+V*(s) = max [ R(s,a) + γ·V*(s') ]
+a
+Searches over ALL possible actions
+Tells us the MAXIMUM achievable value
+Used in Value Iteration algorithm
+Finds the optimal policy π*
+VS
+Bellman Equation
+
+--- Slide 37 ---
+
+
+--- Slide 38 ---
+
+Example
+
+--- Slide 39 ---
+
+EXAMPLE: RECYCLING ROBOT
+At each step, robot has to decide whether it should (1) actively search for a can,
+(2) wait for someone to bring it a can, or (3) go to home base and recharge.
+Searching	is	better	but	runs	down	the	battery;	if	runs	out	of	power	while
+searching, has to be rescued (which is bad).
+Decisions made on basis of current energy level: high, low.
+Reward = number of cans collected
+
+--- Slide 40 ---
+
+Example
+The red arcs are the optimal policy - yield maximum reward
+
+q* - actions our agent will take that yields maximum reward
+
+--- Slide 41 ---
+
+BELLMAN OPTIMALITY EQUATIONS FOR RECYCLING ROBOT
+To make things more compact, we abbreviate the states high and low, and the actions search, wait, and recharge respectively by h, l, s, w, and re. Since there are only two states, the Bellman optimality equation consists of two equations. The equation for v∗(h) can be written as follows:
+
+--- Slide 42 ---
+
+SOLUTION OF RECYCLING ROBOT PROBLEM
+If robot Searches when battery is High:
+With probability α → remains High
+With probability (1 − α) → becomes Low
+
+If robot Searches when battery is Low:
+With probability β → stays Low
+With probability (1 − β) → battery dies
+
+If robot Recharges:
+Goes to High with probability 1
+
+--- Slide 43 ---
+
+BELLMAN OPTIMALITY EQUATIONS                                                                                                    FOR RECYCLING ROBOT
+
+--- Slide 44 ---
+
+BELLMAN OPTIMALITY EQUATIONS FOR RECYCLING ROBOT
+Following the same procedure for v∗(l) yields the	following equation
+For any choice of rs, rw, α, β, and γ, with 0 ≤ γ < 1, 0 ≤ α, β ≤ 1, there is exactly one pair
+of numbers, v∗(h) and v∗(l), that simultaneously satisfy these two nonlinear equations
+
+--- Slide 45 ---
+
+Practice Questions
+
+--- Slide 46 ---
+
+Quiz Game Show - Example
+In a quiz game show there are 10 levels, at each level one question is asked and if answered correctly a certain monetary reward based on the current level is given. Higher the level, tougher the question but higher the reward.
+At each round of play, if the participant answers the quiz correctly then s/he wins the reward and also gets to decide whether to play at the next level or quit. If quit then the participant gets to keep all the rewards earned so far. At any round if participants failed to answer correctly then s/he looses “all” the rewards earned so far. The game stops at level 10. The goal is to decide on the actions to play or quit maximizing total rewards
+
+--- Slide 47 ---
+
+Quiz Game Show - Solution
+States: {level1, level2, …, level10}
+
+Actions: Play at next level or quit
+
+Rewards: Play at level1, level2, …, level10 generates rewards $10, $50, $100, $500, $1000, $5000, $10000, $50000, $100000, $500000 with probability p = 0.99, 0.9, 0.8, …, 0.2, 0.1 respectively. The probability here is a the probability of giving correct answer in that level. At any level, the participant losses with probability (1- p) and losses all the rewards earned so far.
+
+--- Slide 48 ---
+
+Bellman Equations — The Full Picture
+Recursive value relationships
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+13
+The Bellman equations express values recursively — V and Q are defined in terms of each other
+Bellman Equation for V_π
+v_π(s) = Σₐ π(a|s) Σₛ' P(s'|s,a) [r + γ·v_π(s')]
+Meaning: V at state s equals the expected immediate reward plus discounted value of the next state — summed over all actions (weighted by π) and all possible next states.
+Bellman Equation for Q_π
+q_π(s,a) = Σₛ' P(s'|s,a) [r + γ·Σₐ' π(a'|s')·q_π(s',a')]
+Meaning: Q at (s,a) equals the expected reward for taking action a, plus discounted value of the next state — evaluated under policy π from that next state onward.
+The V ↔ Q Circular Relationship
+V_π(s) = Σₐ π(a|s) · Q_π(s,a)
+↕
+Q_π(s,a) = Σₛ' P(s'|s,a) [r + γ·V_π(s')]
+V is a weighted average of Q  |  Q depends on V of the next state
+
+--- Slide 49 ---
+
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+14
+Summary
+Key Takeaways
+1
+V_π(s) measures how good it is to be in a state. Q_π(s,a) measures how good it is to take a specific action from a state.
+2
+V is always computed with respect to a policy π. Same state, different policy → different value. Q-values are also policy-dependent.
+3
+The bridge: V_π(s) = Σₐ π(a|s)·Q_π(s,a). State value = weighted average of action values, weights = policy probabilities.
+4
+Adding State 3 (r=−10) showed: greedy immediate action (right, +2) led to catastrophic return (−8). Full RL accounts for future.
+5
+Optimal policy: π*(s) = argmax_a Q*(s,a). Once Q* is known, the optimal policy is trivial — pick the highest Q-value action.
+6
+V and Q are linked by Bellman equations. Q-learning iteratively estimates Q* using only experience, no model needed.
+
+--- Slide 50 ---
+
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+20
+Module Summary
+Key Takeaways
+1
+Full RL considers long-term cumulative reward, not just immediate feedback — this is the core distinction from immediate RL.
+2
+The agent–environment interface exchanges (Sₜ, Aₜ, Rₜ₊₁, Sₜ₊₁) at each time step. The Markov property simplifies state representation.
+3
+Returns Gₜ formalise the agent's goal. Discounting (γ) trades off myopia vs foresight and ensures convergence for continuing tasks.
+4
+A policy π maps states to actions. The goal of RL is to find the optimal policy π* that maximises expected return.
+5
+Episodic tasks have terminal states; continuing tasks do not. Unified notation uses the absorbing state convention.
+6
+The credit assignment problem — linking past actions to future rewards — is the central challenge solved by TD-learning and Q-learning.
+
+--- Slide 51 ---
+
+Review Questions for Students
+Think & Discuss
+Module 3 · State Value & Action Value Functions  |  Sutton & Barto
+15
+Q1
+What is the difference between V_π(s) and Q_π(s,a)? Give one example where knowing Q is more useful than knowing V.
+Q2
+In the 4-state world, compute V_π(0) for a policy that goes left 60% and right 40% of the time. Show all steps.
+Q3
+Prove that if a policy is deterministic (always picks action a*), then V_π(s) = Q_π(s, a*). What does this tell us?
+Q4
+Why did the 'always right' policy look optimal in the 2-state world but become catastrophic in the 4-state world?
+Q5
+Given Q*(s, left)=5, Q*(s, right)=3, Q*(s, up)=7. What is the optimal action at state s? What is V*(s) for the optimal policy?
+Q6
+Write the Bellman equation that expresses Q_π(s,a) in terms of V_π. What additional information do you need compared to just V_π?
+
+--- Slide 52 ---
+
+Review Questions for Students
+Think & Discuss
+Module 3 · Full Reinforcement Learning  |  Sutton & Barto
+21
+Q1
+A robot gets reward +10 only after successfully assembling a product. Why does this make learning harder than if it received feedback at each step?
+Q2
+If γ = 0.9 and the agent is 5 steps away from a reward of +100, what is the discounted value of that reward from the current step?
+Q3
+Explain why a policy that maximises immediate reward at every step can actually produce a lower total return.
+Q4
+Classify these tasks as Episodic or Continuing: (a) Playing Atari Breakout, (b) Stock trading algorithm, (c) Teaching a robot to walk.
+Q5
+What is the Markov property and why is it important for designing state representations in RL?
+Q6
+Write the recursive (Bellman) form of the discounted return Gₜ in terms of Rₜ₊₁ and Gₜ₊₁.
+
+============================================================
+FILE: ML- III - Module 3 - Full Reinforcement Learning and MDP.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Module 3
+
+--- Slide 2 ---
+
+THE MARKOV PROPERTY Fundamentals
+It is a property of environments and their state signals.
+State : is the position of the agents at a specific time-step in the environment. So, whenever an agent performs an action, the environment gives the reward and a new state where the agent reached by performing the action.
+Actions can be any decision we want the agent to learn, and state can be anything
+which can be useful in choosing actions
+Transition : Moving from one state to another is called Transition.
+Transition Probability: The probability that the agent will move from one state to another is called transition probability.
+
+--- Slide 3 ---
+
+THE MARKOV PROPERTY
+The Markov Property states that the future state depends only on the current state and action, not on the sequence of states and actions that preceded it.
+
+The probability of transitioning to the next state St+1 depends only on the current state St​ and the current action At​.
+The history of past states and actions (before St​ and At​) does not influence the future state.
+
+--- Slide 4 ---
+
+THE MARKOV PROPERTY
+The Markov Property states that :
+
+
+“Future is Independent of the past given the present”
+
+Example: Robot
+
+Mathematically we can express this statement as (also called as Markov Chain):
+
+--- Slide 5 ---
+
+MARKOV PROPERTY
+The Markov property is a fundamental concept in reinforcement learning (RL) where the future state depends only on the current state and action, not on the past states and actions.
+
+Key Characteristics:
+Conditional Independence: Future state St+1​ is conditionally independent of past states and actions given the current state St​ and action at​. Example: Imagine a self-driving car approaching a traffic light or playing video game.
+
+Simplifies Modeling: Allows RL problems to be modeled and analyzed more efficiently by focusing on the current state and action.
+
+--- Slide 6 ---
+
+THE MARKOV PROPERTY
+To keep the mathematics simple, we assume here that there are a finite number of states and reward values. This enables us to work in terms of sums and probabilities rather than integrals and probability densities, but the argument can easily be extended to include continuous states and rewards.
+Consider how a general environment might respond at time t+1 to the action taken at time t. In the most general, causal case this response may depend on everything that has happened earlier. In this case the dynamics can be defined only by specifying the complete probability distribution:
+
+--- Slide 7 ---
+
+Example
+Suppose today’s bank balance is ₹10,000.
+If :
+P(Tomorrow’s balance∣Today’s balance,Yesterday’s balance,Last month’s balance)
+Once today’s balance is known, yesterday’s balance gives no extra information.
+So:
+P(Tomorrow∣Today,Yesterday)=P(Tomorrow∣Today)
+
+--- Slide 8 ---
+
+STATE TRANSITION PROBABILITY
+We can formulate State Transition probability into a State Transition probability matrix by :
+Each row in the matrix represents the probability from moving from our 	original or starting state to any successor state. 
+Sum of each row is equal to 1
+
+--- Slide 9 ---
+
+MARKOV CHAIN
+The Markov Chain consists of a sequence
+of	states that follow the	Markov property.
+This  Markov  Chain  actually  is  the probabilistic model that depends on the current state to predict the next state.
+
+--- Slide 10 ---
+
+MARKOV CHAIN
+We can show these states and transition probability into a table or a matrix as below:
+Markov chain consists of a set of states along with their transition probabilities.
+
+--- Slide 11 ---
+
+MARKOV REWARD PROCESS
+An MRP is a mathematical framework used in reinforcement learning and sequential decision-making. It extends a Markov Process (or Markov Chain) by adding a reward function. Unlike an MDP, an MRP does not include actions; it focuses solely on states, transitions, and rewards.
+This reward function gives us the reward that we get from each state. This function will tell us the reward we obtain in the state cloudy, the reward we obtain in the state of windy, and the rainy state.
+This reward also can be a positive or negative value. Mathematically can 	define reward as:
+This means the reward R(s) is the expected reward received when transitioning from state s.
+
+--- Slide 12 ---
+
+FINITE MARKOV DECISION PROCESS
+A	reinforcement	learning	task	that	satisfies	the	Markov	property	is
+called a Markov decision process, or MDP.
+If	the	state	and	action	spaces	are	finite,	then	it	is	called	a	finite	Markov
+decision process (finite MDP).
+Finite MDPs are particularly important to the theory of reinforcement learning.
+
+--- Slide 13 ---
+
+MARKOV DECISION PROCESS
+We define MRP as (S,P, R,ɤ) , where :
+S is a set of states,
+P is the Transition Probability Matrix,
+R is the Reward function,
+ɤ is the discount factor
+We define MDP as (S,P, R, A, ɤ) , where :
+
+S is a set of states,
+P is the Transition Probability Matrix,
+R is the Reward function, we saw earlier,
+A is a set of actions
+ɤ is the discout factor
+
+--- Slide 14 ---
+
+MRP:
+Focuses on states, transitions, and rewards.
+Does not include actions or a policy.
+Used to model environments where the agent passively observes states and receives rewards.
+Example: Imagine a train moving automatically between stations.
+
+MDP:
+Extends an MRP by adding actions and a policy.
+The agent actively chooses actions to influence state transitions and maximize rewards.
+Example: Self-Driving Car
+
+--- Slide 15 ---
+
+SOLUTION OF RECYCLING ROBOT PROBLEM
+If robot Searches when battery is High:
+With probability α → remains High
+With probability (1 − α) → becomes Low
+
+If robot Searches when battery is Low:
+With probability β → stays Low
+With probability (1 − β) → battery dies
+
+If robot Recharges:
+Goes to High with probability 1
+
+--- Slide 16 ---
+
+SOLUTION OF RECYCLING ROBOT PROBLEM
+There are two kinds of nodes: state nodes and action nodes. There is a state node for each possible state (a large open circle labeled by the name of the state), and an action node for each state–action pair (a small solid circle labeled by the name of the action and connected by a line to the state node).
+Starting in state s and taking action a moves you along the line from state node s to action node (s, a).
+Then the environment responds with a transition to the next state’s node via one of the arrows leaving action node (s, a). Each arrow corresponds to a triple (s, s', a), where s' is the next state, and we label the arrow with the transition probability, p(s'|s, a), and the expected reward for that transition, r(s, a, s').
+Note that the transition probabilities labeling the arrows leaving an action node always sum to 1.
+
+--- Slide 17 ---
+
+SOLUTION OF RECYCLING ROBOT PROBLEM
+If the energy  level is high, then a period of active search can always be completed without risk of depleting the battery. A period of searching that begins with a high energy level leaves the energy level high with probability α and reduces it to low with probability 1−α.
+On the other hand, a period of searching undertaken when  the  energy  level  is  low  leaves  it  low  with probability β and depletes the battery with probability 1−β.
+In the latter case, the robot must be rescued, and the battery is then recharged back to high.
+Each can collected by the robot counts as a unit reward, whereas a reward of −3 results whenever the robot has to be rescued.
+
+--- Slide 18 ---
+
+SOLUTION OF RECYCLING ROBOT
+
+--- Slide 19 ---
+
+SOLUTION OF RECYCLING ROBOT
+
+--- Slide 20 ---
+
+Practice Questions
+
+--- Slide 21 ---
+
+Quiz Game Show - Example
+In a quiz game show there are 10 levels, at each level one question is asked and if answered correctly a certain monetary reward based on the current level is given. Higher the level, tougher the question but higher the reward.
+At each round of play, if the participant answers the quiz correctly then s/he wins the reward and also gets to decide whether to play at the next level or quit. If quit then the participant gets to keep all the rewards earned so far. At any round if participants failed to answer correctly then s/he looses “all” the rewards earned so far. The game stops at level 10. The goal is to decide on the actions to play or quit maximizing total rewards
+
+--- Slide 22 ---
+
+Quiz Game Show - Solution
+States: {level1, level2, …, level10}
+
+Actions: Play at next level or quit
+
+Rewards: Play at level1, level2, …, level10 generates rewards $10, $50, $100, $500, $1000, $5000, $10000, $50000, $100000, $500000 with probability p = 0.99, 0.9, 0.8, …, 0.2, 0.1 respectively. The probability here is a the probability of giving correct answer in that level. At any level, the participant losses with probability (1- p) and losses all the rewards earned so far.

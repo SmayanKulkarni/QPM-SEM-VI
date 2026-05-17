@@ -1,0 +1,661 @@
+
+============================================================
+FILE: Module 2.pdf
+============================================================
+
+
+--- Page 1 ---
+
+Module 2
+1. Linear Time Series:
+In time series analysis, a linear time series refers to a time series data where the relationship
+between variables can be described by linear equations. Linear time series models assume
+that the future values of a variable can be predicted based on a linear combination of past
+observations and error terms.
+The most common linear time series model is the autoregressive integrated moving average
+(ARIMA) model. ARIMA models are used to analyze and forecast stationary time series
+data. They consist of three components:
+Autoregressive (AR) component: This component models the relationship between an
+observation and a certain number of lagged observations. It assumes that the future value of a
+variable depends linearly on its past values.
+Moving average (MA) component: This component models the relationship between an
+observation and a linear combination of error terms from previous observations. It captures
+the effects of past forecast errors.
+Integrated (I) component: This component accounts for non-stationarity in the time series by
+differencing the observations. Differencing transforms a non-stationary time series into a
+stationary one.
+ARIMA models are specified by three parameters: p, d, and q. The parameter p represents the
+order of the autoregressive component, d represents the order of differencing, and q
+represents the order of the moving average component.
+Other linear time series models include autoregressive moving average (ARMA) models,
+which do not account for differencing, and autoregressive integrated moving average with
+exogenous variables (ARIMAX) models, which incorporate additional independent variables.
+Linear time series models are useful for analyzing and forecasting time series data that
+exhibit a linear relationship between variables. However, they may not capture complex
+nonlinear relationships or other patterns that exist in the data. In such cases, nonlinear models
+or other advanced techniques like neural networks may be more appropriate.
+2. Motivation:
+Studying linear time series models can be highly motivating for several reasons. Here are a
+few motivations to consider:
+Predictive Power: Linear time series models provide a powerful framework for understanding
+and predicting future values in a time series. By studying these models, you can gain insights
+into the underlying patterns and trends in the data, allowing you to make accurate predictions
+about future behavior. This predictive power can be particularly valuable in various fields
+such as finance, economics, meteorology, and marketing, where accurate forecasting is
+essential.
+
+--- Page 2 ---
+
+Interpretability: Linear time series models offer interpretability, meaning that you can
+understand the individual contributions of each variable and their impact on the time series.
+This interpretability can provide valuable insights into the relationships between different
+variables and help you understand the driving forces behind the observed patterns. It allows
+you to analyze how changes in one variable affect the entire system, which can be crucial for
+decision-making and policy planning.
+Fundamental Understanding: Studying linear time series models deepens your understanding
+of the underlying principles and concepts of time series analysis. You will learn about
+autocorrelation, stationarity, and other fundamental properties of time series data. This
+knowledge forms a solid foundation for more advanced models and techniques, such as
+nonlinear models or state-space models, which may be necessary in more complex scenarios.
+Diagnostic Tools: Linear time series models provide various diagnostic tools for assessing the
+adequacy of the model fit. You can evaluate the model's performance, identify outliers, check
+for residual autocorrelation, and test for model assumptions. Understanding and utilizing
+these diagnostic tools can help you refine your models, improve their accuracy, and ensure
+reliable results.
+Practical Applications: Linear time series models have a wide range of practical applications.
+They are used for forecasting future sales, predicting stock prices, analyzing economic trends,
+understanding customer behavior, and many other real-world scenarios. By studying these
+models, you acquire skills that are in high demand in industries such as finance, economics,
+data science, and operations research.
+Career Advancement: Proficiency in linear time series modeling can open up exciting career
+opportunities. The ability to analyze time series data and make accurate predictions is highly
+sought after by employers in various fields. By developing expertise in this area, you can
+enhance your resume and increase your chances of landing rewarding positions in industries
+that heavily rely on time series analysis.
+Overall, studying linear time series models can be a rewarding and motivating endeavor. It
+empowers you to make accurate predictions, gain a deep understanding of time-dependent
+data, and opens up a wide range of career prospects. Whether you are driven by the practical
+applications, the intellectual challenge, or the potential for impact, delving into linear time
+series modeling can be an excellent investment of your time and effort.
+3. Linear Time Series Models:
+Linear time series models can be represented mathematically using equations. The specific
+form of the equations depends on the type of linear time series model being used. Here are
+the mathematical equations for some commonly used linear time series models:
+Autoregressive (AR) Model:
+The autoregressive model of order p, denoted as AR(p), describes the relationship between an
+observation and its p lagged values. The equation for an AR(p) model is:
+X(t) = c + φ₁X(t-1) + φ₂X(t-2) + ... + φₚ*X(t-p) + ε(t)
+where:
+
+--- Page 3 ---
+
+X(t) is the value of the time series at time t,
+c is a constant term,
+φ₁, φ₂, ..., φₚ are the autoregressive coefficients,
+ε(t) is the error term or random noise at time t.
+Moving Average (MA) Model:
+The moving average model of order q, denoted as MA(q), describes the relationship between
+an observation and q lagged error terms. The equation for an MA(q) model is:
+X(t) = c + ε(t) + θ₁ε(t-1) + θ₂ε(t-2) + ... + θₚ*ε(t-q)
+where:
+X(t) is the value of the time series at time t,
+c is a constant term,
+ε(t), ε(t-1), ..., ε(t-q) are the error terms at respective time periods,
+θ₁, θ₂, ..., θₚ are the moving average coefficients.
+Autoregressive Moving Average (ARMA) Model:
+The autoregressive moving average model combines the autoregressive and moving average
+components. An ARMA model of order (p, q), denoted as ARMA(p, q), is given by:
+X(t) = c + φ₁X(t-1) + φ₂X(t-2) + ... + φₚX(t-p) + ε(t) + θ₁ε(t-1) + θ₂ε(t-2) + ... + θₚε(t-q)
+where the terms have the same meaning as in the AR and MA models.
+These equations represent the basic linear time series models. More complex models, such as
+the autoregressive integrated moving average (ARIMA) or autoregressive integrated moving
+average with exogenous variables (ARIMAX), include additional terms for differencing or
+exogenous variables, respectively.
+It's important to note that the coefficients (φ and θ) and the error terms (ε) are estimated using
+statistical methods such as maximum likelihood estimation or least squares estimation to fit
+the model to the observed time series data.
+4. Autoregressive (AR) Model:
+The autoregressive (AR) model is a popular approach for modeling time series data. It
+assumes that the value of a variable at a given time is linearly dependent on its previous
+values. The mathematical equation for an AR(p) model is:
+X(t) = c + Σ(φ(i) * X(t-i)) + ε(t)
+In this equation:
+
+--- Page 4 ---
+
+X(t) represents the value of the variable at time t.
+c is the constant term.
+φ(i) is the coefficient for the i-th lag term.
+X(t-i) represents the value of the variable at time t-i.
+ε(t) is the error term, representing the random noise or residual at time t.
+The key benefits of using autoregressive models in time series analysis include:
+Simplicity: AR models are relatively simple to understand and implement. They provide a
+straightforward way to capture the temporal dependence in the data.
+Flexibility: AR models can be used to capture both short-term and long-term dependencies in
+a time series, depending on the order (p) chosen for the model.
+Interpretable coefficients: The coefficients (φ(i)) in the AR model equation can provide
+insights into the impact and significance of the previous values on the current value of the
+variable.
+However, autoregressive models also have some drawbacks:
+Linearity assumption: AR models assume a linear relationship between the variable and its
+lagged values. This may not capture complex nonlinear patterns that exist in some time series
+data.
+Stationarity requirement: AR models assume that the time series is stationary, meaning that
+its statistical properties (such as mean and variance) remain constant over time. If the data
+violates stationarity assumptions, the model's performance may be compromised.
+Determining the model order: Selecting the appropriate order (p) for an AR model can be
+challenging. Choosing a low order may result in underfitting, while a high order may lead to
+overfitting. Model selection techniques, such as Akaike Information Criterion (AIC) or
+Bayesian Information Criterion (BIC), are often used to address this issue.
+Sensitivity to outliers: AR models are sensitive to outliers or extreme values in the time
+series. Outliers can significantly affect the estimated coefficients and degrade the model's
+performance.
+Limited forecasting horizon: AR models are generally better suited for short-term forecasting
+rather than long-term predictions. As the forecast horizon increases, the model's accuracy
+tends to decrease due to the accumulation of errors.
+It's important to note that the AR model is just one approach among many for time series
+modeling. Depending on the specific characteristics of the data, other models like
+autoregressive moving average (ARMA), autoregressive integrated moving average
+(ARIMA), or more advanced methods like state-space models or recurrent neural networks
+(RNNs) may be more appropriate.
+5. Moving Average Model (MA):
+
+--- Page 5 ---
+
+The moving average (MA) model is a commonly used approach in time series analysis to
+capture the trend or patterns in data. It is a simple yet effective method that involves
+calculating the average of a fixed window of previous observations to make predictions for
+future values. Here's the mathematical equation for the MA model:
+X_t = μ + ε_t + θ_1ε_(t-1) + θ_2ε_(t-2) + ... + θ_qε_(t-q)
+In this equation:
+X_t represents the value of the time series at time t.
+μ is the mean of the time series.
+ε_t represents the error term at time t, which is assumed to be a random variable with a mean
+of zero.
+θ_1, θ_2, ..., θ_q are the parameters of the MA model that represent the weights assigned to
+the lagged error terms ε_(t-1), ε_(t-2), ..., ε_(t-q).
+Benefits of the MA model:
+Simplicity: The MA model is relatively easy to understand and implement compared to more
+complex models.
+Smoothing: It can help smooth out short-term fluctuations in the data, making underlying
+trends more visible.
+Forecasting: The MA model can be used to make short-term forecasts based on the recent
+values of the time series.
+Drawbacks of the MA model:
+Lagged dependence: The MA model assumes that the value at each time point depends only
+on a fixed number of previous error terms. It may not capture long-term dependencies or
+complex patterns in the data.
+Stationarity assumption: The MA model requires the time series to be stationary, meaning
+that its mean and variance should remain constant over time. If the series is non-stationary, it
+may lead to unreliable forecasts.
+Parameter estimation: Estimating the parameters of the MA model can be challenging,
+particularly for large values of q. The method of maximum likelihood estimation or other
+optimization techniques are typically used, which can be computationally intensive.
+It's worth noting that there are variations of the MA model, such as the autoregressive
+moving average (ARMA) model and the autoregressive integrated moving average (ARIMA)
+model, which incorporate additional components to handle autocorrelation and trend in the
+data.
+6. Simulating from an autoregressive process:
+
+--- Page 6 ---
+
+To simulate from an autoregressive (AR) process, you can follow these general steps:
+Define the order of the AR process: Determine the number of previous observations (lags)
+that influence the current value. Let's say you choose an order of p.
+Specify the AR coefficients: Assign values to the AR coefficients, denoted by φ_1, φ_2, ...,
+φ_p. These coefficients determine the strength and direction of the influence of past
+observations on the current value.
+Generate random noise: Generate a sequence of random numbers, typically following a
+standard normal distribution (mean 0, variance 1), denoted by ε_t. This noise represents the
+unexplained part of the process.
+Set an initial condition: Choose a starting value for the AR process. This could be a random
+number or a specific value depending on the application.
+Generate the AR process: Iterate through time steps from t = p+1 to t = n, where n is the
+number of desired observations. For each time step, calculate the current value based on the
+previous p values and the AR coefficients. The formula for the AR(p) process is:
+X_t = φ_1X_{t-1} + φ_2X_{t-2} + ... + φ_p*X_{t-p} + ε_t
+Where X_t represents the value at time t.
+Substitute the appropriate values of X_{t-1}, X_{t-2}, ..., X_{t-p} from the previous time
+steps to calculate X_t. Add the corresponding random noise ε_t to obtain the current value.
+Repeat step 5 for the desired number of observations.
+Here's some example Python code that demonstrates the simulation of an AR(1) process:
+import numpy as np
+# Parameters
+n = 100 # Number of observations
+phi = 0.8 # AR coefficient
+sigma = 1.0 # Standard deviation of the random noise
+# Initialize the process
+X = np.zeros(n)
+X[0] = np.random.normal(0, sigma) # Initial condition
+# Generate AR(1) process
+for t in range(1, n):
+epsilon = np.random.normal(0, sigma)
+X[t] = phi * X[t-1] + epsilon
+# Print the simulated process
+print(X)
+
+--- Page 7 ---
+
+This code simulates an AR(1) process with an AR coefficient of 0.8 and a standard deviation
+of 1 for the random noise. It generates 100 observations and stores them in the array X. The
+initial condition is chosen randomly from a normal distribution.
+You can modify the code for different orders of AR processes (changing the value of p),
+different AR coefficients (changing the value of phi), or different standard deviations of the
+random noise (changing the value of sigma).
+7. ARMA Model:
+The ARMA (Autoregressive Moving Average) model is a popular and widely used approach
+in time series analysis. It combines autoregressive (AR) and moving average (MA)
+components to capture the linear dependencies and patterns in a time series data. The model
+is based on the assumption that the current value of a series is a linear combination of its past
+values and random error terms.
+Mathematical Equation:
+The general equation for an ARMA(p,q) model is:
+X_t = c + ϕ₁X_(t-1) + ϕ₂X_(t-2) + ... + ϕ_pX_(t-p) + ε_t - θ₁ε_(t-1) - θ₂ε_(t-2) - ... - θ_qε_(t-
+q)
+Where:
+X_t represents the value of the time series at time t.
+c is the constant term or the mean of the series.
+ϕ₁, ϕ₂, ..., ϕ_p are the autoregressive coefficients representing the influence of past values on
+the current value.
+ε_t is the error term at time t, which represents the random noise in the series.
+θ₁, θ₂, ..., θ_q are the moving average coefficients representing the influence of past error
+terms on the current value.
+Benefits of ARMA model:
+Flexibility: ARMA models can capture both short-term dependencies (via the moving
+average component) and long-term dependencies (via the autoregressive component), making
+them suitable for various time series patterns.
+Interpretability: The model coefficients provide insights into the relationship between the
+current value and the past values of the series.
+Forecasting: ARMA models can be used to forecast future values of the time series based on
+historical data and estimated coefficients.
+
+--- Page 8 ---
+
+Model diagnostics: ARMA models provide statistical measures (e.g., AIC, BIC) to evaluate
+the goodness of fit, enabling model selection and comparison.
+Drawbacks of ARMA model:
+Linearity assumption: ARMA models assume a linear relationship between the time series
+and its past values, which may not hold in some cases.
+Stationarity requirement: ARMA models require the time series to be stationary, i.e., having
+constant mean and variance over time. Non-stationary series may need pre-processing or
+transformation before modeling.
+Model selection: Determining the appropriate orders (p and q) of the ARMA model can be
+challenging, and selecting an incorrect order may result in poor forecasting performance.
+Sensitivity to outliers: ARMA models can be sensitive to outliers or extreme values, which
+may impact the estimation of model parameters.
+It's worth noting that the ARMA model is a basic model in time series analysis, and there are
+more advanced models available, such as ARIMA (which includes differencing to handle
+non-stationarity) and SARIMA (which incorporates seasonality).
+8. ARIMA Model:
+The ARIMA (AutoRegressive Integrated Moving Average) model is a commonly used
+statistical method for analyzing and forecasting time series data. It combines autoregressive
+(AR), differencing (I), and moving average (MA) components to capture the temporal patterns
+and dependencies present in the data.
+The mathematical equation for an ARIMA (p, d, q) model can be represented as:
+Benefits of using ARIMA models in time series analysis include:
+
+--- Page 9 ---
+
+Flexibility: ARIMA models can capture various temporal patterns such as trend, seasonality,
+and autocorrelation. By adjusting the parameters p,d, and q, the model can accommodate
+different types of time series data.
+Forecasting Accuracy: ARIMA models can provide reasonably accurate forecasts, especially
+when applied to stationary or weakly stationary time series data.
+Interpretability: The model coefficients (ϕ and θ) can provide insights into the underlying
+dynamics and relationships within the time series.
+Statistical Inference: ARIMA models are based on sound statistical theory, allowing for
+hypothesis testing, confidence intervals, and model diagnostics.
+However, ARIMA models also have some drawbacks:
+Stationarity Requirement: ARIMA models assume that the underlying time series is stationary,
+meaning its mean, variance, and autocovariance structure do not change over time. If the data
+is non-stationary, it needs to be differenced (d > 0) to achieve stationarity, which can introduce
+complexity and potential information loss.
+Limited Handling of Complex Patterns: While ARIMA models can capture basic temporal
+patterns, they may struggle with complex or nonlinear relationships, long-term dependencies,
+or irregular fluctuations that do not fit the ARIMA assumptions.
+Model Selection: Determining the appropriate values of p,d, and q can be challenging and often
+requires statistical techniques like information criteria (e.g., AIC, BIC) or cross-validation,
+which may be time-consuming or prone to subjective biases.
+Sensitivity to Outliers: ARIMA models can be sensitive to outliers or extreme values in the
+data, potentially affecting their performance and forecasting accuracy.
+Computationally Intensive: Estimating ARIMA parameters and conducting model diagnostics
+can be computationally intensive, especially for large or high-frequency time series datasets.
+It's worth noting that while ARIMA models have been widely used in time series analysis,
+there are also alternative models and techniques available, such as seasonal ARIMA
+(SARIMA), state space models, and machine learning approaches, which may be more suitable
+depending on the specific characteristics of the data and the analysis goals.
+9. Unit Roots:
+In linear time series analysis, a unit root is a property of a time series variable that indicates it
+is non-stationary. Non-stationarity refers to the presence of a trend or systematic pattern in the
+data that does not dissipate over time.
+A unit root implies that the series has a root equal to 1, meaning it has a stochastic trend. In
+other words, the series has a tendency to return to its long-term mean but does not converge to
+a fixed value. Unit roots are typically associated with persistent shocks or random fluctuations
+in the data.
+The presence of unit roots poses challenges in time series analysis because it violates the
+assumptions of many statistical techniques that require stationarity. Therefore, it is important
+to address unit roots before applying various econometric models and techniques.
+
+--- Page 10 ---
+
+One common approach to dealing with unit roots is to difference the series. Taking the
+difference between consecutive observations can often remove the trend and make the series
+stationary. This process is called differencing and is denoted by the first difference (Δ) operator.
+If differencing the series once (i.e., taking the first difference) leads to stationarity, then the
+series is said to be integrated of order one, denoted as I(1). If further differencing is required,
+it is referred to as integrated of order two (I(2)), and so on.
+Another approach to address unit roots is to use specific econometric models designed for non-
+stationary time series, such as autoregressive integrated moving average (ARIMA) models or
+vector autoregressive (VAR) models. These models explicitly account for the presence of unit
+roots and can capture the dynamics of non-stationary series.
+It's worth noting that unit root tests, such as the Augmented Dickey-Fuller (ADF) test or the
+Phillips-Perron (PP) test, are commonly employed to determine the presence of unit roots in a
+time series. These tests provide statistical evidence regarding the presence or absence of unit
+roots, helping researchers make informed decisions about the appropriate modeling strategies.
+10. Integrated and non-invertible processes
+In the context of linear time series analysis, an integrated process refers to a series that has been
+differenced to achieve stationarity. Differencing involves taking the difference between
+consecutive observations to remove trends or seasonality in the data.
+On the other hand, a non-invertible process refers to a situation where it is not possible to
+recover the original series from its differenced version. In other words, the differenced series
+does not contain enough information to reconstruct the original series accurately.
+Mathematically, an integrated process of order d, denoted as I(d), can be represented as follows:
+(1 - B)^d * Y(t) = X(t),
+where Y(t) is the original non-stationary time series, X(t) is the differenced series, B is the
+backshift operator (B^k * Y(t) = Y(t-k)), and d represents the order of differencing.
+The (1 - B)^d term represents the differencing operator applied d times to the time series. When
+this operator is applied to Y(t), it transforms the non-stationary series into a stationary series
+X(t). In the case of an integrated process, the differenced series X(t) is stationary.
+It is important to note that if the process is non-invertible, it means that it is not possible to
+accurately reconstruct the original series Y(t) from the differenced series X(t) using the
+differencing operator. This situation may arise when multiple differencing steps are applied or
+if the original series has a stochastic trend that cannot be fully removed through differencing.
+Overall, the equation (1 - B)^d * Y(t) = X(t) represents the integration and differencing
+operations involved in linear time series analysis.
+11. Box-Jenkins model:
+
+--- Page 11 ---
+
+The Box-Jenkins model selection process is a methodology used in time series analysis to
+determine the appropriate model for forecasting and analyzing a given time series. It involves
+three main stages: identification, estimation, and diagnostic checking.
+The identification stage focuses on identifying the appropriate model orders, which include
+the autoregressive (AR) order, the moving average (MA) order, and the differencing order.
+The AR order represents the number of lagged values of the dependent variable used in the
+model, the MA order represents the number of lagged forecast errors used in the model, and
+the differencing order represents the number of times the data needs to be differenced to
+achieve stationarity.
+The estimation stage involves estimating the parameters of the selected model using methods
+like maximum likelihood estimation.
+The diagnostic checking stage is crucial for assessing the adequacy of the model. It involves
+checking the residuals (forecast errors) for any patterns or deviations from assumptions, such
+as independence, normality, and constant variance.
+It relies on statistical techniques and algorithms to identify the appropriate model for a given
+time series. The process involves trying different combinations of AR, MA, and differencing
+orders and evaluating the models based on criteria like Akaike Information Criterion (AIC) or
+Bayesian Information Criterion (BIC).
+Overall, the Box-Jenkins model selection process is an iterative and exploratory approach
+that aims to find the most suitable model to capture the underlying patterns and dynamics of a
+time series.
+12. SARIMA Model:
+SARIMA (Seasonal AutoRegressive Integrated Moving Average) is a popular model used for
+time series forecasting. It is an extension of the ARIMA model that incorporates seasonal
+components.
+The mathematical equation for SARIMA(p, d, q)(P, D, Q)s is as follows:
+(1 - φ₁B - ... - φₚBᵖ)(1 - Φ₁Bˢ - ... - ΦₚBˢP)(1 - B)ᵈ(1 - Bˢ)ᴰyₜ = (1 + θ₁B + ... + θₚBᵖ)(1 + Θ₁Bˢ +
+... + ΘₚBˢP)εₜ
+Where:
+p: The order of the autoregressive (AR) component.
+d: The degree of differencing (integration).
+q: The order of the moving average (MA) component.
+P: The order of the seasonal autoregressive (SAR) component.
+D: The degree of seasonal differencing (seasonal integration).
+
+--- Page 12 ---
+
+Q: The order of the seasonal moving average (SMA) component.
+s: The seasonal period.
+B: The backshift operator.
+yₜ: The observed value at time t.
+φ₁,..., φₚ: The autoregressive coefficients.
+Φ₁,..., Φₚ: The seasonal autoregressive coefficients.
+θ₁,..., θₚ: The moving average coefficients.
+Θ₁,..., Θₚ: The seasonal moving average coefficients.
+εₜ: The error term at time t.
+Benefits of SARIMA model:
+Seasonal Component Handling: SARIMA can effectively capture and model seasonal
+patterns in the data.
+Flexibility: SARIMA allows for the modeling of both non-seasonal and seasonal components,
+providing flexibility in capturing different patterns and trends in time series data.
+Forecasting Accuracy: SARIMA has demonstrated good performance in many real-world
+forecasting tasks, particularly when the data exhibits seasonality.
+Interpretability: SARIMA models can provide interpretable parameters and diagnostics,
+allowing analysts to understand the underlying patterns and make informed decisions.
+Drawbacks of SARIMA model:
+Complexity in Parameter Selection: Choosing the appropriate values for the various
+SARIMA parameters (p, d, q, P, D, Q, s) can be challenging and time-consuming, requiring
+expertise and experimentation.
+Computational Intensity: SARIMA models can be computationally intensive, particularly for
+large datasets and higher-order models. Estimating parameters and forecasting can be time-
+consuming.
+Limited Handling of Complex Patterns: SARIMA assumes linear relationships and may
+struggle to capture complex nonlinear patterns or long-term dependencies present in some
+time series.
+Sensitivity to Outliers: SARIMA models can be sensitive to outliers and extreme values in
+the data, which may negatively impact forecasting accuracy.
+It's important to note that SARIMA is just one of many available models for time series
+forecasting, and its suitability depends on the specific characteristics of the data and the
+forecasting task at hand.
+
+============================================================
+FILE: Module 2.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Linear Time SeriesModule 2
+By: Prof. Pradnya Saval Joshi
+
+--- Slide 2 ---
+
+Contents
+Motivation
+Linear time series and moving average (MA) models
+The AR model
+Simulating from an autoregressive process
+The ARMA model
+The ARIMA model
+Unit roots
+integrated and non-invertible processes
+Box – Jenkins Model Selection
+Seasonality
+The SARIMA model
+
+--- Slide 3 ---
+
+Motivation
+Predictive Power
+Interpretability
+Fundamental Understanding
+Diagnostic Tools
+Practical Applications
+Career Advancement
+It empowers you to make accurate predictions, gain a deep understanding of time-dependent data, and opens up a wide range of career prospects.
+
+--- Slide 4 ---
+
+Linear Time Series
+Linear time series refers to a time series data where the relationship between variables can be described by linear equations. 
+Linear time series models assume that the future values of a variable can be predicted based on a linear combination of past observations and error terms.
+Common linear time series model : AR, MA, ARMA, ARIMA. 
+For example, for things that change slowly (the height of a river measured every hour if there isn't a flash flood), next hour's measurement is almost certainly very close to the prior ones, and so on.
+A model like this:	xt=.9Xt−1+.81Xt−2+...+ϵt
+
+--- Slide 5 ---
+
+Linear Time Series Models
+The mathematical equations for some commonly used linear time series models:
+Autoregressive (AR) Model
+Moving Average (MA) Model
+Autoregressive Moving Average (ARMA) Model
+
+--- Slide 6 ---
+
+Autoregressive (AR) Models
+It assumes that the value of a variable at a given time is linearly dependent on its previous values. The mathematical equation for an AR(p) model is:
+
+Benefits:
+Simplicity (simple to understand and implement)
+Flexibility (capture short-term and long-term dependencies)
+Interpretable coefficients (impact and significance of past values on current value)
+Drawbacks:
+Linearity assumption (cannot capture complex non-linear patterns)
+Determining the model order (high order -> overfitting and low order -> underfitting)
+Sensitivity to outliers
+Limited forecasting horizon
+
+--- Slide 7 ---
+
+Moving Average (MA) Model
+The moving average (MA) model is a commonly used approach in time series analysis to capture the trend or patterns in data. It is a simple yet effective method that involves calculating the average of a fixed window of previous observations to make predictions for future values. Here's the mathematical equation for the MA model:
+
+Benefits of the MA model:
+Simplicity
+Smoothing
+Forecasting
+Drawbacks of the MA model:
+Lagged dependence
+Stationarity assumption
+Parameter estimation
+
+--- Slide 8 ---
+
+Theoretical properties of time series with a MA (1) and MA (2) model
+Class Notes
+
+--- Slide 9 ---
+
+ACF vs. PACF
+ACF (Auto-Correlation Function)
+PACF (Partial Auto-Correlation Function)
+
+--- Slide 10 ---
+
+Rules of using acf and pacf
+Determine if there is an obvious trend in the dataset. If there is, use differencing to “detrend” the data. Usually, one lag differencing is used.
+
+
+
+
+
+Use PACF to determine the terms used in the AR model. Only significant terms will be chosen. The number of terms determine the order of the model.
+Use ACF to determine the terms used in the MA model.
+Choose a model by using ACF and PACF charts together.
+
+--- Slide 11 ---
+
+Example 1
+AR(2)
+
+--- Slide 12 ---
+
+Example 2
+MA(1)
+
+--- Slide 13 ---
+
+Example 3
+ARMA(1,1)
+
+--- Slide 14 ---
+
+What if….
+If all autocorrelation are non-significant, then the series is random (white noise; the ordering matters, but the data are independent and identically distributed).
+
+If you have taken first differences and all autocorrelations are non-significant, then the series is called random walk (Both the mean and variance are increasing over time).
+
+--- Slide 15 ---
+
+Simulating from an AR process
+Define the order of the AR process
+Specify the AR coefficients
+Generate random noise
+Set an initial condition
+Generate the AR process
+
+--- Slide 16 ---
+
+Autoregressive Moving Average (ARMA) Model
+It combines autoregressive (AR) and moving average (MA) components to capture the linear dependencies and patterns in a time series data. 
+The model is based on the assumption that the current value of a series is a linear combination of its past values and random error terms.
+The general equation for an ARMA(p,q) model is:
+X_t = c + ϕ₁X_(t-1) + ϕ₂X_(t-2) + ... + ϕ_pX_(t-p) + ε_t - θ₁ε_(t-1) - θ₂ε_(t-2) - ... - θ_qε_(t-q)
+Benefits of ARMA model:
+Flexibility
+Interpretability
+Forecasting
+Model diagnostics
+Drawbacks of ARMA model:
+Linearity assumption
+Stationarity requirement
+Model selection
+Sensitivity to outliers
+
+--- Slide 17 ---
+
+The ARIMA model
+It combines autoregressive (AR), differencing (I), and moving average (MA) components to capture the temporal patterns and dependencies present in the data.
+The mathematical equation for an ARIMA(p, d, q) model can be represented as:
+
+
+Benefits of using ARIMA models:
+Flexibility
+Forecasting Accuracy
+Interpretability
+Statistical Inference
+Drawbacks
+Stationarity Requirement
+Limited Handling of Complex Patterns
+Model Selection
+Sensitivity to Outliers
+Computationally Intensive
+
+--- Slide 18 ---
+
+Unit roots
+It is a property of a time series variable that indicates it is non-stationary. Non-stationarity refers to the presence of a trend or systematic pattern in the data that does not dissipate over time.
+The presence of unit roots violates the assumptions of many statistical techniques that require stationarity. 
+One common approach to dealing with unit roots is to difference the series denoted by (∆).
+Eg: Class Notes
+
+--- Slide 19 ---
+
+Box – Jenkins Model Selection
+The Box-Jenkins model selection process is a methodology used in time series analysis to determine the appropriate model for forecasting and analyzing a given time series. 
+The Box-Jenkins method refers to the iterative application of the following three steps:
+Identification:
+Using plots of the data, autocorrelations, partial autocorrelations, and other information, a class of simple ARIMA models is selected. This amounts to estimating appropriate values for p, d, and q.
+Estimation. 
+The Φ and θ of the selected model are estimated.
+Diagnostic Checking. 
+The fitted model is checked for inadequacies by considering the autocorrelations of the residual series (the series of residual, or error, values).
+These steps are applied iteratively until step three does not produce any improvement in the model.
+
+--- Slide 20 ---
+
+Seasonal AutoRegressive Integrated Moving Average (SARIMA) Model
+SARIMA is a popular model used for time series forecasting. It is an extension of the ARIMA model that incorporates seasonal components.
+The mathematical equation for SARIMA(p, d, q)(P, D, Q)s is as follows:
+
+
+Benefits of SARIMA model:
+Seasonal Component Handling
+Flexibility
+Forecasting Accuracy
+Interpretability
+Drawbacks of SARIMA model:
+Complexity in Parameter Selection
+Computational Intensity
+Limited Handling of Complex Patterns
+Sensitivity to Outliers

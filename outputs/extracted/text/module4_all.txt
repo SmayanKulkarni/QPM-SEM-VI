@@ -1,0 +1,1087 @@
+
+============================================================
+FILE: 1. Chapter 4.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Deep Learning Architectures
+for Sequence Processing
+
+
+--- SLIDE_2 ---
+ Recap of Feed Forward Neural Networks
+
+Inputs → pass through hidden layers → output
+
+Each layer has weights + activation functions
+
+Limitation: FFNNs assume inputs are independent (no memory of past  inputs).
+
+Works well for images, tabular data, but not for sequences.
+
+Example to give students:
+Predicting tomorrow’s weather using only today’s temperature (FFNN).
+But in reality, weather depends on past few days → we need memory.
+
+
+--- SLIDE_3 ---
+Introduce the Idea of Sequences
+Some problems need context:
+Sentences in language (words depend on previous words).
+Stock price prediction (depends on past days).
+Speech recognition (next sound depends on earlier sounds).
+ “If I say ‘The cat sat on the ___’, what word do you expect?” They’ll naturally answer ‘mat’. That shows context matters.
+
+
+--- SLIDE_4 ---
+Recurrent Neural Networks
+
+Works well with sequence of data for example Natural language data, Time series data, sales forecasting, stock forecasting . 
+Problems in NLP using Machine Learning 
+For example, SPAM Classifier 
+NLP Text Preprocessing  technique used to convert text data to vector are Bag of Words ,TFIDF,wprd2Vec 
+Steps followed for Classification
+Step 1   Covert the text into vector 
+Step 2   Apply machine learning algorithm(naïve Bayes)
+
+Problem :-While converting text to vector sequence information is discarded 
+If the sequence information is decarded Accuracy of the result may get affected.
+In many NLP applications sequence information is very important..
+And for such applications RNN is important concept 
+
+
+
+--- SLIDE_5 ---
+RNN
+where the output from the previous step is fed as input to the current step
+
+when in language models, it is required to predict the next word of a sentence, the previous words are required and hence there is a need to remember the previous words.
+
+ main and most important feature of RNN is its Hidden state which remembers some information about a sequence.
+
+The state is also referred to as Memory State since it remembers the previous input to the network.
+
+It uses the same parameters for each input as it performs the same task on all the inputs or hidden layers to produce the output.
+
+--- SLIDE_6 ---
+
+Architecture of RNN
+where:
+ht -> current state
+ht-1 -> previous state
+xt -> input state
+
+--- SLIDE_7 ---
+Simple recurrent neural network illustrated as a feed-forward network
+Most significant change: new set of weights, U
+connect the hidden layer from the previous time step to the current hidden layer. 
+determine how the network should make use of past context in calculating the output for the current input.
+
+INPUT
+OUTPUT
+WEIGHT MATRIX 
+WEIGHT MATRIX 
+HIDDEN LAYER 
+PREVIOUS TIME STEP 
+weights from the hiddenlayer to the output layer
+
+--- SLIDE_8 ---
+RNNs: Passing hidden state to next time step
+
+While processing, it passes the previous hidden state to the next step of the sequence. 
+The hidden state acts as the memory. 
+It holds information on previous data the network has seen before.
+
+--- SLIDE_9 ---
+Simple-RNN abstraction
+
+
+
+y2
+y1
+y3
+
+--- SLIDE_10 ---
+RNNs: Understanding a single cell
+
+
+
+--- SLIDE_11 ---
+Unrolled RNN
+
+--- SLIDE_12 ---
+Training
+we’ll use a training set, a loss function, and back-propagation 
+to obtain the gradients needed to adjust the weights in these recurrent networks. 
+
+3 sets of weights to update while training : 
+W , the weights from the input layer to the hidden layer,
+
+ U, the weights from the previous hidden layer to the current hidden layer, and finally 
+
+V , the weights from the hidden layer to the output layer.
+
+--- SLIDE_13 ---
+Steps in Training 
+ to compute the loss function for the output at time t we need the hidden layer from time t − 1. 
+
+
+ the hidden layer at time t influences both the output at time t and the hidden layer at time t + 1 (and hence the output and loss at t + 1). 
+
+ to assess the error accruing to ht , we’ll need to know its influence on both the current output as well as the ones that follow.
+
+--- SLIDE_14 ---
+Backpropagation algorithm – two pass algorithm for training the weights in RNNs.
+Step 1:- we perform forward inference, computing ht , yt , accumulating the loss at each step-in time, saving thevalue of the hidden layer at each step for use at the next time step. 
+
+Step 2:- we process the sequence in reverse, computing the required gradients as we go, computing and saving the error term for use in the hidden layer for each step backward in time.
+
+ This general approach is commonly referred to as Backpropagation Through Time 
+
+--- SLIDE_15 ---
+Language Modeling 
+Language Modelling (LM) is the task of predicting what word comes next or more generally, a system that assigns probability to a piece of a text sequence.
+
+N-gram is the simplest language model, and its performance is limited by its lack of complexity. 
+
+Simplistic models like this one cannot achieve fluency, enough language variation and correct writing style for long texts.
+
+ For these reasons, neural networks (NN) are explored as the new gold standard despite their complexity and Recurrent Neural Networks (RNN) became a fundamental architecture for sequences of any kind. 
+
+--- SLIDE_16 ---
+RNNs as Language Models
+Processes sequences one word at a time
+
+Predicts the next word in a sequence
+
+Uses: Current word & Previous hidden state 
+
+Hidden state captures information from all previous words
+
+Overcomes limited context problem of N-gram models & maintains long-term context from the beginning of the
+
+--- SLIDE_17 ---
+RNN as language Model 
+Input sequence x consists of word embeddings (one-hot vectors) of size |V| × 1 
+
+Output y is a probability distribution over the vocabulary 
+
+At each step: 
+Retrieve word embedding using embedding matrix (E) 
+Combine with previous hidden state 
+Compute new hidden state 
+
+Hidden state is used to generate the output layer 
+
+Output is passed through Softmax function 
+Produces probabilities for all words in the vocabulary 
+
+--- SLIDE_18 ---
+Training RNNs as language models.
+
+--- SLIDE_19 ---
+Generation with RNN-Based Language Models
+
+Generate random sentences using a trained language model to understand its behavior
+
+Start with beginning-of-sentence token (<s>)Sample first word from Softmax output distribution
+
+Feed the sampled word’s embedding as input for the next step
+
+Repeat the process:
+	Generate next word Sample from probability distribution
+
+Continue until:
+	End-of-sentence token (</s>) is generated
+	A fixed length limit is reached
+
+
+
+--- SLIDE_20 ---
+RNN as a Language Model
+Steps for using RNN as Language Model 
+
+Consider the following sentences 
+"The cat sat on the mat."
+
+Let’s assume our vocabulary consists of 5 unique words:
+ The, cat, sat, on, mat
+We will manually compute:
+Word Representation
+Forward Pass in RNN
+Softmax Output Calculation
+Loss Calculation (Cross-Entropy)
+Backpropagation (BPTT) Calculation
+
+
+--- SLIDE_21 ---
+Step 1: Assign Numerical Representation
+We convert words into one-hot vectors:
+
+
+--- SLIDE_22 ---
+Our training data consists of input-output pairs:
+
+
+--- SLIDE_23 ---
+Step 2: Forward Pass in RNN
+An RNN updates its hidden state ht  using the formula:
+where:
+ht  = hidden state at time t
+ht−1  = previous hidden state
+xt  = input one-hot vector
+Wh = hidden state weight matrix (random initialization)
+Wx = input weight matrix (random initialization)
+bh  = bias term
+tanh⁡(⋅) = activation function
+Let's assume:
+Hidden state size = 3
+Initial hidden state: h0=[0,0,0]
+
+
+Random weight matrices:
+
+--- SLIDE_24 ---
+Step 2.1: Compute h1  for Input "The"
+
+Using the one-hot vector for "The":
+       x1=[1,0,0,0,0] 
+Hidden state calculation:
+ h1=tanh⁡(Wh*h0+Wx*x1+bh)
+
+
+
+--- SLIDE_25 ---
+Step 3: Compute Softmax Output
+The output layer computes:
+yt=softmax(Wo*ht+bo) 
+where:
+Wo = output weight matrix
+bo  = bias
+
+
+--- SLIDE_26 ---
+Step 4: Compute Cross-Entropy Loss
+
+Given correct output "cat" (index = 1):
+L=−log P("cat")
+ L= −log(0.206)=1.58L 
+
+Step 5: Backpropagation Through Time (BPTT)
+Gradient calculations are computed for Wx,Wh,Wo using the chain rule.
+
+
+--- SLIDE_27 ---
+Step 1: Assign Word Embeddings
+Let’s assume we use a 3-dimensional embedding for each word:
+
+So instead of using one-hot vectors, we directly pass the embedding vector to the RNN.
+
+
+--- SLIDE_28 ---
+
+
+--- SLIDE_29 ---
+
+
+--- SLIDE_30 ---
+
+
+--- SLIDE_31 ---
+
+
+--- SLIDE_32 ---
+
+
+--- SLIDE_33 ---
+
+
+--- SLIDE_34 ---
+
+
+--- SLIDE_35 ---
+Autoregressive Generation
+The technique of the  generation since the word generated at each  autoregressive generation time step is conditioned on the word selected by the network from the previous step.
+
+--- SLIDE_36 ---
+
+What is Autoregressive RNN?
+
+Autoregressive RNN is a sequence generation model where the next word is predicted based on the previously generated words.
+
+The key characteristic is that the model uses its own generated outputs as inputs for the next step.
+
+It is commonly used in text generation, language modeling, and machine translation.
+
+in actual generation (inference, real time use), the model predicts words one by one without knowing the ground truth at each step, so per-step loss is not useful.
+
+
+--- SLIDE_37 ---
+Step-by-Step Numerical Example
+
+Problem Statement
+
+Let's say we train an RNN language model on the sentence:
+
+"I love deep learning"
+
+
+We want to use autoregressive RNN to generate text starting from the seed word "I".
+
+
+
+--- SLIDE_38 ---
+Step 2: Initialize RNN Parameters
+
+We assume a simple Recurrent Neural Network (RNN) with the
+ following parameters:
+
+Hidden state size = 3
+
+Weight matrices: 
+
+Input-to-hidden weights: Wx​ (3×3 matrix)
+Hidden-to-hidden weights: Wh​ (3×3 matrix)
+Hidden-to-output weights: Wy​ (3×3 matrix)
+
+
+Biases: bh,by​
+
+--- SLIDE_39 ---
+Step 3: Compute Hidden State for First Word ("I")
+Hidden State Equation
+
+
+ht=tanh⁡(Wx*xt+Wh*ht−1+bh)
+ Initial hidden state (h0​) = [0,0,0]
+For word "I" (x1=[0.1,0.3,0.5])
+
+--- SLIDE_40 ---
+
+
+--- SLIDE_41 ---
+Step 5: Continue the Process
+The model feeds "love" as input into the RNN.
+It generates "deep" next.
+Then "learning".
+The process continues until a stopping condition is met.
+
+--- SLIDE_42 ---
+Conclusion
+Autoregressive RNNs generate text one word at a time.
+The hidden state captures context from previous words.
+The softmax layer selects the most probable next word.
+The model recursively feeds predictions back as input.
+
+--- SLIDE_43 ---
+Sequence Labeling
+In sequence labeling, the network’s task is to assign a label chosen from a small fixed set of labels to each element of a sequence. 
+
+Canonical examples of sequence labeling include part-of-speech tagging and named entity recognition
+
+In an RNN approach to sequence labeling, inputs are wordembeddings and the outputs are tag probabilities generated by a softmax layer over the given tag set, 
+
+--- SLIDE_44 ---
+Part-of-speech tagging as sequence labeling with a simple RNN.
+The inputs at each time step are pre-trained word embeddings corresponding to the input tokens.
+
+
+ The RNN block is an abstraction that represents an unrolled simple recurrent network consisting of an input layer, hidden layer, and output layer at each time step, as well as the shared U, V and W weight matrices that comprise the network. 
+
+
+The outputs of the network at each time step represent the distribution over the POS tagset generated by a softmax layer.
+
+--- SLIDE_45 ---
+RNNs for Sequence Classification
+RNNs is to classify entire sequences rather than the tokens within them
+
+
+document-level topic classification, spam detection, message routing for customer service applications, and deception detection
+
+
+To apply RNNs in this setting, the text to be classified is passed through the RNN a word at a time generating a new hidden layer at each time step. 
+
+
+
+The hidden layer for the final element of the text, hn, is taken to constitute a compressed representation of the entire sequence. In the simplest approach to classification, hn, serves as theinput to a subsequent feedforward network that chooses a class via a SoftMax over the possible classes
+
+--- SLIDE_46 ---
+there are no intermediate outputs for the words in the sequence preceding the last element. 
+
+ there are no loss terms associated with those elements. 
+
+Instead, the loss function used to train the weights in the network is based entirely on the final text classification task. 
+
+Specifically, the output from the SoftMax output from the feedforward classifier together with a cross-entropy loss drives the training. 
+
+
+The error signal from the classification is backpropagated all the way through the weights in the feedforward classifier through, to its input, and then through to the three sets of weights in the RNN 
+
+--- SLIDE_47 ---
+Performing Sentiment analysis using RNN
+Sentiment analysis using Recurrent Neural Networks (RNNs) involves processing textual data to classify whether the sentiment of a sentence is positive, negative, or neutral. 
+
+--- SLIDE_48 ---
+Step 1: Understanding the Sentiment Analysis Task
+
+Objective:
+
+To classify given text (e.g., movie reviews, tweets) into sentiment categories such as:
+
+Positive sentiment (e.g., "I love this movie")
+Negative sentiment (e.g., "I hate this film")
+
+
+--- SLIDE_49 ---
+Step 2: Preprocessing the Text Data
+
+Before feeding text into an RNN model, we must convert it into numerical form.
+
+ Tokenization
+
+Definition: Splitting a sentence into words (tokens).
+
+Example: 
+
+Input: "This movie is great"
+Output tokens: ["this", "movie", "is", "great"]
+
+--- SLIDE_50 ---
+Convert Words into Word Embeddings
+
+Instead of one-hot encoding, we use word embeddings (like Word2Vec, GloVe, or trainable embeddings) that convert words into dense vector representations.
+
+Example:
+
+So, the sentence "This movie is great" becomes a matrix of word embeddings.​
+
+--- SLIDE_51 ---
+Step 3: Define RNN Model
+
+
+RNN processes sequences one word at a time and maintains a hidden state ht​.
+
+3.1 Forward Pass in RNN
+
+For each word, the hidden state is updated using:
+
+ht=tanh(Wh*ht−1+Wx*xt+bh)
+where:
+xt​ = Word embedding of the current word.
+ht​ = Hidden state at time t.
+Wx​, Wh​, bh​ = Learnable parameters.
+
+--- SLIDE_52 ---
+Each word in a sentence updates the hidden state as:
+Time Step 1: "This"
+h1=tanh(Wx*x1+bh)
+
+
+Time Step 2: "movie"
+h2=tanh(Wh*h1+Wx*x2+bh)
+
+ Time Step 3: "is"
+h3=tanh(Wh*h2+Wx*x3+bh)
+
+ Time Step 4: "great"
+h4=tanh(Wh*h3+Wx*x4+bh)
+
+
+ At the final time step, the hidden state hT​ represents the entire sentence.
+
+--- SLIDE_53 ---
+Step 4: Sentiment Prediction
+
+The final hidden state hT​ is passed through a fully connected layer and a sigmoid activation function to get the final sentiment score:
+
+y=σ(Wy*hT + by) 
+
+where:
+Wy​, by​ = Learnable parameters.
+
+
+
+ (Sigmoid function converts the output to a probability between 0 and 1).
+
+If y>0.5→ Positive Sentiment
+If y<0.5→ Negative Sentiment
+
+--- SLIDE_54 ---
+Step 5: Loss Function & Backpropagation
+
+To train the model, we use Binary Cross-Entropy Loss:
+
+
+
+ where:
+Ytrue = Actual sentiment label (1 for positive, 0 for negative).
+y = Predicted probability.
+
+Gradients are computed using Backpropagation Through Time (BPTT), and parameters are updated using Gradient Descent:
+
+
+where α  (learning rate) is a small value like 0.01.
+
+--- SLIDE_55 ---
+Step 6: Model Training
+
+Train on a dataset of labeled reviews (e.g., IMDB reviews dataset).
+
+Adjust hyperparameters like learning rate, embedding size, and number of RNN units.
+Use dropout to prevent overfitting.
+
+--- SLIDE_56 ---
+Step 7: Model Evaluation
+
+Evaluate performance using accuracy, precision, recall, and F1-score.
+
+Test with new sentences like: 
+"I love this film" → Predicted Sentiment: Positive (1)
+"This movie is bad" → Predicted Sentiment: Negative (0)
+
+--- SLIDE_57 ---
+Step 1: Understanding Sentiment Analysis with RNN
+
+Objective: Predict sentiment (e.g., positive/negative) from a given text.
+
+Input: Text data (reviews, tweets, etc.).
+
+Output: Sentiment score (e.g., binary classification: positive = 1, negative = 0).
+
+Example:
+Input: "I love this movie"
+Output: Positive sentiment (1)
+
+--- SLIDE_58 ---
+Step 2: Preprocessing the Data
+Before feeding text into an RNN model, we must convert it into numerical form.
+
+2.1 Tokenization
+Tokenization splits the text into individual words:Sentence: "This movie is great"Tokens: ["this", "movie", "is", "great"]
+
+
+2.2 Word Embeddings (Instead of One-Hot Encoding)
+Each word is mapped to a fixed-size vector using pretrained embeddings (like Word2Vec, GloVe) or a trainable embedding layer.
+
+
+--- SLIDE_59 ---
+
+
+--- SLIDE_60 ---
+Step 3: Forward Pass in RNN\
+
+An RNN processes each word sequentially and updates a hidden state.
+
+ht=tanh⁡(Wh*ht−1+Wx*xt+bh)
+
+ where:
+xt​ = Word embedding at time t.
+
+ht​ = Hidden state at time t.
+
+Wx​, Wh​, bh​ = Learnable parameters.
+
+Let's initialize:
+h0=[0,0,0]
+
+--- SLIDE_61 ---
+
+
+--- SLIDE_62 ---
+
+
+--- SLIDE_63 ---
+
+
+--- SLIDE_64 ---
+
+
+--- SLIDE_65 ---
+Stacked RNN 
+Stacked recurrent networks. 
+
+
+The output of a lower level serves as the input to higher levels with the output of the last network serving as the final output
+
+The optimal number of stacked RNNs is specific to each application and to each training set. 
+
+
+However, as the number of stacks is increased the training costs rise quickly.
+
+--- SLIDE_66 ---
+RNNs: Vanishing/exploding gradients
+
+Product of so many derivatives of tanh functions (<1) will lead to exponentially small values (~0). Vanishing Gradient problem
+Product of so many derivatives of tanh functions (>1) will lead to exponentially large values. Exploding Gradient problem
+Exploding Gradient problem can be simply solved by clipping the gradients
+However, vanishing gradients is a complex issue and disallow capturing long-range dependencies 
+Proper initialization of the W matrix can reduce the effect of vanishing gradients
+Use ReLU (derivative either 0 or 1) instead of sigmoid or tanh activation functions
+Use Long Short-Term Memory (LSTM) or Gated Recurrent Unit (GRU) architectures
+
+--- SLIDE_67 ---
+Managing Context in RNNs: LSTMs and GRUs
+to make use of information distant from the current point of processing is difficult while training RNN. 
+
+the information encoded in hidden states tends to be local, more relevant to the most recent parts of the input sequence and recent decisions.
+
+
+
+
+--- SLIDE_68 ---
+Long short-term memory (LSTM)
+
+A type of RNN
+The differences are the operations within the LSTM’s cells
+What to keep and what to forget?
+
+
+--- SLIDE_69 ---
+LSTM: The main idea
+
+The cell state and various gates
+The cell state act as a transport highway that transfers relative information all the way down the sequence chain.
+The gates decide which information is allowed on the cell state
+Gates contains sigmoid activations
+Forget info: if sigmoid activation ~0 
+Keep info: if sigmoid activation ~1
+
+
+--- SLIDE_70 ---
+Consider the following example 
+ step by step and calculation of  all intermediate values for an LSTM cell when processing the input sequence "Movie is good" using given weights and biases.
+
+
+--- SLIDE_71 ---
+Consider the following example 
+ step by step and calculation of  all intermediate values for an LSTM cell when processing the input sequence "Movie is good" using given weights and biases.
+
+
+--- SLIDE_72 ---
+Step 2: LSTM Forward Pass for "Movie"
+We compute all gate activations for time step t = 1.
+
+
+--- SLIDE_73 ---
+LSTM: Forget gate
+
+This gate decides what information should be thrown away or kept. 
+Information from previous hidden state and the current input is passed through the sigmoid function.
+Values come out between 0 and 1. The closer to 0 means to forget, and the closer to 1 means to keep.
+
+--- SLIDE_74 ---
+LSTM: Input gate
+
+First, the previous hidden state and current input is passed into a sigmoid function
+Also pass the hidden state and current input into the tanh function to squish values between -1 and 1.
+Multiply the tanh output with the sigmoid output
+Sigmoid output will decide which information is important to keep from the tanh output
+
+--- SLIDE_75 ---
+
+
+--- SLIDE_76 ---
+LSTM: Cell state
+
+The cell state gets pointwise multiplied by the forget vector.
+Take the output from the input gate and do a pointwise addition which updates the cell state to new values
+
+--- SLIDE_77 ---
+LSTM: Output gate
+
+The output gate decides what the next hidden state should be
+First, we pass the previous hidden state and the current input into a sigmoid function. 
+Then we pass the newly modified cell state to the tanh function. 
+Multiply the tanh output with the sigmoid output
+
+--- SLIDE_78 ---
+Example 
+Traditional RNN Fails to predict because of short term memory 
+
+--- SLIDE_79 ---
+Example 
+
+--- SLIDE_80 ---
+Example 
+
+--- SLIDE_81 ---
+LSTM: The operations
+
+Forget gate
+
+--- SLIDE_82 ---
+LSTM: The operations
+
+Input gate
+
+--- SLIDE_83 ---
+LSTM: Updating weights
+
+
+--- SLIDE_84 ---
+LSTM: The operations
+
+Output gate
+
+--- SLIDE_85 ---
+LSTM: Updating weights
+
+
+--- SLIDE_86 ---
+LSTM: Updating weights
+
+
+--- SLIDE_87 ---
+LSTM: Updating weights
+
+Gradient behaves similar to the forget gate
+
+--- SLIDE_88 ---
+LSTM: Updating weights
+
+This can be controlled initially using +ve bias term!
+
+--- SLIDE_89 ---
+Gated Recurrent Unit (GRU)
+
+
+New generation RNNs
+GRU’s got rid of the cell state and used the hidden state to transfer information
+Little speedier to train than LSTMs
+But not a clear winner
+Update Gate: decides what information to throw away and what new information to add
+Reset Gate: decides how much past information to forget.
+
+
+
+--- SLIDE_90 ---
+GRU Mathematical Explanation to the Diagram
+A GRU cell consists of:
+Reset Gate (rt , red sigmoid in the left part of the diagram)
+Update Gate (zt , red sigmoid in the center)
+Candidate Hidden State (h~t)
+New Hidden State (ht , final output)
+
+
+--- SLIDE_91 ---
+
+
+--- SLIDE_92 ---
+Purpose of the Reset Gate
+
+The reset gate (rt​) determines how much of the past hidden state (ht−1​) should be forgotten before computing the new candidate hidden state (ht~​). 
+
+
+If rt is close to 0, the past hidden state is ignored, meaning the GRU relies mostly on the current input. 
+
+
+If rt is close to 1, the past hidden state is preserved and influences the new candidate hidden state.
+
+--- SLIDE_93 ---
+For example, if rt=
+The first value 0.42 means that for the first hidden unit, about 42% of the previous hidden state is used in computing h~t​, while 58% is ignored.
+
+
+
+The second value 0.55 means that for the second hidden unit, 55% of the past state is preserved, and 45% is forgotten.
+
+--- SLIDE_94 ---
+
+
+--- SLIDE_95 ---
+Purpose of the Candidate Hidden State
+
+
+The candidate hidden state (h~t​) represents the new memory that could be used to update the final hidden state.
+
+
+ It is computed based on the current input xt and a modified version of the previous hidden state ht−1​, which is influenced by the reset gate rt​.
+
+
+
+If rt​ is close to 0, the past hidden state is largely ignored. If rt​ is close to 1, the past hidden state has more influence.
+
+--- SLIDE_96 ---
+
+
+--- SLIDE_97 ---
+
+
+--- SLIDE_98 ---
+Understanding 1−z  and zt
+The update gate zt​ plays a critical role in determining how much of the previous hidden state ht−1​ should be kept and how much of the newly computed candidate hidden state h~t​ should be used.
+
+
+The final hidden state ht  is computed as:
+This equation is a weighted sum where:
+
+
+zt​ controls how much of h~t (the new memory) is retained.
+
+
+1−zt controls how much of ht−1​ (the old memory) is kept.
+
+--- SLIDE_99 ---
+
+
+--- SLIDE_100 ---
+Interpretation of 1−zt​ and zt
+1−ztacts as a forgetting factor for the old state ht−1​.
+
+If ztis small, then 1−zt is large, meaning more of the old state is preserved.
+
+If zt​ is large, then 1−zt=​ is small, meaning more of the old state is discarded.
+
+zt​ determines how much of h~t​ (new memory) should be incorporated into the hidden state.
+
+If zt​ is close to 1, the new memory is fully used, making the network update its knowledge rapidly.
+
+If zt​ is close to 0, the network relies mostly on past memory, preventing unnecessary updates.
+
+This mechanism makes the GRU effective at handling long-term dependencies in sequential data.
+
+--- SLIDE_101 ---
+Example
+
+--- SLIDE_102 ---
+GRU 
+
+--- SLIDE_103 ---
+Example 2 
+
+--- SLIDE_104 ---
+Different types of RNNs
+
+
+--- SLIDE_105 ---
+
+one-to-one: Binary Classification [single images/words → single output]
+
+one-to-many: Image Captioning [image → Sequence of words](variability sized)
+
+many-to-one: Sentiment Classification [sequence of words (variable sized) → single sentiment]
+
+many-to-many (non-matching): Machine Translation [sequence of words → sequence of words], where both sequences have variable length and these lenghts may be difference
+
+
+many-to-many (matching): Video classification on a…
+
+
+
+============================================================
+FILE: 2. Bidirectional RNN.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Bi-directional Recurrent Neural Network
+In order for the network to use information from both the past and future context in its predictions, BRNNs process input sequences in both the forward and backward directions. 
+
+
+This is the main distinction between BRNNs and conventional recurrent neural networks.
+
+--- SLIDE_2 ---
+BRNN
+A BRNN has two distinct recurrent hidden layers, one of which processes the input sequence forward and the other of which processes it backward. 
+
+After that, the results from these hidden layers are collected and input into a prediction-making final layer. 
+
+Any recurrent neural network cell, such as Long Short-Term Memory (LSTM) or Gated Recurrent Unit, can be used to create the recurrent hidden layers.
+
+--- SLIDE_3 ---
+BRNN functions
+The BRNN functions similarly to conventional recurrent neural networks in the forward direction, updating the hidden state depending on the current input and the prior hidden state at each time step. 
+
+The backward hidden layer, on the other hand, analyses the input sequence in the opposite manner, updating the hidden state based on the current input and the hidden state of the next time step.
+
+Compared to conventional unidirectional recurrent neural networks, the accuracy of the BRNN is improved since it can process information in both directions and account for both past and future contexts.
+
+ Because the two hidden layers can complement one another and give the final prediction layer more data, using two distinct hidden layers also offers a type of model regularization.
+
+
+--- SLIDE_4 ---
+Gradient Updating
+In order to update the model parameters, the gradients are computed for both the forward and backward passes of the backpropagation through the time technique that is typically used to train BRNNs. 
+
+The input sequence is processed by the BRNN in a single forward pass at inference time, and predictions are made based on the combined outputs of the two hidden layers. 
+
+--- SLIDE_5 ---
+
+
+--- SLIDE_6 ---
+Working of Bidirectional Recurrent Neural Network
+
+ Inputting a sequence: A sequence of data points, each represented as a vector with the same dimensionality, are fed into a BRNN. The sequence might have different lengths.
+
+Dual Processing:  Both the forward and backward directions are used to process the data. Based on the input at that step and the hidden state at step t-1, the hidden state at time step t is determined in the forward direction. The input at step t and the hidden state at step t+1 are used to calculate the hidden state at step t in a reverse way.
+
+Computing the hidden state: A non-linear activation function on the weighted sum of the input and previous hidden state is used to calculate the hidden state at each step. This creates a memory mechanism that enables the network to remember data from earlier steps in the process.
+
+Determining the output: A non-linear activation function is used to determine the output at each step from the weighted sum of the hidden state and a few output weights. This output has two options: it can be the final output or input for another layer in the network.
+
+Training: The network is trained through a supervised learning approach where the goal is to minimize the discrepancy between the predicted output and the actual output. The network adjusts its weights in the input-to-hidden and hidden-to-output connections during training through backpropagation.
+
+--- SLIDE_7 ---
+To calculate the output from an RNN unit, we use the following formula:
+
+--- SLIDE_8 ---
+The training of a BRNN is like backpropagation through a time algorithm. BPTT algorithm works as follows:
+
+--- SLIDE_9 ---
+Applications of Bidirectional Recurrent Neural Network
+Bi-RNNs have been applied to various natural language processing (NLP) tasks, including:
+
+Sentiment Analysis: By considering both the prior and subsequent context, BRNNs can be utilized to categorize the sentiment of a particular sentence.
+
+Named Entity Recognition: By considering the context both before and after the stated thing, BRNNs can be utilized to identify those entities in a sentence.
+
+Part-of-Speech Tagging: The classification of words in a phrase into their corresponding parts of speech, such as nouns, verbs, adjectives, etc., can be done using BRNNs.
+
+Machine Translation: BRNNs can be used in encoder-decoder models for machine translation, where the decoder creates the target sentence, and the encoder analyses the source sentence in both directions to capture its context.
+
+Speech Recognition: When the input voice signal is processed in both directions to capture the contextual information, BRNNs can be used in automatic speech recognition systems.
+
+--- SLIDE_10 ---
+Advantages of Bidirectional RNN
+
+Context from both past and future: With the ability to process sequential input both forward and backward, BRNNs provide a thorough grasp of the full context of a sequence. Because of this, BRNNs are effective at tasks like sentiment analysis and speech recognition.
+
+Enhanced accuracy: BRNNs frequently yield more precise answers since they take both historical and upcoming data into account.
+
+Efficient handling of variable-length sequences: When compared to conventional RNNs, which require padding to have a constant length, BRNNs are better equipped to handle variable-length sequences.
+
+Resilience to noise and irrelevant information: BRNNs may be resistant to noise and irrelevant data that are present in the data. This is so because both the forward and backward paths offer useful information that supports the predictions made by the network.
+
+Ability to handle sequential dependencies: BRNNs can capture long-term links between sequence pieces, making them extremely adept at handling complicated sequential dependencies.
+
+--- SLIDE_11 ---
+Disadvantages of Bidirectional RNN
+
+ Computational complexity: Given that they analyze data both forward and backward, BRNNs can be computationally expensive due to the increased amount of calculations needed.
+
+
+Long training time: BRNNs can also take a while to train because there are many parameters to optimize, especially when using huge datasets.
+
+
+Difficulty in parallelization: Due to the requirement for sequential processing in both the forward and backward directions, BRNNs can be challenging to parallelize.
+
+
+Overfitting: BRNNs are prone to overfitting since they include many parameters that might result in too complicated models, especially when trained on short datasets.
+
+
+Interpretability: Due to the processing of data in both forward and backward directions, BRNNs can be tricky to interpret since it can be difficult to comprehend what the model is doing and how it is producing predictions.
+
+============================================================
+FILE: Gated Recurrent Unit (3).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Gated Recurrent Unit 
+
+
+--- SLIDE_2 ---
+
+
+--- SLIDE_3 ---
+
+
+--- SLIDE_4 ---
+
+
+--- SLIDE_5 ---
+
+
+--- SLIDE_6 ---
+
+
+--- SLIDE_7 ---
+
+
+--- SLIDE_8 ---
+Element Wise Multiplication 
+
+--- SLIDE_9 ---
+
+
+--- SLIDE_10 ---
+The Basic Idea
+It uses gating mechanisms to selectively update the hidden state of the network at each time step. 
+
+The gating mechanisms are used to control the flow of information in and out of the network. 
+
+The GRU has two gating mechanisms, called the reset gate and the update gate.
+
+
+The reset gate determines how much of the previous hidden state should be forgotten, while the update gate determines how much of the new input should be used to update the hidden state. 
+
+The output of the GRU is calculated based on the updated hidden state.
+
+
+--- SLIDE_11 ---
+The equations used to calculate the reset gate, update gate, and hidden state of a GRU are as follows:
+where W_r, W_z, and W_h are learnable weight matrices,
+
+ x_t is the input at time step t, 
+
+h_{t-1} is the previous hidden state, 
+
+and h_t is the current hidden state.
+
+--- SLIDE_12 ---
+Collective information passed onto the next Gated Recurrent Unit
+The different gates of a GRU are as described below:- 
+Update Gate(z): 
+It determines how much of the past knowledge needs to be passed along into the future. 
+It is analogous to the Output Gate in an LSTM recurrent unit.
+
+
+Reset Gate(r):
+It determines how much of the past knowledge to forget. 
+It is analogous to the combination of the Input Gate and the Forget Gate in an LSTM recurrent unit.
+
+
+Current Memory Gate(    ): 
+It is often overlooked during a typical discussion on Gated Recurrent Unit Network. It is incorporated into the Reset Gate just like the Input Modulation Gate is a sub-part of the Input Gate and is used to introduce some non-linearity into the input and to also make the input Zero-mean. Another reason to make it a sub-part of the Reset gate is to reduce the effect that previous information has on the current information that is being passed into the future.
+
+
+
+--- SLIDE_13 ---
+Working of a Gated Recurrent Unit: 
+Take input the current input and the previous hidden state as vectors.
+
+Calculate the values of the three different gates by following the steps given below:- 
+
+For each gate, calculate the parameterized current input and previously hidden state vectors by performing element-wise multiplication (Hadamard Product) between the concerned vector and the respective weights for each gate.
+
+Apply the respective activation function for each gate element-wise on the parameterized vectors. Below given is the list of the gates with the activation function to be applied for the gate.
+
+
+--- SLIDE_14 ---
+Step 3
+The process of calculating the Current Memory Gate is a little different. 
+
+First, the Hadamard product of the Reset Gate and the previously hidden state vector is calculated. Then this vector is parameterized and then added to the parameterized current input vector. 
+
+
+--- SLIDE_15 ---
+Step 4
+To calculate the current hidden state, first, a vector of ones and the same dimensions as that of the input is defined. 
+
+This vector will be called ones and mathematically be denoted by 1.
+
+ First, calculate the Hadamard Product of the update gate and the previously hidden state vector. 
+
+Then generate a new vector by subtracting the update gate from ones and then calculate the Hadamard Product of the newly generated vector with the current memory gate.
+
+ Finally, add the two vectors to get the currently hidden state vector.
+
+--- SLIDE_16 ---
+Training 
+the training process for a GRU network is also diagrammatically like that of a basic Recurrent Neural Network and differs only in the internal working of each recurrent unit. 
+
+The Back-Propagation Through Time Algorithm for a Gated Recurrent Unit Network is like that of a Long Short Term Memory Network and differs only in the differential chain formation. 
+
+--- SLIDE_17 ---
+

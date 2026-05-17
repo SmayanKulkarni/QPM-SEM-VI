@@ -1,0 +1,535 @@
+
+============================================================
+FILE: Module 6.pdf
+============================================================
+
+
+--- Page 1 ---
+
+Nonlinear Time Series Models
+ARCH | GARCH | Bilinear (BAR) | Stochastic Volatility | NAR | NARX
+1. The ARCH Model (AutoRegressive Conditional Heteroscedasticity)
+Introduced by Engle (1982), the ARCH model was developed to capture a fundamental feature of
+financial time series: volatility is not constant over time. Periods of high volatility tend to cluster together,
+as do periods of calm. The ARCH model captures this by making the conditional variance depend on
+past squared values of the series.
+1.1 Definition — ARCH(q)
+A time series {Xₜ } follows an ARCH(q) model if:
+Xₜ = σₜ ϵₜ , where σₜ ² = α₀ + α₁Xₜ ₋₁² + α₂Xₜ ₋₂² + ... +
+αqXₜ ₋q²
+• ϵₜ is an i.i.d. sequence with mean 0 and variance 1 (typically standard normal or t-distributed).
+• α₀ > 0 and αᵢ ≥ 0 for all i ≥ 1 — ensures variance is always positive.
+• σₜ ² is the conditional variance of Xₜ given past information — it is measurable with respect to
+the past.
+1.2 Features of the ARCH Model
+The ARCH model is characterised by several distinctive statistical features:
+• Volatility Clustering: Large shocks (positive or negative) tend to be followed by more large
+shocks. If |Xₜ ₋ ₁ | is large, σₜ ² increases, raising the probability of another large |Xₜ |.
+• Leptokurtosis (Heavy Tails): The unconditional distribution of Xₜ has heavier tails than a
+Gaussian — consistent with observed financial return distributions. Even if ϵₜ is normal, Xₜ is
+not normal.
+• Time-Varying Conditional Variance: Unlike linear models where variance is constant, ARCH
+allows the variance to change with the information set at each time step.
+• Uncorrelated but Dependent: Xₜ is serially uncorrelated (E[Xₜ Xₜ ₋ ₖ ] = 0 for k ≠ 0), yet the
+series {Xₜ ²} exhibits significant autocorrelation — revealing non-linear dependence.
+• Mean Zero: The conditional mean E[Xₜ | past] = 0, since E[ϵₜ ] = 0 and σₜ is measurable on
+the past.
+Exam Tip: ARCH captures the 'quiet follows quiet, turbulent follows turbulent' phenomenon
+observed in stock markets. Identifying ARCH effects: test whether the squared residuals of a
+linear model show autocorrelation (Ljung-Box test on Xₜ²).
+1.3 Existence of a Strictly Stationary Solution — ARCH(1)
+For the ARCH(1) model: Xₜ = σₜ ϵₜ , σₜ ² = α₀ + α₁ Xₜ ₋ ₁ ², the fundamental stationarity question is:
+under what conditions does a strictly stationary solution exist?
+
+[TABLE]
+ |  | 
+ | Xₜ = σₜ ϵₜ , where σₜ ² = α₀ + α₁Xₜ ₋₁² + α₂Xₜ ₋₂² + ... + | 
+ | αqXₜ ₋q² | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Exam Tip: ARCH captures the 'quiet follows quiet, turbulent follows turbulent' phenomenon | 
+ | observed in stock markets. Identifying ARCH effects: test whether the squared residuals of a | 
+ | linear model show autocorrelation (Ljung-Box test on Xₜ²). | 
+ |  | 
+
+--- Page 2 ---
+
+Theorem (Strict Stationarity of ARCH(1)): A strictly stationary solution to the ARCH(1) model
+exists if and only if E[log(α₁ ϵₜ ²)] < 0.
+This condition is the top Lyapunov exponent condition. For the simpler case where ϵₜ ~ N(0,1):
+• Sufficient condition: α₁ < 1 ensures a weakly (covariance) stationary solution exists.
+• When α₁ < 1: The unconditional variance exists and equals Var(Xₜ ) = α₀ / (1 − α₁ ).
+• When α₁ ≥ 1: The variance explodes — shocks do not die out and the series is non-stationary.
+• Strict stationarity: Can exist even when α₁ ≥ 1 (i.e., even without finite variance), provided
+E[log(α₁ ϵₜ ²)] < 0.
+Economically: if α₁ < 1, a large shock gradually fades and the market stabilises. If α₁ ≥ 1, each shock
+amplifies the next, causing an explosive, non-stationary process.
+2. The GARCH Model (Generalised ARCH)
+Proposed by Bollerslev (1986), GARCH generalises ARCH by allowing the conditional variance to
+depend on both past squared observations AND past conditional variances. This gives the model
+'memory' — volatility from several periods ago continues to influence today's variance.
+2.1 Definition — GARCH(p, q)
+Xₜ = σₜ ϵₜ , σₜ ² = α₀ + Σᵢ αᵢ Xₜ ₋ᵢ² + Σⱼ βⱼ σₜ ₋ⱼ²
+The most widely used specification in practice is GARCH(1,1):
+σₜ ² = α₀ + α₁ Xₜ ₋₁² + β₁ σₜ ₋₁²
+• α₀ > 0 — baseline (long-run) variance level.
+• α₁ ≥ 0 — weight given to last period's squared shock (reaction to news).
+• β₁ ≥ 0 — weight given to last period's conditional variance (persistence).
+• ϵₜ — i.i.d. with mean 0, variance 1.
+2.2 Interpretation of GARCH(1,1)
+α₁ Xₜ ₋ ₁ ² (Today's Shock) β₁ σₜ ₋ ₁ ² (Volatility Memory)
+○ Impact of yesterday's surprise ○ Persistence of past variance
+○ Captures immediate reaction to ○ High β₁ → volatility lingers long
+news ○ Models prolonged post-crisis
+○ High α₁ → sharp, reactive volatility instability
+After a financial crisis, markets remain unstable for days or weeks. GARCH(1,1) captures this 'slow decay'
+by feeding past conditional variance back into the model. ARCH alone cannot do this efficiently without
+very high lag orders.
+
+[TABLE]
+ |  | 
+ | Theorem (Strict Stationarity of ARCH(1)): A strictly stationary solution to the ARCH(1) model | 
+ | exists if and only if E[log(α₁ ϵₜ ²)] < 0. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Xₜ = σₜ ϵₜ , σₜ ² = α₀ + Σᵢ αᵢ Xₜ ₋ᵢ² + Σⱼ βⱼ σₜ ₋ⱼ² | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | σₜ ² = α₀ + α₁ Xₜ ₋₁² + β₁ σₜ ₋₁² | 
+ |  | 
+
+[TABLE]
+ |  |  |  |  | 
+ | α₁ Xₜ ₋ ₁ ² (Today's Shock) |  |  | β₁ σₜ ₋ ₁ ² (Volatility Memory) | 
+ | ○ Impact of yesterday's surprise |  |  | ○ Persistence of past variance | 
+ | ○ Captures immediate reaction to |  |  | ○ High β₁ → volatility lingers long | 
+ | news |  |  | ○ Models prolonged post-crisis | 
+ | ○ High α₁ → sharp, reactive volatility |  |  | instability | 
+ |  |  |  |  | 
+
+--- Page 3 ---
+
+2.3 Existence of a Stationary Solution for GARCH(1,1)
+Theorem (Weak Stationarity): A weakly (covariance) stationary solution to GARCH(1,1)
+exists if and only if: α₁ + β₁ < 1
+• If α₁ + β₁ < 1: The unconditional variance is finite and equals σ² = α₀ / (1 − α₁ − β₁ ).
+• If α₁ + β₁ = 1: The model is called Integrated GARCH (IGARCH) — variance shocks are
+permanent (unit root in variance). The unconditional variance is infinite.
+• If α₁ + β₁ > 1: Explosive variance — the process is non-stationary and variance grows without
+bound.
+• Strict stationarity: A strictly stationary solution exists under the weaker condition E[log(α₁ ϵₜ ²
++ β₁ )] < 0, even when α₁ + β₁ ≥ 1.
+Practically: GARCH(1,1) with α₁ + β₁ close to (but below) 1 implies high persistence — shocks die out
+slowly. This matches empirical findings in equity and forex markets where volatility is highly persistent.
+Exam Tip: ARCH(1) stationarity → α₁ < 1. GARCH(1,1) stationarity → α₁ + β₁ < 1. GARCH
+generalises ARCH: GARCH(1,0) = ARCH(1). Higher β₁ means longer volatility memory —
+crucial for modelling financial crises.
+3. Bilinear Models — Bilinear Autoregressive (BAR)
+Bilinear models, introduced by Granger & Andersen (1978), are one of the simplest forms of nonlinear
+time series. They extend the linear ARMA framework by adding interaction terms between past values
+and past innovations (shocks). These interaction terms allow the effect of a shock to depend on the
+current level of the series — something linear models cannot capture.
+3.1 The Bilinear Autoregressive (BAR) Model
+The general bilinear model BL(p, q, P, Q) is defined as:
+Xₜ = Σ aᵢ Xₜ ₋ᵢ + Σ bₖₗ Xₜ ₋ₖ ϵₜ ₋ₗ + ϵₜ
+The simplest and most studied case is the Bilinear Autoregressive model BAR(1,1) or BL(1,0,1,1):
+Xₜ = a Xₜ ₋₁ + b Xₜ ₋₁ ϵₜ ₋₁ + ϵₜ
+• a Xₜ ₋ ₁ : Standard linear autoregressive component.
+• b Xₜ ₋ ₁ ϵₜ ₋ ₁ : Interaction (bilinear) term — the key nonlinear component.
+• ϵₜ : i.i.d. noise with mean 0, variance σ².
+3.2 The Interaction Term — Economic Intuition
+The term b Xₜ ₋ ₁ ϵₜ ₋ ₁ captures multiplicative interaction between past state and past shock. This
+means the impact of a shock on future values is not constant — it depends on the current level of the
+series:
+
+[TABLE]
+ |  | 
+ | Theorem (Weak Stationarity): A weakly (covariance) stationary solution to GARCH(1,1) | 
+ | exists if and only if: α₁ + β₁ < 1 | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Exam Tip: ARCH(1) stationarity → α₁ < 1. GARCH(1,1) stationarity → α₁ + β₁ < 1. GARCH | 
+ | generalises ARCH: GARCH(1,0) = ARCH(1). Higher β₁ means longer volatility memory — | 
+ | crucial for modelling financial crises. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Xₜ = Σ aᵢ Xₜ ₋ᵢ + Σ bₖₗ Xₜ ₋ₖ ϵₜ ₋ₗ + ϵₜ | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Xₜ = a Xₜ ₋₁ + b Xₜ ₋₁ ϵₜ ₋₁ + ϵₜ | 
+ |  | 
+
+--- Page 4 ---
+
+• Strong economy + sudden policy shock → amplified effect.
+• Weak economy + same shock → smaller effect.
+• This explains asymmetric market responses not possible with linear ARMA.
+3.3 Properties of BAR Models
+• Non-linear Structure: The conditional mean E[Xₜ | Xₜ ₋ ₁ , ϵₜ ₋ ₁ ] = aXₜ ₋ ₁ + bXₜ ₋ ₁ ϵₜ ₋ ₁
+is linear in Xₜ ₋ ₁ but nonlinear in the joint pair (Xₜ ₋ ₁ , ϵₜ ₋ ₁ ).
+• State-Dependent Variance: Var(Xₜ | past) = σ²(1 + b²Xₜ ₋ ₁ ²) — variance itself depends on
+the level of the process. This creates heteroscedastic behaviour.
+• Stationarity: Requires conditions on the spectral radius of associated matrices. For BAR(1,1), a
+sufficient condition for stationarity involves E[log|a + bϵₜ |] < 0.
+• Moment Conditions: Second-order stationarity requires a² + b²σ² < 1.
+Exam Tip: The key distinguishing feature of bilinear models is the product term Xₜ₋ₖ · ϵₜ₋ₗ.
+This is what makes them 'bilinear' — linear in Xₜ and linear in ϵₜ separately, but not jointly.
+They are the simplest models that capture amplitude-dependent noise effects.
+4. Stochastic Volatility (SV) Models
+Stochastic Volatility models take a fundamentally different approach to time-varying variance compared
+to ARCH/GARCH. Instead of making volatility a deterministic function of past data, SV models treat
+volatility itself as an unobserved (latent) random process. This makes SV more flexible but also more
+difficult to estimate.
+4.1 Model Specification
+Xₜ = σₜ ϵₜ , where log(σₜ ²) = hₜ
+hₜ = μ + φ(hₜ ₋₁ − μ) + ηₜ
+• hₜ = log(σₜ ²): The log-volatility follows an AR(1) process.
+• μ: Long-run mean of log-volatility.
+• φ: Persistence parameter (|φ| < 1 for stationarity).
+• ηₜ : Innovation in the log-volatility process, i.i.d. N(0, ση²).
+• ϵₜ : Return innovation, i.i.d. N(0,1), typically independent of ηₜ .
+4.2 Key Features and Comparison with GARCH
+SV Model GARCH Model
+○ Volatility is a latent stochastic ○ Volatility is a deterministic function
+process of past data
+○ Cannot be computed directly from ○ σₜ ² can be computed exactly from
+data observations
+○ Requires Kalman filter, MCMC, or ○ Estimated by Maximum Likelihood
+particle filter for estimation (fast)
+
+[TABLE]
+ |  | 
+ | Exam Tip: The key distinguishing feature of bilinear models is the product term Xₜ₋ₖ · ϵₜ₋ₗ. | 
+ | This is what makes them 'bilinear' — linear in Xₜ and linear in ϵₜ separately, but not jointly. | 
+ | They are the simplest models that capture amplitude-dependent noise effects. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Xₜ = σₜ ϵₜ , where log(σₜ ²) = hₜ | 
+ |  | 
+ |  | 
+ | hₜ = μ + φ(hₜ ₋₁ − μ) + ηₜ | 
+ |  | 
+
+[TABLE]
+ |  |  |  |  | 
+ | SV Model |  |  | GARCH Model | 
+ | ○ Volatility is a latent stochastic |  |  | ○ Volatility is a deterministic function | 
+ | process |  |  | of past data | 
+ | ○ Cannot be computed directly from |  |  | ○ σₜ ² can be computed exactly from | 
+ | data |  |  | observations | 
+ | ○ Requires Kalman filter, MCMC, or |  |  | ○ Estimated by Maximum Likelihood | 
+ | particle filter for estimation |  |  | (fast) | 
+ |  |  |  |  | 
+
+--- Page 5 ---
+
+○ More flexible — two separate noise ○ Simpler but less flexible
+sources ○ Leverage needs extensions
+○ Naturally handles leverage effects (EGARCH, GJR)
+• Stationarity: Requires |φ| < 1 — the log-volatility AR process must be stationary.
+• Interpretation: Market fear and sentiment (which drive volatility spikes) are inherently
+unobservable — SV models this hidden uncertainty directly.
+• Applications: Option pricing, risk management, modelling fear indices (VIX), and regimes
+where sudden unobservable sentiment shifts cause volatility spikes (e.g., geopolitical events).
+Exam Tip: The key difference — GARCH volatility is observable and deterministic given the past.
+SV volatility is latent and has its own randomness (ηₜ). SV is more realistic but harder to
+estimate. Stationarity condition: |φ| < 1.
+5. Nonlinear Autoregressive Models (NAR and NARX)
+5.1 NAR — Nonlinear Autoregressive Model
+The NAR model generalises the linear AR model by replacing the linear combination of past values with
+an arbitrary nonlinear function f:
+Xₜ = f(Xₜ ₋₁, Xₜ ₋₂, ..., Xₜ ₋p) + ϵₜ
+• f(·): A nonlinear function — could be a neural network, polynomial, sigmoid, piecewise linear
+(threshold), or kernel function.
+• ϵₜ : i.i.d. noise with mean 0 and constant variance σ².
+• p: The lag order (number of past values used).
+NAR is the most general framework for nonlinear univariate time series. The choice of f determines the
+specific model type:
+• Polynomial NAR: f includes cross-products of lag terms — captures smooth nonlinearities.
+• Threshold AR (TAR): f is piecewise linear, switching regimes based on a threshold variable.
+• Neural Network AR (NNAR): f is a feedforward neural network — can approximate any
+continuous function.
+5.2 NARX — Nonlinear Autoregressive with Exogenous Inputs
+NARX extends NAR by incorporating external (exogenous) input variables Uₜ alongside the lagged
+outputs:
+Xₜ = f(Xₜ ₋₁, ..., Xₜ ₋p, Uₜ ₋₁, ..., Uₜ ₋r) + ϵₜ
+• Uₜ : External input variable (e.g., temperature, policy rate, rainfall, price).
+• r: Lag order for the external input.
+• f(·): Nonlinear function — same options as NAR (neural network, polynomial, etc.).
+
+[TABLE]
+ |  |  |  |  | 
+ | ○ More flexible — two separate noise |  |  | ○ Simpler but less flexible | 
+ | sources |  |  | ○ Leverage needs extensions | 
+ | ○ Naturally handles leverage effects |  |  | (EGARCH, GJR) | 
+ |  |  |  |  | 
+
+[TABLE]
+ |  | 
+ | Exam Tip: The key difference — GARCH volatility is observable and deterministic given the past. | 
+ | SV volatility is latent and has its own randomness (ηₜ). SV is more realistic but harder to | 
+ | estimate. Stationarity condition: |φ| < 1. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Xₜ = f(Xₜ ₋₁, Xₜ ₋₂, ..., Xₜ ₋p) + ϵₜ | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Xₜ = f(Xₜ ₋₁, ..., Xₜ ₋p, Uₜ ₋₁, ..., Uₜ ₋r) + ϵₜ | 
+ |  | 
+
+--- Page 6 ---
+
+NARX is the nonlinear equivalent of ARX (AR with exogenous inputs) and ARMAX. It enables the model
+to use both the history of the target series and relevant external drivers:
+• Electricity Demand: Xₜ (demand) depends nonlinearly on past demand AND temperature
+Uₜ ₋ ₁ . A hot day causes a disproportionate surge in AC usage.
+• Macroeconomics: GDP depends nonlinearly on its own history AND monetary policy inputs.
+• Epidemiology: Infection rate depends on past infections AND vaccination rates.
+5.3 Properties and Stationarity
+• Stationarity of NAR/NARX: Depends heavily on the specific form of f. For f Lipschitz
+continuous with Lipschitz constant L < 1, geometric ergodicity (a strong stationarity concept) can
+be established.
+• Estimation: Parameters of f are estimated by Nonlinear Least Squares (NLS), maximum
+likelihood, or neural network backpropagation, depending on the form of f.
+• Advantage over linear AR: Captures threshold effects, regime changes, saturation effects, and
+asymmetric responses — all common in real-world data.
+• Model Selection: Lag orders p and r selected by information criteria (AIC/BIC). The form of f is
+chosen based on domain knowledge or via cross-validation.
+Exam Tip: NAR = nonlinear f of past outputs only. NARX = nonlinear f of past outputs + past
+external inputs. The key advantage is that real-world relationships are rarely linear —
+temperature's effect on energy demand is nonlinear; NARX captures this naturally.
+6. Comparative Summary of All Models
+Model Core Formula Key Idea Stationarity Use Case
+ARCH(1) σₜ ² = α₀ + α₁ Xₜ ₋ ₁ ² Variance driven by past α₁ < 1 Asset volatility
+shocks
+GARCH(1,1) σₜ ² = α₀ + α₁ Xₜ ₋ ₁ ² Variance has memory α₁ +β₁ < 1 Financial
++ β₁ σₜ ₋ ₁ ² (shocks + past variance) crises
+BAR(1,1) Xₜ = aXₜ ₋ ₁ + Value × shock interaction Spectral cond. Non-linear
+bXₜ ₋ ₁ ϵₜ ₋ ₁ + ϵₜ term econ.
+SV log(σₜ ²) = AR(1) Hidden (latent) stochastic AR root inside Sentiment/fear
+process volatility unit disk
+NAR Xₜ = f(Xₜ ₋ ₁ ,…) + Nonlinear function of past Model- Weather,
+ϵₜ values dependent ecology
+NARX Xₜ = f(Xₜ ₋ ₁ , Uₜ ₋ ₁ ) NAR + external exogenous Model- Energy
++ ϵₜ input dependent demand
+7. Key Takeaways for the Exam
+• ARCH: Conditional variance depends on past squared values. Features: volatility clustering,
+heavy tails, uncorrelated but dependent. Stationarity: α₁ < 1 (weak); E[log(α₁ ϵₜ ²)] < 0 (strict).
+
+[TABLE]
+ |  | 
+ | Exam Tip: NAR = nonlinear f of past outputs only. NARX = nonlinear f of past outputs + past | 
+ | external inputs. The key advantage is that real-world relationships are rarely linear — | 
+ | temperature's effect on energy demand is nonlinear; NARX captures this naturally. | 
+ |  | 
+
+[TABLE]
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ | Model |  |  | Core Formula |  |  | Key Idea |  |  | Stationarity |  |  | Use Case | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ARCH(1) |  |  | σₜ ² = α₀ + α₁ Xₜ ₋ ₁ ² |  |  |  | Variance driven by past |  | α₁ < 1 |  |  | Asset volatility |  | 
+ |  |  |  |  |  |  | shocks |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+GARCH(1,1) |  |  |  | σₜ ² = α₀ + α₁ Xₜ ₋ ₁ ² |  |  | Variance has memory |  | α₁ +β₁ < 1 |  |  |  | Financial | 
+ |  |  |  | + β₁ σₜ ₋ ₁ ² |  |  | (shocks + past variance) |  |  |  |  |  | crises | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+BAR(1,1) |  |  |  | Xₜ = aXₜ ₋ ₁ + |  |  | Value × shock interaction |  | Spectral cond. |  |  |  | Non-linear | 
+ |  |  |  | bXₜ ₋ ₁ ϵₜ ₋ ₁ + ϵₜ |  |  | term |  |  |  |  |  | econ. | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+SV |  |  |  | log(σₜ ²) = AR(1) |  |  | Hidden (latent) stochastic |  |  | AR root inside |  | Sentiment/fear |  | 
+ |  |  |  | process |  |  | volatility |  |  | unit disk |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+NAR |  |  |  | Xₜ = f(Xₜ ₋ ₁ ,…) + |  |  | Nonlinear function of past |  |  | Model- |  |  | Weather, | 
+ |  |  |  | ϵₜ |  |  | values |  |  | dependent |  |  | ecology | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+NARX |  |  |  | Xₜ = f(Xₜ ₋ ₁ , Uₜ ₋ ₁ ) |  |  | NAR + external exogenous |  |  | Model- |  |  | Energy | 
+ |  |  |  | + ϵₜ |  |  | input |  |  | dependent |  |  | demand | 
+ |  |  |  |  |  |  |  |  |  |  |  |  |  | 
+
+--- Page 7 ---
+
+• GARCH(1,1): Extends ARCH by including past conditional variance (β₁ σₜ ₋ ₁ ²). Captures long
+memory in volatility. Stationarity: α₁ + β₁ < 1.
+• BAR: Bilinear term bXₜ ₋ ₁ ϵₜ ₋ ₁ captures amplitude-dependent, state-dependent noise
+effects. Simplest nonlinear model with interaction between state and shock.
+• SV: Volatility is a latent AR(1) process on log scale. More flexible than GARCH — two separate
+noise sources. Hard to estimate (MCMC/particle filter needed). Stationarity: |φ| < 1.
+• NAR: Generalises linear AR with a nonlinear function f of past values. Covers threshold, neural
+network, polynomial AR as special cases.
+• NARX: Adds exogenous inputs to NAR. Essential when external drivers (temperature, policy)
+nonlinearly affect the series.
+
+============================================================
+FILE: Module 6.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Nonlinear Time Series
+Models & Applications
+ARCH • GARCH • Bilinear • SV • NAR • NARX
+Advanced Econometrics & Financial Modelling
+
+--- Slide 2 ---
+
+NONLINEAR TIME SERIES  —  FOUNDATION
+Theory
+Xₜ = f(Xₜ₋₁, Xₜ₋₂, …) + ϵₜ
+
+
+Present value is a nonlinear function of past values & errors
+
+
+• Real systems ≠ straight lines
+• Small changes → Big effects
+Real-World Example
+⚡ Electricity demand spikes when temperature crosses a threshold — classic nonlinear behaviour!
+Key Insight
+Linear models assume fixed straight-line relationships. Nonlinear models capture thresholds, interactions & regime shifts that linear models miss.
+
+--- Slide 3 ---
+
+ARCH MODEL  —  Volatility from Past Shocks
+Xₜ = σₜ ϵₜ
+σₜ² = α₀ + α₁ Xₜ₋₁²
+Features
+→ Time-varying variance
+→ Captures volatility clustering
+Stationarity: α₁ < 1  →  Market stabilises
+📉  Stock Market Example
+Big crash today  →  high uncertainty tomorrow
+Calm day  →  low future volatility
+
+
+The ARCH model quantifies this by making variance depend on the previous period's squared shock.
+
+
+If α₁ < 1 → shock fades, market settles
+If α₁ ≥ 1 → volatility keeps exploding
+
+--- Slide 4 ---
+
+GARCH(1,1) MODEL  —  Volatility with Memory
+σₜ² = α₀ + α₁ Xₜ₋₁² + β₁ σₜ₋₁²
+Today's Shock
+α₁ Xₜ₋₁²
+Impact of yesterday's surprise on today's variance
+Volatility Memory
+β₁ σₜ₋₁²
+Persistence of past variance into today
+Long-Run Average
+α₀
+Baseline variance when market is calm
+Stationarity Condition: α₁ + β₁ < 1
+After a financial crisis, markets remain unstable for days. GARCH captures this prolonged uncertainty by including both yesterday's shock AND yesterday's volatility.
+
+--- Slide 5 ---
+
+BILINEAR  &  STOCHASTIC VOLATILITY MODELS
+🔁  Bilinear (BAR) Model
+Xₜ = a Xₜ₋₁ + b Xₜ₋₁ ϵₜ₋₁ + ϵₜ
+Interaction Term:
+b Xₜ₋₁ ϵₜ₋₁ captures how past value
+& past shock interact together
+
+
+Economy Example:
+Strong economy + sudden policy = HUGE impact
+Weak economy + same policy = smaller effect
+🌪️  Stochastic Volatility (SV)
+Xₜ = σₜ ϵₜ
+log(σₜ²) = AR(1) process
+Hidden Volatility:
+Volatility itself is random & latent
+— more flexible than GARCH
+
+
+Market Sentiment Example:
+Fear & uncertainty can't be measured directly — but they drive sudden volatility spikes (e.g. war news).
+
+--- Slide 6 ---
+
+NAR  &  NARX MODELS  —  Nonlinear Autoregressive
+🔄  NAR  (Nonlinear Autoregressive)
+Xₜ = f(Xₜ₋₁, Xₜ₋₂, …) + ϵₜ
+Uses a nonlinear function f
+to capture complex patterns
+
+
+🌦 Weather Example:
+Temperature rises are non-linear — a small increase when it's already 42°C causes disproportionate discomfort.
+
+
+Past values affect future in a
+non-proportional way
+🔗  NARX  (With External Inputs)
+Xₜ = f(Xₜ₋₁, Uₜ₋₁) + ϵₜ
+Uₜ = external input variable
+More realistic real-world modelling
+
+
+⚡ Electricity Demand Example:
+Demand depends on:
+  • Past demand history
+  • Temperature (external input)
+
+
+Hot day → sudden AC surge explains NARX over plain NAR
+
+--- Slide 7 ---
+
+FINAL SUMMARY  —  All Models at a Glance
+Model
+Theory Idea
+Real-World Meaning
+Condition
+ARCH
+Variance ∝ past squared values
+Big shock → high future volatility
+α₁ < 1
+GARCH(1,1)
+Past variance + past shocks
+Volatility has memory (crashes linger)
+α₁ + β₁ < 1
+Bilinear
+Interaction: value × shock
+Effect = value AND shock combined
+Concept
+SV
+Random hidden volatility
+Fear & sentiment drive spikes
+Advanced
+NAR
+Nonlinear function of past values
+Complex patterns like weather
+No fixed
+NARX
+NAR + external input U
+Demand reacts to outside factors
+No fixed
+All models assume weak stationarity unless stated. Condition ensures variance/effects eventually stabilise.

@@ -1,0 +1,651 @@
+
+============================================================
+FILE: ACF and PACF questions and rules.pdf
+============================================================
+
+
+--- Page 1 ---
+
+General Identification Rules Using ACF &
+PACF
+Term Meaning Visual Behavior
+Cut Off Becomes insignificant after a certain Significant spikes up to lag k, then zero
+lag
+Tail Off Decreases gradually over many lags Slowly declining spikes
+Model Type ACF Behavior PACF Behavior Interpretation Rule
+AR(p) Tails off gradually (exponential Cuts off sharply If PACF cuts off at lag p,
+or damped sine wave) after lag p choose AR(p)
+MA(q) Cuts off sharply after lag q Tails off gradually If ACF cuts off at lag q,
+choose MA(q)
+ARMA(p,q) Tails off gradually Tails off gradually If both tail off, consider
+ARMA
+White No significant spikes No significant No AR or MA structure
+Noise spikes
+Q.2.
+Step 2: Look at the ACF Plot (First Image)
+What do we observe?
+
+[TABLE]
+Term | Meaning | Visual Behavior
+Cut Off | Becomes insignificant after a certain
+lag | Significant spikes up to lag k, then zero
+Tail Off | Decreases gradually over many lags | Slowly declining spikes
+
+[TABLE]
+Model Type | ACF Behavior | PACF Behavior | Interpretation Rule
+AR(p) | Tails off gradually (exponential
+or damped sine wave) | Cuts off sharply
+after lag p | If PACF cuts off at lag p,
+choose AR(p)
+MA(q) | Cuts off sharply after lag q | Tails off gradually | If ACF cuts off at lag q,
+choose MA(q)
+ARMA(p,q) | Tails off gradually | Tails off gradually | If both tail off, consider
+ARMA
+White
+Noise | No significant spikes | No significant
+spikes | No AR or MA structure
+
+--- Page 2 ---
+
+ There is one significant spike at lag 1
+ After lag 1, all values are inside the confidence bounds (blue dotted lines)
+ No gradual decay pattern
+ No repeated significant spikes
+This means the ACF cuts off after lag 1
+This is the signature behavior of an MA(1) model.
+If it were:
+ MA(2) → significant spikes at lag 1 and lag 2
+ MA(3) → significant spikes up to lag 3
+ AR model → ACF would decay gradually, not cut off sharply
+Step 3: Look at the PACF Plot (Second Image)
+What do we observe?
+ PACF does not show a clean cutoff
+ Several small spikes appear
+ It gradually fluctuates within bounds
+That is exactly what we expect for an MA model:
+PACF tails off instead of cutting off sharply
+Step 4: Why NOT AR(1)?
+If this were AR(1):
+ PACF would show one clear significant spike at lag 1 and then cut off
+ ACF would show gradual decay
+But here:
+ ACF cuts off
+ PACF tails off
+So AR(1) is not consistent with the pattern.
+Step 5: Why NOT ARMA?
+In ARMA:
+ Both ACF and PACF tail off gradually
+ No sharp cutoff
+But here:
+ ACF clearly cuts off at lag 1
+So ARMA is unlikely.
+Q.3.
+
+--- Page 3 ---
+
+Answer: ARMA (1,1)
+Step 1: Observe the ACF (Left Plot)
+What we see:
+ Large spike at lag 1
+ Gradually decreasing values afterward
+ No sharp cutoff
+ Slow decay pattern
+Interpretation:
+ The ACF is tailing off, not cutting off.
+ So this is NOT a pure MA(q) model (because MA should show ACF cutoff).
+Step 2: Observe the PACF (Right Plot)
+What we see:
+ Significant spike at lag 1
+ Possibly lag 2
+ Then gradual decay
+ No sharp cutoff at a specific lag
+Interpretation:
+ PACF is also tailing off
+ So this is NOT a pure AR(p) model (because AR should show PACF cutoff).
+Step 3: Why Not Pure AR?
+For AR(p):
+ PACF must cut off sharply at lag p.
+Here:
+ PACF does not clearly stop at lag 1 or 2.
+ It slowly decays.
+Therefore → Not pure AR.
+Step 4: Why Not Pure MA?
+For MA(q):
+ ACF must cut off sharply at lag q.
+Here:
+ ACF gradually decreases.
+ No clear cutoff at lag 1 or 2.
+Therefore → Not pure MA.
+
+============================================================
+FILE: TT1 practice questions.pdf
+============================================================
+
+
+--- Page 1 ---
+
+Time Series Analysis
+Practice Questions for TT1
+Q. No Question
+State the differences between: AR, MA, ARMA, ARIMA and SARIMA model also
+write the general equation of each.
+ Definition
+1  General equation
+ Role of parameters
+ When differencing is required
+ Example for each
+Explain the concept of Unit Root in an AR(1) process:
+X = ϕX +ε
+t t−1 t
+Discuss the behaviour of the series when:
+2 |φ| < 1
+|φ| = 1
+|φ| > 1
+Comment on stationarity in each case.
+Write the general mathematical expressions for:
+3
+(a) AR (2) model (b) MA(1) model
+Explain the purpose of differencing in ARIMA modelling. When is first differencing
+4
+sufficient?
+5 Explain the SARIMA model. Interpret the parameters in SARIMA(p,d,q)(P,D,Q) .
+s
+A time series shows gradual exponential decay in ACF and sharp cutoff at lag 2 in
+6
+PACF. Identify the model, write its equation, and justify theoretically.
+ACF cuts off sharply after lag 1, while PACF shows gradual decay. Identify the model
+7
+and explain the theoretical reason behind this behavior.
+A monthly dataset shows significant spikes at lag 12 in ACF along with slow decay.
+8
+Suggest an appropriate seasonal model and justify your answer.
+An airline company observes:
+ Trend
+ Seasonality every 4 quarters
+ Autoregressive structure
+9
+(a) Write general SARIMA equation
+(b) Explain parameters (p,d,q)(P,D,Q)s
+(c) Suggest a suitable SARIMA model for quarterly airline data
+(d) Explain seasonal differencing.
+Consider:
+X = 15 + 0.5ε - 0.2ε + εt
+t t−1 t−2
+10 (a) Identify the model
+(b) Calculate: ρ , ρ and ρ
+1 2 3
+(c) Sketch expected ACF and PACF
+Explain the theoretical properties of an MA(2) model. Consider X = 0.7ε + 0.3ε + εt
+11 t t−1 t−2
+and compute autocovariance at lag 1 and 2
+
+[TABLE]
+Q. No | Question
+1 | State the differences between: AR, MA, ARMA, ARIMA and SARIMA model also
+write the general equation of each.
+ Definition
+ General equation
+ Role of parameters
+ When differencing is required
+ Example for each
+2 | Explain the concept of Unit Root in an AR(1) process:
+X = ϕX +ε
+t t−1 t
+Discuss the behaviour of the series when:
+|φ| < 1
+|φ| = 1
+|φ| > 1
+Comment on stationarity in each case.
+3 | Write the general mathematical expressions for:
+(a) AR (2) model (b) MA(1) model
+4 | Explain the purpose of differencing in ARIMA modelling. When is first differencing
+sufficient?
+5 | Explain the SARIMA model. Interpret the parameters in SARIMA(p,d,q)(P,D,Q) .
+s
+6 | A time series shows gradual exponential decay in ACF and sharp cutoff at lag 2 in
+PACF. Identify the model, write its equation, and justify theoretically.
+7 | ACF cuts off sharply after lag 1, while PACF shows gradual decay. Identify the model
+and explain the theoretical reason behind this behavior.
+8 | A monthly dataset shows significant spikes at lag 12 in ACF along with slow decay.
+Suggest an appropriate seasonal model and justify your answer.
+9 | An airline company observes:
+ Trend
+ Seasonality every 4 quarters
+ Autoregressive structure
+(a) Write general SARIMA equation
+(b) Explain parameters (p,d,q)(P,D,Q)s
+(c) Suggest a suitable SARIMA model for quarterly airline data
+(d) Explain seasonal differencing.
+10 | Consider:
+X = 15 + 0.5ε - 0.2ε + εt
+t t−1 t−2
+(a) Identify the model
+(b) Calculate: ρ , ρ and ρ
+1 2 3
+(c) Sketch expected ACF and PACF
+11 | Explain the theoretical properties of an MA(2) model. Consider X = 0.7ε + 0.3ε + εt
+t t−1 t−2
+and compute autocovariance at lag 1 and 2
+
+--- Page 2 ---
+
+Explain the role of ACF and PACF in model identification. How do they help
+12
+distinguish AR, MA, and ARMA models using appropriate rules?
+Explain the algorithm involved in time series forecasting from data initialization to
+13
+model validation and diagnostic.
+14 Define seasonal variation. Explain how seasonal differencing removes seasonality.
+15 Explain the concept of autocorrelation. How is it interpreted using correlogram?
+16 What is non-stationarity? Explain how unit roots cause non-stationarity.
+Explain infinite past forecasting in time series. How is it different from Levinson–
+17
+Durbin algorithm? (Not in TT1 but for practice)
+(a) Explain forecasting using infinite past values.
+(b) Derive general expression for best linear predictor.
+18 (c) Explain the role of autocovariance matrix.
+(d) Compare with Levinson-Durbin Algorithm
+(Not in TT1 but for practice)
+The annual production (in thousand units) of a factory is:
+Year 2016 2017 2018 2019 2020
+Output 45 52 50 60 63
+19 1. Fit a straight-line trend using Least Squares Method.
+2. Estimate the trend values.
+3. Forecast output for 2021.
+4. Interpret the slope.
+The quarterly sales (in ₹lakhs) of a retail company are:
+Year Q1 Q2 Q3 Q4
+2018 120 110 100 130
+2019 125 115 105 135
+2020 130 118 108 140
+20 2021 135 120 112 145
+1. Compute quarterly averages.
+2. Compute the grand average.
+3. Calculate seasonal indices
+4. Identify peak seasonal quarter.
+5. Comment on seasonal variation.
+Calculate seasonal indices for the following data:
+Year Q1 Q2 Q3 Q4
+2012 85 78 74 88
+2013 90 84 82 86
+2014 88 80 76 92
+21 2015 92 86 84 90
+2016 94 88 86 96
+1. Compute quarterly averages
+2. Compute grand average
+3. Calculate seasonal indices
+4. Interpret highest seasonal quarter
+
+[TABLE]
+12 | Explain the role of ACF and PACF in model identification. How do they help
+distinguish AR, MA, and ARMA models using appropriate rules?
+13 | Explain the algorithm involved in time series forecasting from data initialization to
+model validation and diagnostic.
+14 | Define seasonal variation. Explain how seasonal differencing removes seasonality.
+15 | Explain the concept of autocorrelation. How is it interpreted using correlogram?
+16 | What is non-stationarity? Explain how unit roots cause non-stationarity.
+17 | Explain infinite past forecasting in time series. How is it different from Levinson–
+Durbin algorithm? (Not in TT1 but for practice)
+18 | (a) Explain forecasting using infinite past values.
+(b) Derive general expression for best linear predictor.
+(c) Explain the role of autocovariance matrix.
+(d) Compare with Levinson-Durbin Algorithm
+(Not in TT1 but for practice)
+19 | The annual production (in thousand units) of a factory is:
+Year 2016 2017 2018 2019 2020
+Output 45 52 50 60 63
+1. Fit a straight-line trend using Least Squares Method.
+2. Estimate the trend values.
+3. Forecast output for 2021.
+4. Interpret the slope.
+20 | The quarterly sales (in ₹lakhs) of a retail company are:
+Year Q1 Q2 Q3 Q4
+2018 120 110 100 130
+2019 125 115 105 135
+2020 130 118 108 140
+2021 135 120 112 145
+1. Compute quarterly averages.
+2. Compute the grand average.
+3. Calculate seasonal indices
+4. Identify peak seasonal quarter.
+5. Comment on seasonal variation.
+21 | Calculate seasonal indices for the following data:
+Year Q1 Q2 Q3 Q4
+2012 85 78 74 88
+2013 90 84 82 86
+2014 88 80 76 92
+2015 92 86 84 90
+2016 94 88 86 96
+1. Compute quarterly averages
+2. Compute grand average
+3. Calculate seasonal indices
+4. Interpret highest seasonal quarter
+
+[TABLE]
+Year | 2016 | 2017 | 2018 | 2019 | 2020
+Output | 45 | 52 | 50 | 60 | 63
+
+[TABLE]
+Year | Q1 | Q2 | Q3 | Q4
+2018 | 120 | 110 | 100 | 130
+2019 | 125 | 115 | 105 | 135
+2020 | 130 | 118 | 108 | 140
+2021 | 135 | 120 | 112 | 145
+
+[TABLE]
+Year | Q1 | Q2 | Q3 | Q4
+2012 | 85 | 78 | 74 | 88
+2013 | 90 | 84 | 82 | 86
+2014 | 88 | 80 | 76 | 92
+2015 | 92 | 86 | 84 | 90
+2016 | 94 | 88 | 86 | 96
+
+--- Page 3 ---
+
+For the following parameter combinations, suggest appropriate model and justify:
+1. (1,1,2)
+2. (0,1,1)(1,1,1)₁₂
+22
+3. (3,0)
+4. (1,1,1)(0,1,1)₄
+5. (2,0,2)
+Consider the AR(1) process: 𝑋 = 0.4𝑋 +𝜖
+𝑡 𝑡−1 𝑡
+If the current observation is 𝑋 =15,
+𝑡
+23 1. Find the one-step ahead forecast.
+2. Find the two-step ahead forecast.
+3. Find the three-step ahead forecast.
+24 Explain the steps for using prediction in estimating time series.
+25 Explain types of Time Series and its components.
+26 Explain additive and multiplicative model with help of a graph and an example.
+27 Difference between stationary and non-stationary.
+
+[TABLE]
+22 | For the following parameter combinations, suggest appropriate model and justify:
+1. (1,1,2)
+2. (0,1,1)(1,1,1)₁₂
+3. (3,0)
+4. (1,1,1)(0,1,1)₄
+5. (2,0,2)
+23 | Consider the AR(1) process: 𝑋 = 0.4𝑋 +𝜖
+𝑡 𝑡−1 𝑡
+If the current observation is 𝑋 =15,
+𝑡
+1. Find the one-step ahead forecast.
+2. Find the two-step ahead forecast.
+3. Find the three-step ahead forecast.
+24 | Explain the steps for using prediction in estimating time series.
+25 | Explain types of Time Series and its components.
+26 | Explain additive and multiplicative model with help of a graph and an example.
+27 | Difference between stationary and non-stationary.
+
+============================================================
+FILE: TT2 Practice Questions.pdf
+============================================================
+
+
+--- Page 1 ---
+
+Department of Computer Science and Engineering (Data Science)
+Practice Questions – TT2
+1. Explain in detail the ADF test with respect to unit roots.
+2. Explain in detail the different types of detrending techniques used to detrend a time
+series.
+3. Determine from the below observations if the time series data is stationary or not using
+then ADF test and also justify with respect to the conditions.
+Test Statistic: 0.815369
+p-value: 0.991880
+Critical Values:
+5%: -2.884
+1%: -3.482
+10%: -2.579
+4. Determine from the below observations if the time series data is stationary or not using
+then ADF test and also justify with respect to the conditions.
+Test Statistic: -4.444805
+p-value: 0.000247
+Critical Values:
+5%: -2.884
+1%: -3.482
+10%: -2.579
+5. Determine from the below observation and complete wherever necessary and find:
+a. If the time series data contains unit roots or no.
+b. Complete the missing values.
+c. Mention the statistical test used to check the presence of unit roots.
+d. Justify the conclusion.
+Test Statistic: -4.444805
+p-value: 0.000247
+Critical Values:
+5%: --------
+1%: --------
+10%: --------
+6. Explain and evaluate the following:
+a. Importance of Residual diagnostic.
+b. With the help of an example explain the Naïve forecast method to calculate
+residuals.
+7. A researcher is testing whether a financial time series has a unit root using the ADF
+test. However, the distribution of the test statistic is unknown. Explain how the Monte
+
+--- Page 2 ---
+
+Carlo method can be applied to generate critical values for the Dickey-Fuller test in this
+scenario. Illustrate the process with steps.
+8. Explain intervention analysis with respect to the ARIMA model.
+9. Sketch the various patterns of intervention analysis effect using suitable graphs.
+10. Explain how Monte Carlo simulate and analyze the behaviour of a given time series
+model.
+11. Differentiate the type of intervention effect based on the graphs given.
+a.
+b.
+c.
+d.
+
+--- Page 3 ---
+
+12. North Carolina Highway Fatality Rates, monthly for n = 86 months. Beginning at
+month = 71 the maximum speed limit was lowered from 70 mph to 55 mph. The fatality
+rate is computed as highway fatalities per 100 million miles of travel. A time series plot
+follows. The latter part of the series, in red, is the fatality rate after the change in speed
+limit. Determine the type of method/effect used to determine the fatality rate.
+13. Explain and derive the ADL multivariate model with respect to transfer function for
+any order p, q where p=2 and q=2.
+14. Explain in detail the need and the steps for Monte-Carlo Method.
+15. You are given two-time series datasets—one for stock prices and another for exchange
+rates. How would you apply a VAR model to analyze the interdependence between the
+two series and assess the effect of exchange rate fluctuations on stock prices over time?
+16. An economist observes that the relationship between GDP growth and inflation changes
+significantly before and after a financial crisis. Explain how a TVP-VAR model can be
+applied to capture this change and what insights it provides compared to a standard
+VAR.
+17. A data scientist is building a forecasting model for energy demand using multiple variables
+like temperature, industrial output, and population, but the model becomes too complex and
+gives unstable predictions. Explain how BVAR can be applied to improve the model and
+describe the role of priors.
+18. Which statistical model is used to analyze volatility in time series in order to forecast
+future volatility. Also, which the help of the model constructs a (p) model for the same.
+19. The Nigerian Stock Exchange has grown tremendously over the years in an attempt
+to meet the ever increasing needs and sophistication of the domestic economy; it also
+plays a significant role in the daily capital formation and resource generation of the
+
+--- Page 4 ---
+
+nation. The Nigerian Stock Exchange as an essential place for sourcing funds needed
+to power the financial needs of industries is highly dependent on the steadiness
+(stability) of prices of stock on the exchange. There is a major unsteadiness (instability)
+in stock prices. The company wants to predict the returns of the stock price based on
+the past values and the instability.
+a. State the appropriate model to be used for the scenario above and justify.
+b. Based on the scenario selected state the order of the model referring to the below
+PACF plot.
+c. Write the model with respect to the order selected in the question above.
+20. Which of the following statements are true concerning the standardised residuals
+(residuals divided by their respective conditional standard deviations) from an
+estimated GARCH model?
+i. They are assumed to be normally distributed.
+ii. Their squares will be related to their lagged squared values if the GARCH model
+is appropriate
+iii. In practice, they are likely to not work with volatility.
+iv. If the GARCH model is only considering the past errors
+21. Explain the ARCH model with respect to the below points:
+d. Each component in ARCH model.
+e. Need of ARCH model.
+f. When to apply an ARCH model.
+g. ARCH(p).
+22. Which of the following is TRUE about ARCH and GARCH models?
+h. They are used for modelling and forecasting volatility
+i. They are non-linear models
+j. They can both be estimated using OLS(IV) Series estimated using these
+models must have a unit root process.
+
+[TABLE]
+20. Which of the following statements are true concerning the standardised residuals | 
+(residuals divided by their respective conditional standard deviations) from an | 
+estimated GARCH model? | 
+ | . They are assumed to be normally distributed.
+ | . Their squares will be related to their lagged squared values if the GARCH model
+ | is appropriate
+ | . In practice, they are likely to not work with volatility.
+ | . If the GARCH model is only considering the past errors
+
+[TABLE]
+d. Each component in ARCH model.
+e. Need of ARCH model.
+f. When to apply an ARCH model.
+g. ARCH(p).
+
+[TABLE]
+h. They are used for modelling and forecasting volatility
+i. They are non-linear models
+j. They can both be estimated using OLS(IV) Series estimated using these
+models must have a unit root process.
+
+
+--- Page 5 ---
+
+23. Explain the importance of ARCH model and derive the equation for ARCH (2) and
+ARCH (p) model.
+24. You are the manager of a supermarket and would like to forecast the sales in the next
+few weeks and have been provided with the historical daily sales data of hundreds of
+products. But, as instructed by the CEO, you have been asked to change the price of
+some products as the manufacturing cost has increased. The management has asked to
+submit a detailed analysis between the past price value of the product and the changed
+value to check if it has hampered the total sales of the product for their supermarket.
+k. State the model that will be used to analyse the data.
+l. Apply the model used above with the help of various notations.
+m. State the various ways in which the data can be seen on the analysis submitted
+to the management.
+25. Differentiate between ARCH and GARCH model based on the notations used to
+justify the model.
+26. Differentiate between SV and Bilinear VAR.
+27. A company wants to develop a predictive model quickly. They are considering
+AutoML instead of a traditional ML workflow. Apply your knowledge to evaluate
+both approaches and recommend when AutoML should not be used.
+28. Given a dataset with multiple time-dependent variables, explain how multivariate
+time series regression can be applied. How does it differ from univariate regression,
+and in which scenarios is it useful?
+29. Explain convolution with respect to time domain and prove that the convolution in
+time domain is equivalent to the multiplication of their spectrum in frequency domain.
+30. State the problem of convolution in time domain with respect to the points in the
+convolution result. Also, with the help of the formula provide a solution depicting a
+pictorial representation.
+31. During festivals, the promotion of barbecue meat will also boost the sales of ketchup
+and other spices. If one brand of toothpaste is on sale, the demand of other brands might
+decline. Which type of analysis needs to be done when various variables(products)
+forecast is dependent on some other variable (product)?
+32. Apply an appropriate model based on the following parameters given:
+
+[TABLE]
+23. Explain the importance of ARCH model and derive the equation for ARCH (2) and
+ARCH (p) model.
+
+24. You are the manager of a supermarket and would like to forecast the sales in the next
+few weeks and have been provided with the historical daily sales data of hundreds of
+products. But, as instructed by the CEO, you have been asked to change the price of
+some products as the manufacturing cost has increased. The management has asked to
+submit a detailed analysis between the past price value of the product and the changed
+value to check if it has hampered the total sales of the product for their supermarket.
+
+[TABLE]
+k. State the model that will be used to analyse the data.
+l. Apply the model used above with the help of various notations.
+m. State the various ways in which the data can be seen on the analysis submitted
+to the management.
+
+[TABLE]
+25. Differentiate between ARCH and GARCH model based on the notations used to
+justify the model.
+
+26. Differentiate between SV and Bilinear VAR.
+
+27. A company wants to develop a predictive model quickly. They are considering
+AutoML instead of a traditional ML workflow. Apply your knowledge to evaluate
+both approaches and recommend when AutoML should not be used.
+
+28. Given a dataset with multiple time-dependent variables, explain how multivariate
+time series regression can be applied. How does it differ from univariate regression,
+and in which scenarios is it useful?
+
+29. Explain convolution with respect to time domain and prove that the convolution in
+time domain is equivalent to the multiplication of their spectrum in frequency domain.
+
+30. State the problem of convolution in time domain with respect to the points in the
+convolution result. Also, with the help of the formula provide a solution depicting a
+pictorial representation.
+31. During festivals, the promotion of barbecue meat will also boost the sales of ketchup
+and other spices. If one brand of toothpaste is on sale, the demand of other brands might
+decline. Which type of analysis needs to be done when various variables(products)
+forecast is dependent on some other variable (product)?
+
+
+--- Page 6 ---
+
+ARCH (3)
+Intervention Model
+ADL (4,4)
+GARCH(3,2)
+33. A time series shows nonlinear dependence where past values interact with past errors
+(e.g., demand influenced by past demand and shocks). Explain how a Bilinear AR
+model can be applied to model this behavior and why linear AR models fail.
+34. A model is defined as:
+𝑦 = 0.5𝑦 +0.2𝑦 +0.3𝑥 + 0.1𝑥 + 𝜖
+𝑡 𝑡−1 𝑡−2 𝑡−1 𝑡−2 𝑡
+Given:
+𝑦 = 2 ; 𝑦 = 1 ; 𝑥 = 3; 𝑥 = 2
+𝑡−1 𝑡−2 𝑡−1 𝑡−1
+i. Explain the role of lag length in a VAR model.
+ii. Determine whether this represents a complete VAR system. Justify.
+iii. Compute 𝑦 .
+𝑡
+35. A system is designed to predict future electricity load using only its past values.
+a) Identify the appropriate nonlinear model for this scenario.
+b) Write the general form of the model.
+c) Explain how this model works in this context.
+36. A dataset shows non-stationary behavior and the analyst wants to automatically build a
+forecasting model without manually selecting parameters.
+ Explain how Auto-ARIMA can be used in this situation.
+ Describe the steps it will follow to select the best model.
+37. In an AutoML pipeline, both hyperparameter tuning and ensemble methods are used.
+Analyze their roles and explain how they contribute differently to improving model accuracy.
+38. A dataset contains millions of unique store and product IDs, making traditional encoding
+techniques impractical.
+a) Explain why one-hot encoding is not suitable for such high-cardinality categorical data.
+b) Describe how feature hashing can be applied in this scenario to handle the data
+efficiently.
+c) Discuss the role of the hash size K and explain the trade-off between dimensionality
+reduction and model accuracy.
+
+[TABLE]
+
+34. A model is defined as:
+𝑦 = 0.5𝑦 +0.2𝑦 +0.3𝑥 + 0.1𝑥 + 𝜖
+𝑡 𝑡−1 𝑡−2 𝑡−1 𝑡−2 𝑡
+Given:
+𝑦 = 2 ; 𝑦 = 1 ; 𝑥 = 3; 𝑥 = 2
+𝑡−1 𝑡−2 𝑡−1 𝑡−1
+
+[TABLE]
+a) Identify the appropriate nonlinear model for this scenario. | 
+b) Write the general form of the model. | 
+c) Explain how this model works in this context. | 
+ | 
+ | 

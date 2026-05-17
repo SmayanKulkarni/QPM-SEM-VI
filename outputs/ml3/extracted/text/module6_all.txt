@@ -1,0 +1,806 @@
+
+============================================================
+FILE: Function Approximation.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Function Approximation
+Module-6
+
+--- Slide 2 ---
+
+Table of Content
+Function Approximation
+Drawbacks of tabular implementation
+Gradient Descent Methods
+Linear parameterization
+Policy gradient with function approximation
+
+--- Slide 3 ---
+
+Tabular Methods
+
+--- Slide 4 ---
+
+Tabular Methods - Limitations
+Large state spaces and that means huge memory need and also huge amount of time to update each state enough number of times. 
+This also means, continuous states and actions can not be handled.
+States not encountered previously will not have a sensible policy i.e., generalization is an issue. 
+ Fortunately, a change of representation can address all these issues to some extent. Instead of representing the value functions as look-up tables, they are represented as a parameterized functions.
+
+--- Slide 5 ---
+
+Drawbacks of Tabular Representation
+Does not learn anything about how different states and actions relate to each other.
+Curse of Dimensionality
+Lack of Generalization
+Inefficient Learning
+Scalability Issues
+Lack of Flexibility
+
+--- Slide 6 ---
+
+We denote the approximate value function in parameterized form as    
+                                          is  the learnable parameter vector.
+ Any form of function approximator e.g., linear function approximator, multi-layer neural networks, decision trees, nearest neighbors etc. can be used. 
+Advantages and Specialties of Function Approximates
+Handle large state spaces. In tabular methods, learned values at each state are decoupled - an update at one state affected no other state. 
+Parameterized value function representation means an update at one state affects many others helping generalization.
+
+--- Slide 7 ---
+
+Function Approximation
+We have seen that our estimates of value functions are represented as a table with one entry for each state or for each state–action pair.
+This is a particularly clear and instructive case, but of course it is limited to problems with small numbers of states and actions.
+The problem is not just the memory needed for large tables, but the time and data needed to fill them accurately.
+In other words, the key issue is that of generalization.
+How can experience with a limited subset of the state space be usefully generalized to produce a good approximation over a much larger subset?
+
+--- Slide 8 ---
+
+Function Approximation
+In many reinforcement learning (RL) tasks, most encountered states are new and have never been experienced exactly before.
+This is especially true when the state or action spaces involve:
+Continuous variables, or
+Complex sensations, such as visual images.
+To learn effectively in such scenarios, the agent must generalize from past experiences to new, unseen states.
+Therefore, reinforcement learning needs to be combined with generalization methods.
+This type of generalization is often referred to as function approximation.
+Taking examples from a desired function (e.g., a value function),
+Generalizing from these examples,
+And constructing an approximation of the entire function.
+
+--- Slide 9 ---
+
+Function Approximation
+A function is just a mapping from inputs to outputs, and these can take many forms.
+Let’s say you want to train a machine learning model that predicts a person’s clothing size.
+The inputs are the person’s height, weight, and age. The output is the size.
+What we are trying to do is produce a function that converts a person’s height/weight/age combination (a triple of numbers) into a size (perhaps a continuous scalar value or a classification like XS, S, M, L, XL).
+
+--- Slide 10 ---
+
+Function Approximation
+According to machine learning, we can do this by using the following steps:
+Gather data that is representative of the population (height/weight/age numbers for a large number of people, paired with their actual clothing size).
+Train a model to approximate the function that maps the inputs to the outputs of your training data.
+Test your model on unseen data: give it height/weight/age numbers for new people and hopefully it will produce an accurate clothing size!
+Training a model would be easy if the clothing size were just a linear combination of the input variables.
+A simple linear regression could get you good values for a, b, c, and d in the following equation.
+size = a*height + b*weight + c*age + d
+
+--- Slide 11 ---
+
+Function Approximation
+However, we cannot assume, in general, that an output is a linear combination of input variables.
+Conditions in real life are complicated. Rules have exceptions and special cases.
+Examples like handwriting recognition and image classification clearly require very complicated patterns to be learned from high-dimensional input data.
+Wouldn’t it be great if there were a way to approximate any function?
+According to the Universal Approximation Theorem, a neural network with a single hidden layer can do exactly that.
+
+--- Slide 12 ---
+
+Advantages of Function Approximators
+Ability to handle large or continuous state/action spaces.
+
+Generalization to unseen states by exploiting similarities between states.
+
+Compact representation of the value function or policy.
+
+--- Slide 13 ---
+
+Disdvantages of Function Approximators
+Potential instability or divergence during learning.
+
+Approximation errors due to the limited capacity of the function approximator.
+
+Need for careful feature engineering or representation learning.
+
+--- Slide 14 ---
+
+Types of Function Approximators
+Linear Combinations of Features
+
+Artificial Neural Networks
+
+Kernel Methods
+
+Decision Trees and Ensembles
+
+The choice of function approximator depends on factors like the nature of the problem, the available data, and the trade-off between modeling capacity and computational complexity.
+
+--- Slide 15 ---
+
+Gradient Descent Methods
+Gradient descent methods are widely used for function approximation, particularly in machine learning and optimization tasks.
+Objective Function - 𝐽(𝜃) 
+Parameters - parameters 𝜃 
+Gradient Descent - minimize the objective function
+Gradient Calculation
+Update Rule
+
+where ∇𝐽(𝜃) represents the gradient of the objective function
+𝛼 is learning rate 
+Convergence
+
+--- Slide 16 ---
+
+Types of Gradient Descent
+Batch Gradient Descent:
+Computes the gradient of the objective function using the entire dataset.
+slow for large datasets but ensures convergence to the global minimum.
+
+Stochastic Gradient Descent (SGD):
+Computes the gradient using only one sample at a time.
+faster but may oscillate around the minimum and can be noisy.
+
+Mini-batch Gradient Descent:
+Computes the gradient using a subset of the dataset.
+combines the advantages of both batch and stochastic gradient descent
+
+--- Slide 17 ---
+
+Linear Parameterization
+The details of this Linear Function Approximator method.
+
+
+This is a recursive formula which computes the value of a state s based on the values of the next states s’ and so on…
+The problem with this formula is that each time we need to compute V(s) we need to compute all future states. Even worse, if at a time we encounter a state similar to one that we have already seen in the past, we have no way of recognizing it.
+
+--- Slide 18 ---
+
+Linear Parameterization
+Also from the Temporal Difference with Q learning formulas we have a way of estimating what future states can be:
+
+
+
+We will use those formulas to derive some interesting solutions.
+Let’s redefine V(s) such as it reflects the features it contains
+
+--- Slide 19 ---
+
+Linear Parameterization
+The state-value function can be expressed by its weighted sum of its features:
+V(s) = W1 . F1(s) + W2 . F2(s) + … +Wn . Fn(s) or in shorter terms
+
+
+
+each Fi(s) represents a feature function of the state .V(s) is the estimated value function for state s.
+𝝫(s) is a vector of features at state s, and 
+𝜽ᵀ is a transpose matrix of weights applied to the features, in such a manner that some features are valued more than others at any state s.
+
+--- Slide 20 ---
+
+Advantages of Linear Parameterization
+Generalization: By using feature vectors, the learned value function or policy can generalize to unseen states or state-action pairs, as long as they share similar feature representations.
+
+Scalability: It allows for efficient computation and storage, especially when the state or action space is large or continuous.
+
+Interpretability: The learned weights θ can provide insights into the relative importance of different features in determining the value function or policy.
+
+--- Slide 21 ---
+
+Disadvantage of Linear Parameterization
+The inability to represent complex, non-linear functions accurately.
+
+
+Solution:
+non-linear function approximation techniques, like neural networks or decision trees, may be more suitable.
+
+--- Slide 22 ---
+
+Policy gradient with function approximation
+Policy gradient methods with function approximation are a class of reinforcement learning algorithms used to learn policies in environments with large or continuous state and action spaces.
+These methods aim to directly optimize the policy parameters to maximize the expected return.
+Policy
+Objective
+Policy Gradient Theorem
+Function Approximation
+Update Rule
+
+--- Slide 23 ---
+
+Policy
+The policy is a mapping from states to actions, denoted as 𝜋(𝑎∣𝑠;𝜃), where 𝜃 represents the parameters of the policy.
+
+--- Slide 24 ---
+
+Objective
+maximize the expected return, 𝐽(𝜃)
+expected sum of rewards obtained by following the policy
+
+
+Where,
+𝜏 represents a trajectory generated by the policy 𝜋, 
+𝑟𝑡​ is the reward at time step 𝑡, 
+𝑇 is the time horizon, and 
+𝛾 is the discount factor.
+
+--- Slide 25 ---
+
+Policy Gradient Theorem
+provides a way to compute the gradient of the objective function with respect to the policy parameters
+
+
+
+Where 
+𝐺𝑡 is an estimate of the return at time step 𝑡, often computed using the rewards obtained in the future trajectory
+
+--- Slide 26 ---
+
+Function Approximation
+use a parameterized function approximate, such as a neural network. 
+
+So, 𝜋(𝑎∣𝑠;𝜃) becomes a parameterized function, typically denoted as 𝜋𝜃(𝑠,𝑎).
+
+--- Slide 27 ---
+
+Update Rule
+We update the policy parameters in the direction of the policy gradient to increase the expected return
+
+
+Where
+𝛼 is the learning rate.
+
+The steps for policy gradient with function approximation are:
+Collect trajectories using the current policy.
+Compute the policy gradient using the sampled trajectories.
+Update the policy parameters using the gradient ascent algorithm.
+
+This iterative process continues until the policy converges to an optimal or near-optimal policy.
+
+--- Slide 28 ---
+
+References
+Chapter 4 from Sutton and Barto
+https://web.stanford.edu/class/cs234/CS234Win2020/slides/lecture5_post.pdf
+https://towardsdatascience.com/function-approximation-in-reinforcement-learning-85a4864d566
+https://www.youtube.com/watch?v=gqSuPgrcVx8&list=PLEAYkSg4uSQ0Hkv_1LHlJtC_wqwVu6RQX&index=39&ab_channel=ReinforcementLearning
+https://www.youtube.com/watch?v=c4cvheE3diA&list=PLEAYkSg4uSQ0Hkv_1LHlJtC_wqwVu6RQX&index=40&ab_channel=ReinforcementLearning
+
+============================================================
+FILE: Module 6 Deep_Reinforcement_Learning.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Deep Reinforcement
+Learning
+DQN  ·  REINFORCE  ·  A2C  ·  A3C  ·  DDPG  ·  PPO
+Algorithms · Intuition · Analogies · Clipping · Comparison
+
+--- Slide 2 ---
+
+What is Reinforcement Learning?
+Agent
+Action
+Environment
+State + Reward
+→
+→
+→
+← ← ← ← ← ← ← ← ← ← ← ←
+Core Idea: An agent learns to maximize cumulative reward by interacting with an environment.
+No fixed dataset — agent learns from experience
+Trial & error: good actions get positive reward, bad actions get negative
+Goal: learn a policy π(a|s) that maximises expected future reward
+
+--- Slide 3 ---
+
+RL gives the framework of learning from interactionDeep Learning gives the ability to scale and generalize
+
+--- Slide 4 ---
+
+Deep Learning in RL
+Deep reinforcement learning (deep RL) is machine learning that combines reinforcement learning (RL) and deep learning.
+RL considers the problem of a computational agent learning to make decisions by trial and error.
+Deep RL incorporates deep learning into the solution, allowing agents to make decisions from unstructured input data without manual engineering of the state space.
+
+--- Slide 5 ---
+
+Deep Learning in RL
+Deep RL algorithms are able to take in very large inputs (e.g. every pixel rendered to the screen in a video game) and decide what actions to perform to optimize an objective (e.g. maximizing the game score).
+Deep reinforcement learning has been used for a diverse set of applications including but not limited to robotics, video games, natural language processing, computer vision, education, transportation, finance and healthcare.
+
+--- Slide 6 ---
+
+Atari environments have an observation space with a shape of (210, 160, 3)*, containing values ranging from 0 to 255 so that gives us256210×160×3=256100800 possible observations.
+
+--- Slide 7 ---
+
+How should an agent choose actions to maximize reward?But the way they learn is different.
+Deep Reinforcement Learning Models
+
+--- Slide 8 ---
+
+① DQN — Deep Q-Network
+State (s)
+↓
+Q-Network
+↓
+Q-values for all actions
+↓
+ε-greedy Action
+↓
+Replay Buffer
+↓
+Bellman Update
+Key Concepts
+Value-based: learns Q(s,a) not policy directly
+Replay Buffer prevents forgetting (experience replay)
+Bellman equation drives learning: Q(s,a) = r + γ·max Q(s',a')
+ε-greedy: explore randomly OR exploit best known action
+Works well for discrete action spaces (e.g. Atari games)
+Replay buffer stores past experiences and randomly samples them to break correlation, improve data efficiency, and stabilize training in Deep RL.
+
+--- Slide 9 ---
+
+② REINFORCE — Policy Gradient
+State (s)
+↓
+Policy Network π(a|s)
+↓
+Sample Action
+↓
+Run Full Episode
+↓
+Compute Return G
+↓
+Update Policy ∇J(θ)
+Key Concepts
+Policy-based: directly learns π(a|s) probabilities
+Waits until episode ENDS before updating
+Uses total return G = Σ γᵗ rₜ for gradient
+High variance — updates can be noisy
+No critic (value function) — purely episodic
+🏖️ Analogy: "Taking a full vacation, then deciding if it was good — learn only AFTER complete experience"
+
+--- Slide 10 ---
+
+Deep Q-Network
+What happens when the number of states and actions becomes very large? 
+This is actually not that rare — even a simple game such as Tic Tac Toe has hundreds of different states and we multiply this number by 9, which is the number of possible actions. 
+So how will we solve really complex problems?
+
+--- Slide 11 ---
+
+Deep Q-Network
+
+--- Slide 12 ---
+
+Deep Q-Network
+Combine Q Learning and Deep Learning, which yields Deep Q Networks. 
+The idea is simple: we’ll replace the the Q Learning’s table with a neural network that tries to approximate Q Values. 
+It is usually referred to as the approximator or the approximating function, and denoted as Q(s,a; θ), where θ represents the trainable weights of the network.
+
+--- Slide 13 ---
+
+
+--- Slide 14 ---
+
+In Deep Q-Learning, we create a loss function that compares our Q-value prediction and the Q-target and uses gradient descent to update the weights of our Deep Q-Network to approximate our Q-values better.
+
+--- Slide 15 ---
+
+
+--- Slide 16 ---
+
+In DQN, θ represents the parameters (weights) of the main Q-network, while θ− represents the parameters of the target network.
+
+--- Slide 17 ---
+
+The Deep Q-Learning training algorithm has two phases:
+
+Sampling: we perform actions and store the observed experience tuples in a replay memory.
+Training: Select a small batch of tuples randomly and learn from this batch using a gradient descent update step.
+
+--- Slide 18 ---
+
+Challenges in Deep Q-Learning
+One of the key challenges in implementing Deep Q-Learning is that the Q- function is typically non-linear and can have many local minima.
+Deep Q-Learning training might suffer from instability, mainly because of combining a non-linear Q-value function (Neural Network) and bootstrapping (when we update targets with existing estimates and not an actual complete return).
+
+--- Slide 19 ---
+
+Ways to Improve DQN
+Prioritized Experience Replay
+Double DQN
+Actor Critic
+
+--- Slide 20 ---
+
+Experience Replay
+This first technique (Experience Replay) is easy to implement. The idea is simple to implement and most of the deep reinforcement systems makes use of it.
+It works as given in the diagram.
+The experience replay buffer is the memory where you store the most recent transitions. Usually, the replay buffer has a fixed size.
+
+--- Slide 21 ---
+
+Prioritized Experience Replay
+An improved version of experience replay is prioritized experience replay, where you replay important transitions more frequently.
+The importance of a transition is measured by the magnitude of their TD error.
+
+--- Slide 22 ---
+
+Prioritized Experience Replay
+Autocorrelation is a problem in deep reinforcement learning.
+This means that when you train an agent on consecutive samples, the samples are correlated, because there is a relationship between consecutive Q-values. 
+By taking a random sample from the experience replay buffer, this problem is solved.
+
+--- Slide 23 ---
+
+Prioritized Experience Replay
+Another advantage of this technique is that previous experiences are used efficiently.
+The agent learns multiple times from the same experience and this speeds up the learning process.
+
+--- Slide 24 ---
+
+Double DQN (DDQN)
+Double DQN (DDQN) was introduced to address a critical flaw in the original Deep Q-Network (DQN): overestimation bias in Q-values. This bias occurs because DQN uses the same network to both select and evaluate actions, leading to overly optimistic value estimates that harm performance.
+
+--- Slide 25 ---
+
+Double Deep Q-N
+Instead of using one neural network for action selection and evaluation, it’s possible to use two neural networks. One network is called the online network, and the other one the target network. The weights from the online network are slowly copied to the target network, which stabilizes learning.
+
+--- Slide 26 ---
+
+Actor Critic
+In actor-critic, there are two neural networks:
+A policy network, the actor. This network selects the actions.
+A deep Q network for the action values, the critic. The deep Q network is trained normally and learns from the agent’s experiences.
+The policy network relies on the action values estimated by the deep Q network. It changes the policy based on these action values. Learning happens on-policy.
+
+--- Slide 27 ---
+
+Actor Critic Architecture
+Learning is always on-policy: the critic must learn about and critique whatever policy is currently being followed by the actor.
+The critique takes the form of a TD error. This scalar signal is the sole output of the critic and drives all learning in both actor and critic
+
+--- Slide 28 ---
+
+Advantages of Actor Critic Algorithm
+Less computation is needed because the policy is explicitly stored, and actor-critic methods can learn the optimal probabilities of selecting various actions.
+Low variance, because now we can update our parameters at each step using the Q-values. This also ensures faster convergence of the policy.
+Bootstrapping off of our own predictions of Q-values.
+Possible to run on non-episodic domains.
+
+--- Slide 29 ---
+
+Actor-Critic implementations
+A2C: Advantage Actor-Critic
+A3C: Asynchronous Advantage Actor-Critic
+
+--- Slide 30 ---
+
+REINFORCE Vs Actor Critic
+The main difference is what feedback the actor uses to change its policy.
+
+Where J can be any loss and G is the long-term reward for taking action a in state s.
+Now we can get this long-term reward by running our agent for an episode, gathering rewards and then using the overall rewards we gathered as our G. This is the REINFORCE algorithm
+
+--- Slide 31 ---
+
+REINFORCE Vs Actor Critic
+There are some issues with this approach.
+Because your agent might take a lot of actions over the course of an episode, it’s hard to assign credit to the right action, which means that these updates have a high variance.
+It will take a lot of updates for your policy to converge.
+This method only works in episodic regimes.If your agent is not acting in an episodic environment, it will never get an update.
+
+--- Slide 32 ---
+
+REINFORCE Vs Actor Critic
+
+--- Slide 33 ---
+
+③ A2C — Advantage Actor-Critic
+ACTOR
+State (s)
+↓
+Policy π(a|s)
+↓
+Chooses Action
+↓
+Compute Advantage A
+CRITIC
+State (s)
+↓
+Value V(s)
+↓
+Evaluates Quality
+↓
+Update Both Networks
+Advantage A(s,a) = Q(s,a) – V(s)   →   How much better than average?
+How much better (or worse) an action is compared to the average action in that state.”
+🎓 Analogy: "Student (Actor) answers; Teacher (Critic) gives real-time feedback — no need to wait for end of exam"
+
+--- Slide 34 ---
+
+④ A3C — Asynchronous Advantage Actor-Critic
+Global Network
+Worker 1
+Env Interaction
+Compute Gradients
+↓
+↑
+↑ push
+Worker 2
+Env Interaction
+Compute Gradients
+↓
+↑
+↑ push
+Worker 3
+Env Interaction
+Compute Gradients
+↓
+↑
+↑ push
+Worker 4
+Env Interaction
+Compute Gradients
+↓
+↑
+↑ push
+Analogy: "Multiple students learning the same subject simultaneously, sharing notes in one common notebook"
+
+--- Slide 35 ---
+
+⑤ DDPG — Deep Deterministic Policy Gradient
+ACTOR (μ)
+State (s)
+↓
+Deterministic Action μ(s)
+↓
+Continuous Output
+CRITIC (Q)
+State (s) + Action (a)
+↓
+Q(s,a) Value
+↓
+Replay Buffer
+Why DDPG?
+✔ Designed for CONTINUOUS action spaces (e.g. robotics, driving)
+✔ Combines DQN (replay buffer) + Actor-Critic architecture
+✔ Deterministic policy: single precise action, not distribution
+✔ Uses target networks for stability
+🚗 Analogy: "Learning to drive — smooth steering angle & speed (continuous), not just left/right (discrete)"
+
+--- Slide 36 ---
+
+PPO — Proximal Policy Optimization
+Proximal Policy Optimization (PPO) is a policy gradient method in reinforcement learning that improves the policy gradually to avoid large, unstable updates.
+Instead of changing the policy too much at once, PPO restricts updates using a clipping mechanism.
+
+--- Slide 37 ---
+
+⑥ PPO — Proximal Policy Optimization
+Actor selects action
+↓
+Critic estimates V(s)
+↓
+Compute Advantage A
+↓
+Compute ratio rₜ(θ) = π_new / π_old
+↓
+Apply CLIP to ratio
+↓
+Update Policy (clipped gradient)
+The Clipping Mechanism
+1−ε  ≤  rₜ(θ)  ≤  1+ε       (ε = 0.1 or 0.2)
+rₜ = 1: no change to policy
+rₜ > 1+ε: action prob increased too much → clip
+rₜ < 1-ε: action prob decreased too much → clip
+Good action (Aₜ > 0): increase prob, but not beyond 1+ε
+Bad action (Aₜ < 0): decrease prob, but not below 1-ε
+Most widely used RL algorithm today
+🎓 Analogy: "A teacher allows improvement — but not too drastic at once. Small, safe steps each time."
+
+--- Slide 38 ---
+
+PPO Clipping — Deep Dive
+Why Clipping is Needed
+▶ Large policy updates can cause performance collapse
+▶ PPO clips more simply: bound the probability ratio
+▶ No reward for extreme updates → flat objective beyond clip
+PPO Objective (CLIP)
+L_CLIP = E[ min(rₜAₜ, clip(rₜ, 1−ε, 1+ε)Aₜ) ]
+Two Cases
+Case 1: Aₜ > 0
+(Good Action)
+Increase prob
+but clip (only up) at 1+ε
+Case 2: Aₜ < 0
+(Bad Action)
+Decrease prob
+but clip (only down) at 1−ε
+Intuition Graph
+X-axis: rₜ (policy ratio)   |   Y-axis: Objective
+
+Without clip → objective keeps rising
+With clip → flat after 1+ε or 1−ε (even if you try to update more, PPO will not reward you)
+→ No extra reward for extreme changes!
+⚡ "Clipping restricts rₜ(θ) between 1−ε and 1+ε, preventing large unstable updates and performance collapse.“
+Learn continuously, but never change too much at once
+rₜ - ratio of new policy to old policy
+Aₜ - advantage (how good the action is)
+Clip - restricts the ratio between 1−𝜖 and 1+𝜖
+
+We take the minimum of two terms to ensure the update never goes beyond safe limits.
+
+--- Slide 39 ---
+
+Algorithm Comparison
+Algorithm
+Type
+Action Space
+Learns
+Key Trait
+DQN
+Value-based
+Discrete
+Q(s,a)
+Replay buffer
+REINFORCE
+Policy-based
+Both
+π(a|s)
+Episodic, high variance
+A2C
+Actor-Critic
+Both
+π(a|s) + V(s)
+Real-time advantage
+A3C
+Actor-Critic
+Both
+π(a|s) + V(s)
+Parallel workers
+DDPG
+Actor-Critic
+Continuous
+μ(s) + Q(s,a)
+Deterministic policy
+PPO
+Actor-Critic
+Both
+π(a|s) + V(s)
+Clipped stable updates
+Key: DQN=values | REINFORCE=policy | A2C/A3C=actor-critic | DDPG=continuous | PPO=stable (most used today)
+
+--- Slide 40 ---
+
+Real-Life Analogies
+🍽️  DQN
+Choosing the best restaurant in a new city — learn which actions give best reward
+✈️  REINFORCE
+Taking a full vacation — judge it good or bad only after returning home
+👨‍🏫  A2C
+Student answers questions; Teacher gives real-time feedback each step
+👨‍👩‍👧‍👦  A3C
+Multiple students learn the same topic in parallel, share notes
+🚗  DDPG
+Learning to drive — smooth steering angle, not just left/right
+📏  PPO
+Teacher: improve your answers, but not too drastically at once!
+
+--- Slide 41 ---
+
+⚡ Summary
+DQN
+Value-based · learns Q(s,a) · uses replay buffer · discrete actions
+REINFORCE
+Policy-based · waits for full episode · high variance · no critic
+A2C
+Actor-Critic · real-time feedback · advantage function · reduces variance
+A3C
+Parallel A2C · multiple workers · shared global network · faster learning
+DDPG
+Continuous actions · deterministic policy · DQN + Actor-Critic hybrid
+PPO
+Clipped updates · stable training · most used today · beats TRPO simply
+"DQN=values · REINFORCE=policy · A2C/A3C=actor-critic · DDPG=continuous · PPO=stable — 10 Second Viva Answer"
+
+============================================================
+FILE: Module 6 - Function Approximation.docx
+============================================================
+
+Drawbacks of Tabular Representation:
+When it comes to implementing state and policy representations in reinforcement learning (RL) or dynamic programming (DP) problems, tabular implementations can have several drawbacks, particularly in large or continuous state and action spaces. Here are some key drawbacks of tabular implementations:
+Curse of Dimensionality: In problems with high-dimensional state and action spaces, tabular representations can become impractical or even infeasible due to the exponential growth of the required memory. For example, if a state is represented by n binary variables, the number of possible states grows exponentially as 2^n. This makes it challenging to store and update the values for all state-action pairs.
+Lack of Generalization: Tabular representations treat each state or state-action pair independently, without exploiting any structure or regularity in the problem. This means that the agent cannot generalize its experiences to similar states or actions, leading to poor performance in unseen situations. This issue is particularly problematic in continuous state and action spaces, where each state or action is unique, and tabular representations fail to generalize.
+Inefficient Learning: In large state and action spaces, tabular representations require an excessive amount of experience to accurately estimate the values or policies for all state-action pairs. This can lead to slow convergence and inefficient learning, especially in environments with sparse rewards or when exploration is costly.
+Scalability Issues: As the size of the state and action spaces grows, the memory requirements for tabular representations can quickly become prohibitive. This limitation makes it challenging to apply tabular methods to large-scale or high-dimensional problems encountered in real-world applications.
+Lack of Flexibility: Tabular representations are often specific to the problem at hand and may not be easily transferable or adaptable to different problem instances or domains. This lack of flexibility can limit the reusability and generality of the learned policies or value functions.
+To address these drawbacks, function approximation techniques, such as neural networks or other parametric models, are often used to represent state and policy functions in RL and DP problems. These function approximates can generalize across similar states and actions, handle high-dimensional and continuous spaces more efficiently, and scale better to larger problems. However, they also introduce their own challenges, such as convergence issues, sample inefficiency, and the need for careful design and training.
+Function Approximation:
+Function approximation is a technique used in reinforcement learning (RL) to address the limitations of tabular methods, which rely on storing values for every possible state-action pair in a table. As the state and action spaces become larger or continuous, the tabular approach becomes infeasible due to the exponential growth in memory requirements and the inability to generalize to unseen states.
+Function approximation attempts to solve these issues by approximating the value function or policy using a function that can generalize across states and actions. Instead of storing individual values for each state-action pair, a parameterized function is used to approximate the value function or policy. This function is typically represented by a neural network, a linear combination of basis functions, or other machine learning models.
+
+The key advantages of function approximation are:
+Generalization: By approximating the value function or policy with a function, the agent can generalize to unseen states and actions, rather than having to explicitly visit and store values for every possible state-action pair.
+Continuous state and action spaces: Function approximation can handle continuous state and action spaces, which are intractable for tabular methods.
+Memory efficiency: Instead of storing a separate value for each state-action pair, the agent only needs to store the parameters of the approximating function, which can significantly reduce memory requirements, especially in large or continuous environments.
+Scalability: Function approximation allows RL algorithms to scale to larger and more complex problems by leveraging the generalization capabilities of the approximating function.
+However, function approximation also introduces challenges, such as:
+Stability: Updating the parameters of the approximating function can lead to instability and divergence, especially when using non-linear function approximators like neural networks.
+Local optima: The optimization process for finding the best parameters for the approximating function may converge to local optima, leading to suboptimal solutions.
+Biased approximation: The choice of the function approximator and its capacity can introduce biases, leading to suboptimal approximations of the value function or policy.
+To mitigate these challenges, various techniques have been developed, such as experience replay, target networks, and specialized optimization algorithms like gradient temporal difference learning. Additionally, advances in deep learning and neural network architectures have improved the performance of function approximation in RL.
+Function Approximators in RL:
+Function approximators are used in reinforcement learning (RL) to estimate the value function or the policy when the state or action spaces are too large or continuous to represent them using tabular methods. Here's an overview of function approximators in RL:
+Value Function Approximation: In this case, a function approximator is used to estimate the value function V(s) for the state value function or Q(s,a) for the action-value function. Common choices are linear combinations of features (linear function approximators) or artificial neural networks (non-linear function approximators).
+Policy Approximation: Here, the function approximator directly represents the policy π(a|s), which maps states to a probability distribution over actions. Neural networks are commonly used for this purpose.
+Some advantages of using function approximators include:
+Ability to handle large or continuous state/action spaces.
+Generalization to unseen states by exploiting similarities between states.
+Compact representation of the value function or policy.
+However, using function approximators also introduces challenges like:
+Potential instability or divergence during learning.
+Approximation errors due to the limited capacity of the function approximator.
+Need for careful feature engineering or representation learning.
+Common function approximators used in RL include:
+Linear Combinations of Features: These are linear functions of manually engineered features, where the weights are learned through techniques like gradient descent.
+Artificial Neural Networks: Deep neural networks are powerful non-linear function approximators that can automatically learn relevant features from high-dimensional inputs like images or sensor data.
+Kernel Methods: These methods, such as Gaussian processes, allow for non-linear function approximation by mapping inputs to a high-dimensional feature space.
+Decision Trees and Ensembles: Tree-based methods like random forests or gradient boosting can also be used as function approximators in RL.
+The choice of function approximator depends on factors like the nature of the problem, the available data, and the trade-off between modeling capacity and computational complexity.
+Gradient Descent Methods:
+Gradient descent methods are widely used for function approximation, particularly in machine learning and optimization tasks. Here's how it works:
+Objective Function: In function approximation, you have some objective function 𝐽(𝜃) that you want to minimize or maximize. This objective function could represent the error between the predicted and actual values of the function you're trying to approximate.
+Parameters: The function 𝐽(𝜃) typically depends on parameters 𝜃 that you adjust to minimize the objective function. These parameters are the ones you're trying to optimize to get the best approximation.
+Gradient Descent: Gradient descent is an optimization algorithm used to minimize the objective function by iteratively moving in the direction of steepest descent (or ascent, if maximizing).
+Gradient Calculation: At each iteration, you compute the gradient of the objective function with respect to the parameters 𝜃. The gradient points in the direction of the greatest increase of the function. To minimize the function, you move in the opposite direction, i.e., along the negative gradient.
+Update Rule: You then update the parameters 𝜃 by taking a small step in the opposite direction of the gradient, scaled by a factor known as the learning rate 𝛼. The update rule is typically expressed as:
+
+𝜃=𝜃−𝛼∇𝐽(𝜃)
+where ∇𝐽(𝜃) represents the gradient of the objective function.
+Convergence: The process continues iteratively until convergence, which is typically determined by either a predefined number of iterations or when the change in the objective function becomes smaller than a certain threshold.
+Types of Gradient Descent:
+Batch Gradient Descent: Computes the gradient of the objective function using the entire dataset. It can be slow for large datasets but ensures convergence to the global minimum (for convex functions).
+Stochastic Gradient Descent (SGD): Computes the gradient using only one sample at a time. It is much faster but may oscillate around the minimum and can be noisy.
+Mini-batch Gradient Descent: Computes the gradient using a subset of the dataset. It combines the advantages of both batch and stochastic gradient descent.
+Gradient descent methods are foundational in training neural networks and other machine learning models for function approximation tasks. They are efficient and scalable, making them essential tools in modern data science and machine learning.
+
+Policy Gradient using Function Approximation
+Policy gradient methods with function approximation are a class of reinforcement learning algorithms used to learn policies in environments with large or continuous state and action spaces. These methods aim to directly optimize the policy parameters to maximize the expected return.
+Let's break down the policy gradient with function approximation using equations:
+Policy: The policy is a mapping from states to actions, denoted as 𝜋(𝑎∣𝑠;𝜃), where 𝜃 represents the parameters of the policy.
+Objective: The objective is to maximize the expected return, 𝐽(𝜃), which is defined as the expected sum of rewards obtained by following the policy:
+ 
+where 𝜏 represents a trajectory generated by the policy 𝜋, 𝑟𝑡​ is the reward at time step 𝑡, 𝑇 is the time horizon, and 𝛾 is the discount factor.
+Policy Gradient Theorem: The policy gradient theorem provides a way to compute the gradient of the objective function with respect to the policy parameters:
+ 
+where 𝐺𝑡 is an estimate of the return at time step 𝑡, often computed using the rewards obtained in the future trajectory.
+Function Approximation: To approximate the policy, we use a parameterized function approximator, such as a neural network. So, 𝜋(𝑎∣𝑠;𝜃) becomes a parameterized function, typically denoted as 𝜋𝜃(𝑠,𝑎).
+Update Rule: We update the policy parameters in the direction of the policy gradient to increase the expected return:
+
+where 𝛼 is the learning rate.
+Putting it all together, the steps for policy gradient with function approximation are:
+Collect trajectories using the current policy.
+Compute the policy gradient using the sampled trajectories.
+Update the policy parameters using the gradient ascent algorithm.
+This iterative process continues until the policy converges to an optimal or near-optimal policy.

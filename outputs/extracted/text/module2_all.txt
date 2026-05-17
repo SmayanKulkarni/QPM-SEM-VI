@@ -1,0 +1,2704 @@
+
+============================================================
+FILE: PMI.pdf
+============================================================
+
+
+--- PAGE_1 ---
+CHAPTER
+J Pointwise Mutual Information
+(PMI)
+Analternativeweightingfunctiontotf-idf,PPMI(positivepointwisemutualinfor-
+mation),isusedforterm-term-matrices,whenthevectordimensionscorrespondto
+wordsratherthandocuments.PPMIdrawsontheintuitionthatthebestwaytoweigh
+theassociationbetweentwowordsistoaskhowmuchmorethetwowordsco-occur
+inourcorpusthanwewouldhaveaprioriexpectedthemtoappearbychance.
+pointwise
+mutual
+Pointwisemutualinformation(Fano,1961)1isoneofthemostimportantcon-
+information
+ceptsinNLP.Itisameasureofhowoftentwoeventsxandyoccur,comparedwith
+whatwewouldexpectiftheywereindependent:
+P(x,y)
+I(x,y)=log (J.2)
+2P(x)P(y)
+Thepointwisemutualinformationbetweenatargetwordwandacontextword
+c(ChurchandHanks1989,ChurchandHanks1990)isthendefinedas:
+P(w,c)
+PMI(w,c)=log (J.3)
+2P(w)P(c)
+The numerator tells us how often we observed the two words together (assuming
+we compute probability by using the MLE). The denominator tells us how often
+wewouldexpectthetwowordstoco-occurassumingtheyeachoccurredindepen-
+dently; recall that the probability of two independent events both occurring is just
+the product of the probabilities of the two events. Thus, the ratio gives us an esti-
+mateofhowmuchmorethetwowordsco-occurthanweexpectbychance. PMIis
+ausefultoolwheneverweneedtofindwordsthatarestronglyassociated.
+PMI values range from negative to positive infinity. But negative PMI values
+(which imply things are co-occurring less often than we would expect by chance)
+tend to be unreliable unless our corpora are enormous. To distinguish whether
+twowordswhoseindividualprobabilityiseach10−6 occurtogetherlessoftenthan
+chance, we would need to be certain that the probability of the two occurring to-
+getherissignificantlylessthan10−12,andthiskindofgranularitywouldrequirean
+enormous corpus. Furthermore it’s not clear whether it’s even possible to evaluate
+such scores of ‘unrelatedness’ with human judgments. For this reason it is more
+PPMI commontousePositivePMI(calledPPMI)whichreplacesallnegativePMIvalues
+withzero(ChurchandHanks1989,Daganetal.1993,NiwaandNitta1994)2:
+P(w,c)
+PPMI(w,c)=max(log ,0) (J.4)
+2P(w)P(c)
+1 PMIisbasedonthemutualinformationbetweentworandomvariablesXandY,definedas:
+(cid:88)(cid:88) P(x,y)
+I(X,Y)= P(x,y)log (J.1)
+2P(x)P(y)
+x y
+Inaconfusionofterminology,Fanousedthephrasemutualinformationtorefertowhatwenowcall
+pointwisemutualinformationandthephraseexpectationofthemutualinformationforwhatwenowcall
+mutualinformation
+2 PositivePMIalsocleanlysolvestheproblemofwhattodowithzerocounts,using0toreplacethe
+−∞fromlog(0).
+1
+
+--- PAGE_2 ---
+2 APPENDIXJ • POINTWISEMUTUALINFORMATION(PMI)
+Moreformally,let’sassumewehaveaco-occurrencematrixFwithWrows(words)
+andCcolumns(contexts),where f givesthenumberoftimeswordw occurswith
+ij i
+context c . This can be turned into a PPMI matrix where PPMI gives the PPMI
+j ij
+value of word w with context c (which we can also express as PPMI(w,c ) or
+i j i j
+PPMI(w=i,c= j))asfollows:
+p ij = (cid:80)W i(cid:48)=1 (cid:80) f i C j j(cid:48)=1 f i(cid:48)j(cid:48) , p i∗ = (cid:80)W i(cid:48)= (cid:80) 1 (cid:80) C j= C 1 j(cid:48)= f i 1 j f i(cid:48)j(cid:48) , p ∗j = (cid:80)W i(cid:48)= (cid:80) 1 (cid:80) W i=1 C j(cid:48)= f i 1 j f i(cid:48)j(cid:48) (J.5)
+p
+ij
+PPMI ij =max(log 2 p p ,0) (J.6)
+i∗ ∗j
+Let’sseesomePPMIcalculations. We’lluseFig.J.2,whichrepeatsFig.J.1plusall
+thecountmarginals,andlet’spretendforeaseofcalculationthatthesearetheonly
+words/contextsthatmatter.
+Here’stheoriginalfigure:
+aardvark ... computer data result pie sugar ...
+cherry 0 ... 2 8 9 442 25 ...
+strawberry 0 ... 0 0 1 60 19 ...
+digital 0 ... 1670 1683 85 5 4 ...
+information 0 ... 3325 3982 378 5 13 ...
+FigureJ.1 Co-occurrencevectorsforfourwordsintheWikipediacorpus,showingsixof
+thedimensions(hand-pickedforpedagogicalpurposes). Thevectorfordigitalisoutlinedin
+red.Notethatarealvectorwouldhavevastlymoredimensionsandthusbemuchsparser,i.e.
+wouldhavezerovaluesinmostdimensions.
+computer data result pie sugar count(w)
+cherry 2 8 9 442 25 486
+strawberry 0 0 1 60 19 80
+digital 1670 1683 85 5 4 3447
+information 3325 3982 378 5 13 7703
+count(context) 4997 5673 473 512 61 11716
+FigureJ.2 Co-occurrence counts for four words in 5 contexts in the Wikipedia corpus,
+together with the marginals, pretending for the purpose of this calculation that no other
+words/contextsmatter.
+ThusforexamplewecouldcomputePPMI(information,data),assumingwepre-
+tendedthatFig.J.1encompassedalltherelevantwordcontexts/dimensions,asfol-
+lows:
+3982
+P(w=information,c=data) = =.3399
+11716
+7703
+P(w=information) = =.6575
+11716
+5673
+P(c=data) = =.4842
+11716
+PPMI(information,data) = log (.3399/(.6575∗.4842))=.0944
+2
+Fig. J.3 shows the joint probabilities computed from the counts in Fig. J.2, and
+Fig.J.4showsthePPMIvalues. Notsurprisingly,cherryandstrawberryarehighly
+associatedwithbothpieandsugar,anddataismildlyassociatedwithinformation.
+[TABLES]
+[['aardvark ... computer data result pie sugar ...'], ['cherry 0 ... 2 8 9 442 25 ...\nstrawberry 0 ... 0 0 1 60 19 ...\ndigital 0 ... 1670 1683 85 5 4 ...\ninformation 0 ... 3325 3982 378 5 13 ...'], ['FigureJ.1']]
+[['computer data result pie sugar count(w)'], ['cherry 2 8 9 442 25 486\nstrawberry 0 0 1 60 19 80\ndigital 1670 1683 85 5 4 3447\ninformation 3325 3982 378 5 13 7703\ncount(context) 4997 5673 473 512 61 11716'], ['FigureJ.2']]
+
+--- PAGE_3 ---
+3
+p(w,context) p(w)
+computer data result pie sugar p(w)
+cherry 0.0002 0.0007 0.0008 0.0377 0.0021 0.0415
+strawberry 0.0000 0.0000 0.0001 0.0051 0.0016 0.0068
+digital 0.1425 0.1436 0.0073 0.0004 0.0003 0.2942
+information 0.2838 0.3399 0.0323 0.0004 0.0011 0.6575
+p(context) 0.4265 0.4842 0.0404 0.0437 0.0052
+FigureJ.3 ReplacingthecountsinFig.J.1withjointprobabilities,showingthemarginals
+intherightcolumnandthebottomrow.
+computer data result pie sugar
+cherry 0 0 0 4.38 3.30
+strawberry 0 0 0 4.10 5.51
+digital 0.18 0.01 0 0 0
+information 0.02 0.09 0.28 0 0
+FigureJ.4 ThePPMImatrixshowingtheassociationbetweenwordsandcontextwords,
+computedfromthecountsinFig.J.3.Notethatmostofthe0PPMIvaluesareonesthathada
+negativePMI;forexamplePMI(cherry,computer)=-6.7,meaningthatcherryandcomputer
+co-occuronWikipedialessoftenthanwewouldexpectbychance,andwithPPMIwereplace
+negativevaluesbyzero.
+PMIhastheproblemofbeingbiasedtowardinfrequentevents;veryrarewords
+tendtohaveveryhighPMIvalues.Onewaytoreducethisbiastowardlowfrequency
+eventsistoslightlychangethecomputationforP(c),usingadifferentfunctionP (c)
+α
+thatraisestheprobabilityofthecontextwordtothepowerofα:
+P(w,c)
+PPMI (w,c)=max(log ,0) (J.7)
+α 2P(w)P (c)
+α
+count(c)α
+P (c)= (J.8)
+α (cid:80) count(c)α
+c
+Levy et al. (2015) found that a setting of α =0.75 improved performance of
+embeddingsonawiderangeoftasks(drawingonasimilarweightingusedforskip-
+grams described in Chapter 5. This works because raising the count to α =0.75
+increases the probability assigned to rare contexts, and hence lowers their PMI
+(P (c)>P(c)whencisrare).
+α
+AnotherpossiblesolutionisLaplacesmoothing:BeforecomputingPMI,asmall
+constant k (values of 0.1-3 are common) is added to each of the counts, shrinking
+(discounting)allthenon-zerovalues. Thelargerthek,themorethenon-zerocounts
+arediscounted.
+[TABLES]
+[['p(w,context) p(w)'], ['computer data result pie sugar p(w)'], ['cherry 0.0002 0.0007 0.0008 0.0377 0.0021 0.0415\nstrawberry 0.0000 0.0000 0.0001 0.0051 0.0016 0.0068\ndigital 0.1425 0.1436 0.0073 0.0004 0.0003 0.2942\ninformation 0.2838 0.3399 0.0323 0.0004 0.0011 0.6575\np(context) 0.4265 0.4842 0.0404 0.0437 0.0052'], ['FigureJ.3']]
+[['computer data result pie sugar'], ['cherry 0 0 0 4.38 3.30\nstrawberry 0 0 0 4.10 5.51\ndigital 0.18 0.01 0 0 0\ninformation 0.02 0.09 0.28 0 0'], ['FigureJ.4']]
+
+--- PAGE_4 ---
+4 AppendixJ • PointwiseMutualInformation(PMI)
+Church,K.W.andP.Hanks.1989.Wordassociationnorms,
+mutualinformation,andlexicography.ACL.
+Church,K.W.andP.Hanks.1990.Wordassociationnorms,
+mutual information, and lexicography. Computational
+Linguistics,16(1):22–29.
+Dagan,I.,S.Marcus,andS.Markovitch.1993. Contextual
+wordsimilarityandestimationfromsparsedata.ACL.
+Fano,R.M.1961.TransmissionofInformation:AStatistical
+TheoryofCommunications.MITPress.
+Levy,O.,Y.Goldberg,andI.Dagan.2015. Improvingdis-
+tributionalsimilaritywithlessonslearnedfromwordem-
+beddings.TACL,3:211–225.
+Niwa, Y.andY.Nitta.1994. Co-occurrencevectorsfrom
+corporavs.distancevectorsfromdictionaries.COLING.
+
+============================================================
+FILE: WordSenses.pdf
+============================================================
+
+
+--- PAGE_1 ---
+Speech and Language Processing. Daniel Jurafsky & James H. Martin. Copyright © 2026. All
+rights reserved. Draft of January 25, 2026.
+CHAPTER
+I Word Senses and WordNet
+LadyBracknell. Areyourparentsliving?
+Jack. Ihavelostbothmyparents.
+Lady Bracknell. To lose one parent, Mr. Worthing, may be regarded as a
+misfortune;tolosebothlookslikecarelessness.
+OscarWilde,TheImportanceofBeingEarnest
+ambiguous Wordsareambiguous: thesamewordcanbeusedtomeandifferentthings. In
+Chapter 5 we saw that the word “mouse” has (at least) two meanings: (1) a small
+rodent, or (2) a hand-operated device to control a cursor. The word “bank” can
+mean: (1) a financial institution or (2) a sloping mound. In the quote above from
+hisplayTheImportanceofBeingEarnest,OscarWildeplayswithtwomeaningsof
+“lose”(tomisplaceanobject,andtosufferthedeathofacloseperson).
+Wesaythatthewords‘mouse’or‘bank’arepolysemous(fromGreek‘having
+wordsense many senses’, poly- ‘many’ + sema, ‘sign, mark’).1 A sense (or word sense) is
+a discrete representation of one aspect of the meaning of a word. In this chapter
+WordNet wediscusswordsensesinmoredetailandintroduceWordNet,alargeonlinethe-
+saurus—adatabasethatrepresentswordsenses—withversionsinmanylanguages.
+WordNet also represents relations between senses. For example, there is an IS-A
+relation between dog and mammal (a dog is a kind of mammal) and a part-whole
+relationbetweenengineandcar(anengineisapartofacar).
+Knowing the relation between two senses can play an important role in tasks
+involving meaning. Consider the antonymy relation. Two words are antonyms if
+theyhaveoppositemeanings, likelongandshort, orupanddown. Distinguishing
+these is quite important; if a user asks a dialogue agent to turn up the music, it
+wouldbeunfortunatetoinsteadturnitdown. Butinfactinembeddingmodelslike
+word2vec, antonymsareeasilyconfusedwitheachother, becauseoftenoneofthe
+closest words in embedding space to a word (e.g., up) is its antonym (e.g., down).
+Thesaurusesthatrepresentthisrelationshipcanhelp!
+wordsense Wealsointroducewordsensedisambiguation(WSD),thetaskofdetermining
+disambiguation
+which sense of a word is being used in a particular context. We’ll give supervised
+andunsupervisedalgorithmsfordecidingwhichsensewasintendedinaparticular
+context. Thistaskhasaverylonghistoryincomputationallinguisticsandmanyap-
+plications. Inquestionanswering,wecanbemorehelpfultoauserwhoasksabout
+“bat care” if we know which sense of bat is relevant. (Is the user a vampire? or
+just wants to play baseball.) And the different senses of a word often have differ-
+enttranslations;inSpanishtheanimalbatisamurcie´lagowhilethebaseballbatis
+a bate, and indeed word sense algorithms may help improve MT (Pu et al., 2018).
+Finally,WSDhaslongbeenusedasatoolforevaluatinglanguageprocessingmod-
+els,andunderstandinghowmodelsrepresentdifferentwordsensesisanimportant
+1 Thewordpolysemyitselfisambiguous;youmayseeitusedinadifferentway,toreferonlytocases
+whereaword’ssensesarerelatedinsomestructuredway,reservingthewordhomonymytomeansense
+ambiguitieswithnorelationbetweenthesenses(HaberandPoesio,2020).Herewewilluse‘polysemy’
+tomeananykindofsenseambiguity,and‘structuredpolysemy’forpolysemywithsenserelations.
+
+--- PAGE_2 ---
+2 APPENDIXI • WORDSENSESANDWORDNET
+analyticdirection.
+I.1 Word Senses
+wordsense Asense(orwordsense)isadiscreterepresentationofoneaspectofthemeaningof
+aword. Looselyfollowinglexicographictradition, werepresenteachsensewitha
+superscript: bank1 andbank2,mouse1 andmouse2. Incontext,it’seasytoseethe
+differentmeanings:
+mouse1: .... amousecontrollingacomputersystemin1968.
+mouse2: .... aquietanimallikeamouse
+bank1: ...abankcanholdtheinvestmentsinacustodialaccount...
+bank2: ...asagricultureburgeonsontheeastbank,theriver...
+I.1.1 DefiningWordSenses
+Howcanwedefinethemeaningofawordsense? WeintroducedinChapter5the
+standardcomputationalapproachofrepresentingawordasanembedding,apoint
+in semantic space. The intuition of embedding models like word2vec or GloVe is
+thatthemeaningofawordcanbedefinedbyitsco-occurrences,thecountsofwords
+thatoftenoccurnearby. Butthatdoesn’ttellushowtodefinethemeaningofaword
+sense. As we saw in Chapter 9, contextual embeddings like BERT go further by
+offeringanembeddingthatrepresentsthemeaningofawordinitstextualcontext,
+andwe’llseethatcontextualembeddingslieattheheartofmodernalgorithmsfor
+wordsensedisambiguation.
+But first, we need to consider the alternative ways that dictionaries and the-
+saurusesofferfordefiningsenses. Oneisbasedonthefactthatdictionariesorthe-
+gloss saurusesgivetextualdefinitionsforeachsensecalledglosses. Herearetheglosses
+fortwosensesofbank:
+1. financial institution that accepts deposits and channels
+the money into lending activities
+2. sloping land (especially the slope beside a body of water)
+Glossesarenotaformalmeaningrepresentation;theyarejustwrittenforpeople.
+Considerthefollowingfragmentsfromthedefinitionsofright,left,red,andblood
+fromtheAmericanHeritageDictionary(Morris,1985).
+right adj. locatednearertherighthandesp. beingontherightwhen
+facingthesamedirectionastheobserver.
+left adj. locatednearertothissideofthebodythantheright.
+red n. thecolorofbloodoraruby.
+blood n. theredliquidthatcirculatesintheheart,arteriesandveinsof
+animals.
+Notethecircularityinthesedefinitions. Thedefinitionofrightmakestwodirect
+references to itself, and the entry for left contains an implicit self-reference in the
+phrasethissideofthebody,whichpresumablymeanstheleftside. Theentriesfor
+redandbloodreferenceeachotherintheirdefinitions. Forhumans,suchentriesare
+usefulsincetheuserofthedictionaryhassufficientgraspoftheseotherterms.
+[TABLES]
+[['right', 'adj. locatednearertherighthandesp. beingontherightwhen\nfacingthesamedirectionastheobserver.'], ['left', 'adj. locatednearertothissideofthebodythantheright.'], ['red', 'n. thecolorofbloodoraruby.'], ['blood', 'n. theredliquidthatcirculatesintheheart,arteriesandveinsof\nanimals.']]
+
+--- PAGE_3 ---
+I.1 • WORDSENSES 3
+Yet despite their circularity and lack of formal representation, glosses can still
+beusefulforcomputationalmodelingofsenses.Thisisbecauseaglossisjustasen-
+tence,andfromsentenceswecancomputesentenceembeddingsthattellussome-
+thing about the meaning of the sense. Dictionaries often give example sentences
+alongwithglosses,andthesecanagainbeusedtohelpbuildasenserepresentation.
+Thesecondwaythatthesaurusesofferfordefiningasenseis—likethedictionary
+definitions—definingasensethroughitsrelationshipwithothersenses. Forexam-
+ple,theabovedefinitionsmakeitclearthatrightandleftaresimilarkindsoflemmas
+thatstandinsomekindofalternation, oropposition, tooneanother. Similarly, we
+cangleanthatredisacolorandthatbloodisaliquid. Senserelationsofthissort
+(IS-A,orantonymy)areexplicitlylistedinon-linedatabaseslikeWordNet. Given
+a sufficiently large database of such relations, many applications are quite capable
+of performing sophisticated semantic tasks about word senses (even if they do not
+reallyknowtheirrightfromtheirleft).
+I.1.2 Howmanysensesdowordshave?
+Dictionariesandthesaurusesgivediscretelistsofsenses. Bycontrast,embeddings
+(whetherstaticorcontextual)offeracontinuoushigh-dimensionalmodelofmeaning
+thatdoesn’tdivideupintodiscretesenses.
+Thereforecreatingathesaurusdependsoncriteriafordecidingwhenthediffer-
+ing uses of a word should be represented with discrete senses. We might consider
+twosensesdiscreteiftheyhaveindependenttruthconditions,differentsyntacticbe-
+havior,andindependentsenserelations,oriftheyexhibitantagonisticmeanings.
+ConsiderthefollowingusesoftheverbservefromtheWSJcorpus:
+(I.1) Theyrarelyserveredmeat,preferringtoprepareseafood.
+(I.2) HeservedasU.S.ambassadortoNorwayin1976and1977.
+(I.3) Hemighthaveservedhistime,comeoutandledanupstandinglife.
+The serve of serving red meat and that of serving time clearly have different truth
+conditions and presuppositions; the serve of serve as ambassador has the distinct
+subcategorizationstructureserveasNP.Theseheuristicssuggestthattheseareprob-
+ably three distinct senses of serve. One practical technique for determining if two
+senses are distinct is to conjoin two uses of a word in a single sentence; this kind
+zeugma of conjunction of antagonistic readings is called zeugma. Consider the following
+examples:
+(I.4) Whichofthoseflightsservebreakfast?
+(I.5) DoesAirFranceservePhiladelphia?
+(I.6) ?DoesAirFranceservebreakfastandPhiladelphia?
+Weuse(?) tomarkthoseexamplesthataresemanticallyill-formed. Theoddnessof
+theinventedthirdexample(acaseofzeugma)indicatesthereisnosensiblewayto
+makeasinglesenseofserveworkforbothbreakfastandPhiladelphia. Wecanuse
+thisasevidencethatservehastwodifferentsensesinthiscase.
+Dictionariestendtousemanyfine-grainedsensessoastocapturesubtlemeaning
+differences, a reasonable approach given that the traditional role of dictionaries is
+aiding word learners. For computational purposes, we often don’t need these fine
+distinctions,soweoftengrouporclusterthesenses; wehavealreadydonethisfor
+some of the examples in this chapter. Indeed, clustering examples into senses, or
+sensesintobroader-grainedcategories,isanimportantcomputationaltaskthatwe’ll
+discussinSectionI.7.
+
+--- PAGE_4 ---
+4 APPENDIXI • WORDSENSESANDWORDNET
+I.2 Relations Between Senses
+Thissectionexplorestherelationsbetweenwordsenses,especiallythosethathave
+receivedsignificantcomputationalinvestigationlikesynonymy,antonymy,andhy-
+pernymy.
+Synonymy
+We introduced in Chapter 5 the idea that when two senses of two different words
+synonym (lemmas) are identical, or nearly identical, we say the two senses are synonyms.
+Synonymsincludesuchpairsas
+couch/sofa vomit/throwup filbert/hazelnut car/automobile
+And we mentioned that in practice, the word synonym is commonly used to
+describe a relationship of approximate or rough synonymy. But furthermore, syn-
+onymyisactuallyarelationshipbetweensensesratherthanwords. Consideringthe
+words big and large. These mayseemto besynonyms inthefollowing sentences,
+sincewecouldswapbigandlargeineithersentenceandretainthesamemeaning:
+(I.7) Howbigisthatplane?
+(I.8) WouldIbeflyingonalargeorsmallplane?
+Butnotethefollowingsentenceinwhichwecannotsubstitutelargeforbig:
+(I.9) MissNelson,forinstance,becameakindofbigsistertoBenjamin.
+(I.10) ?MissNelson,forinstance,becameakindoflargesistertoBenjamin.
+Thisisbecausethewordbighasasensethatmeansbeingolderorgrownup,while
+largelacksthissense. Thus, wesaythatsomesensesofbigandlargeare(nearly)
+synonymouswhileotheronesarenot.
+Antonymy
+antonym Whereas synonyms are words with identical or similar meanings, antonyms are
+wordswithanoppositemeaning,like:
+long/short big/little fast/slow cold/hot dark/light
+rise/fall up/down in/out
+Twosensescanbeantonymsiftheydefineabinaryoppositionorareatopposite
+endsofsomescale. Thisisthecaseforlong/short,fast/slow,orbig/little,whichare
+reversives atoppositeendsofthelengthorsizescale. Anothergroupofantonyms,reversives,
+describechangeormovementinoppositedirections,suchasrise/fallorup/down.
+Antonymsthusdiffercompletelywithrespecttooneaspectoftheirmeaning—
+their position on a scale or their direction—but are otherwise very similar, sharing
+almostallotheraspectsof meaning. Thus, automaticallydistinguishingsynonyms
+fromantonymscanbedifficult.
+TaxonomicRelations
+Another way word senses can be related is taxonomically. A word (or sense) is a
+hyponym hyponymofanotherwordorsenseifthefirstismorespecific,denotingasubclass
+oftheother. Forexample,carisahyponymofvehicle,dogisahyponymofanimal,
+hypernym andmangoisahyponymoffruit. Conversely,wesaythatvehicleisahypernymof
+car,andanimalisahypernymofdog.Itisunfortunatethatthetwowords(hypernym
+
+--- PAGE_5 ---
+I.2 • RELATIONSBETWEENSENSES 5
+andhyponym)areverysimilarandhenceeasilyconfused;forthisreason,theword
+superordinate superordinateisoftenusedinsteadofhypernym.
+Superordinate vehicle fruit furniture mammal
+Subordinate car mango chair dog
+We can define hypernymy more formally by saying that the class denoted by
+the superordinate extensionally includes the class denoted by the hyponym. Thus,
+theclassofanimalsincludesasmembersalldogs,andtheclassofmovingactions
+includes all walking actions. Hypernymy can also be defined in terms of entail-
+ment. Under this definition, a sense A is a hyponym of a sense B if everything
+thatisAisalsoB,andhencebeinganAentailsbeingaB,or∀x A(x)⇒B(x). Hy-
+ponymy/hypernymyisusuallyatransitiverelation;ifAisahyponymofBandBisa
+hyponymofC,thenAisahyponymofC.Anothernameforthehypernym/hyponym
+IS-A structureistheIS-Ahierarchy,inwhichwesayAIS-AB,orBsubsumesA.
+Hypernymy is useful for tasks like textual entailment or question answering;
+knowingthatleukemiaisatypeofcancer,forexample,wouldcertainlybeusefulin
+answeringquestionsaboutleukemia.
+Meronymy
+part-whole Anothercommonrelationismeronymy,thepart-wholerelation. Alegispartofa
+chair;awheelispartofacar. Wesaythatwheelisameronymofcar,andcarisa
+holonymofwheel.
+StructuredPolysemy
+The senses of a word can also be related semantically, in which case we call the
+structured relationshipbetweenthemstructuredpolysemy. Considerthissensebank:
+polysemy
+(I.11) ThebankisonthecornerofNassauandWitherspoon.
+This sense, perhaps bank4, means something like “the building belonging to
+a financial institution”. These two kinds of senses (an organization and the build-
+ing associated with an organization ) occur together for many other words as well
+(school,university,hospital,etc.). Thus,thereisasystematicrelationshipbetween
+sensesthatwemightrepresentas
+BUILDING↔ORGANIZATION
+metonymy Thisparticularsubtypeofpolysemyrelationiscalledmetonymy. Metonymyis
+theuseofoneaspectofaconceptorentitytorefertootheraspectsoftheentityor
+totheentityitself. WeareperformingmetonymywhenweusethephrasetheWhite
+House to refer to the administration whose office is in the White House. Other
+commonexamplesofmetonymyincludetherelationbetweenthefollowingpairings
+ofsenses:
+AUTHOR ↔ WORKSOFAUTHOR
+(JaneAustenwroteEmma) (IreallyloveJaneAusten)
+FRUITTREE ↔ FRUIT
+(Plumshavebeautifulblossoms) (Iateapreservedplumyesterday)
+[TABLES]
+[['Superordinate', 'vehicle', 'fruit', 'furniture', 'mammal'], ['Subordinate', 'car', 'mango', 'chair', 'dog']]
+[['AUTHOR', '↔', 'WORKSOFAUTHOR'], ['(JaneAustenwroteEmma)', '', '(IreallyloveJaneAusten)'], ['FRUITTREE', '↔', 'FRUIT'], ['(Plumshavebeautifulblossoms)', '', '(Iateapreservedplumyesterday)']]
+
+--- PAGE_6 ---
+6 APPENDIXI • WORDSENSESANDWORDNET
+I.3 WordNet: A Database of Lexical Relations
+The most commonly used resource for sense relations in English and many other
+WordNet languages is the WordNet lexical database (Fellbaum, 1998). English WordNet
+consists of three separate databases, one each for nouns and verbs and a third for
+adjectivesandadverbs;closedclasswordsarenotincluded. Eachdatabasecontains
+asetoflemmas,eachoneannotatedwithasetofsenses. TheWordNet3.0release
+has117,798nouns, 11,529verbs, 22,479adjectives, and4,481adverbs. Theaver-
+age noun has 1.23 senses, and the average verb has 2.16 senses. WordNet can be
+accessedontheWebordownloadedlocally. FigureI.1showsthelemmaentryfor
+thenounbass.
+Thenoun“bass”has8sensesinWordNet.
+1.bass1-(thelowestpartofthemusicalrange)
+2.bass2,basspart1-(thelowestpartinpolyphonicmusic)
+3.bass3,basso1-(anadultmalesingerwiththelowestvoice)
+4.seabass1,bass4-(theleanfleshofasaltwaterfishofthefamilySerranidae)
+5.freshwaterbass1,bass5-(anyofvariousNorthAmericanfreshwaterfishwith
+leanflesh(especiallyofthegenusMicropterus))
+6.bass6,bassvoice1,basso2-(thelowestadultmalesingingvoice)
+7.bass7-(thememberwiththelowestrangeofafamilyofmusicalinstruments)
+8.bass8-(nontechnicalnameforanyofnumerousediblemarineand
+freshwaterspiny-finnedfishes)
+FigureI.1 AportionoftheWordNet3.0entryforthenounbass.
+gloss Note that there are eight senses, each of which has a gloss (a dictionary-style
+definition), a list of synonyms for the sense, and sometimes also usage examples.
+WordNetdoesn’trepresentpronunciation, sodoesn’tdistinguishthepronunciation
+[baes]inbass4,bass5,andbass8fromtheothersensespronounced[beys].
+synset Thesetofnear-synonymsforaWordNetsenseiscalledasynset(forsynonym
+set); synsets are an important primitive in WordNet. The entry for bass includes
+synsets like {bass1, deep6}, or {bass6, bass voice1, basso2}. We can think of a
+synset as representing a concept of the type we discussed in Appendix F. Thus,
+insteadofrepresentingconceptsinlogicalterms,WordNetrepresentsthemaslists
+of the word senses that can be used to express the concept. Here’s another synset
+example:
+{chump1, fool2, gull1, mark9, patsy1, fall guy1,
+sucker1, soft touch1, mug2}
+Theglossofthissynsetdescribesitas:
+Gloss: apersonwhoisgullibleandeasytotakeadvantageof.
+Glossesarepropertiesofasynset,sothateachsenseincludedinthesynsethasthe
+same gloss and can express this concept. Because they share glosses, synsets like
+this one are the fundamental unit associated with WordNet entries, and hence it is
+synsets,notwordforms,lemmas,orindividualsenses,thatparticipateinmostofthe
+lexicalsenserelationsinWordNet.
+WordNet also labels each synset with a lexicographic category drawn from a
+semanticfieldforexamplethe26categoriesfornounsshowninFig.I.2,aswellas
+15 for verbs (plus 2 for adjectives and 1 for adverbs). These categories are often
+[TABLES]
+[['Thenoun“bass”has8sensesinWordNet.\n1.bass1-(thelowestpartofthemusicalrange)\n2.bass2,basspart1-(thelowestpartinpolyphonicmusic)\n3.bass3,basso1-(anadultmalesingerwiththelowestvoice)\n4.seabass1,bass4-(theleanfleshofasaltwaterfishofthefamilySerranidae)\n5.freshwaterbass1,bass5-(anyofvariousNorthAmericanfreshwaterfishwith\nleanflesh(especiallyofthegenusMicropterus))\n6.bass6,bassvoice1,basso2-(thelowestadultmalesingingvoice)\n7.bass7-(thememberwiththelowestrangeofafamilyofmusicalinstruments)\n8.bass8-(nontechnicalnameforanyofnumerousediblemarineand\nfreshwaterspiny-finnedfishes)'], ['FigureI.1']]
+
+--- PAGE_7 ---
+I.3 • WORDNET: ADATABASEOFLEXICALRELATIONS 7
+supersense calledsupersenses,becausetheyactascoarsesemanticcategoriesorgroupingsof
+senses which can be useful when word senses are too fine-grained (Ciaramita and
+Johnson2003,CiaramitaandAltun2006). Supersenseshavealsobeendefinedfor
+adjectives(Tsvetkovetal.,2014)andprepositions(Schneideretal.,2018).
+Category Example Category Example Category Example
+ACT service GROUP place PLANT tree
+ANIMAL dog LOCATION area POSSESSION price
+ARTIFACT car MOTIVE reason PROCESS process
+ATTRIBUTE quality NATURALEVENT experience QUANTITY amount
+BODY hair NATURALOBJECT flower RELATION portion
+COGNITION way OTHER stuff SHAPE square
+COMMUNICATION review PERSON people STATE pain
+FEELING discomfort PHENOMENON result SUBSTANCE oil
+FOOD food TIME day
+FigureI.2 Supersenses:26lexicographiccategoriesfornounsinWordNet.
+I.3.1 SenseRelationsinWordNet
+WordNetrepresentsallthekindsofsenserelationsdiscussedintheprevioussection,
+asillustratedinFig.I.3andFig.I.4.
+Relation AlsoCalled Definition Example
+Hypernym Superordinate Fromconceptstosuperordinates breakfast1→meal1
+Hyponym Subordinate Fromconceptstosubtypes meal1→lunch1
+InstanceHypernym Instance Frominstancestotheirconcepts Austen1→author1
+InstanceHyponym Has-Instance Fromconceptstotheirinstances composer1→Bach1
+PartMeronym Has-Part Fromwholestoparts table2→leg3
+PartHolonym Part-Of Frompartstowholes course7→meal1
+Antonym Semanticoppositionbetweenlemmas leader1⇐⇒follower1
+Derivation Lemmasw/samemorphologicalroot destruction1⇐⇒destroy1
+FigureI.3 SomeofthenounrelationsinWordNet.
+Relation Definition Example
+Hypernym Fromeventstosuperordinateevents fly9→travel5
+Troponym Fromeventstosubordinateevent walk1→stroll1
+Entails Fromverbs(events)totheverbs(events)theyentail snore1→sleep1
+Antonym Semanticoppositionbetweenlemmas increase1⇐⇒decrease1
+FigureI.4 SomeverbrelationsinWordNet.
+ForexampleWordNetrepresentshyponymy(page4)byrelatingeachsynsetto
+its immediately more general and more specific synsets through direct hypernym
+andhyponymrelations. Theserelationscanbefollowedtoproducelongerchainsof
+moregeneralormorespecificsynsets. FigureI.5showshypernymchainsforbass3
+andbass7;moregeneralsynsetsareshownonsuccessivelyindentedlines.
+WordNethastwokindsoftaxonomicentities:classesandinstances.Aninstance
+isanindividual,apropernounthatisauniqueentity. SanFranciscoisaninstance
+ofcity,forexample. Butcityisaclass,ahyponymofmunicipalityandeventuallyof
+location.Fig.I.6showsasubgraphofWordNetdemonstratingmanyoftherelations.
+[TABLES]
+[['Category Example Category Example Category Example'], ['ACT service GROUP place PLANT tree\nANIMAL dog LOCATION area POSSESSION price\nARTIFACT car MOTIVE reason PROCESS process\nATTRIBUTE quality NATURALEVENT experience QUANTITY amount\nBODY hair NATURALOBJECT flower RELATION portion\nCOGNITION way OTHER stuff SHAPE square\nCOMMUNICATION review PERSON people STATE pain\nFEELING discomfort PHENOMENON result SUBSTANCE oil\nFOOD food TIME day'], ['FigureI.2']]
+[['Relation AlsoCalled Definition Example'], ['Hypernym Superordinate Fromconceptstosuperordinates breakfast1→meal1\nHyponym Subordinate Fromconceptstosubtypes meal1→lunch1\nInstanceHypernym Instance Frominstancestotheirconcepts Austen1→author1\nInstanceHyponym Has-Instance Fromconceptstotheirinstances composer1→Bach1\nPartMeronym Has-Part Fromwholestoparts table2→leg3\nPartHolonym Part-Of Frompartstowholes course7→meal1\nAntonym Semanticoppositionbetweenlemmas leader1⇐⇒follower1\nDerivation Lemmasw/samemorphologicalroot destruction1⇐⇒destro'], ['FigureI.3']]
+[['Relation Definition Example'], ['Hypernym Fromeventstosuperordinateevents fly9→travel5\nTroponym Fromeventstosubordinateevent walk1→stroll1\nEntails Fromverbs(events)totheverbs(events)theyentail snore1→sleep1\nAntonym Semanticoppositionbetweenlemmas increase1⇐⇒decrease1'], ['FigureI.4']]
+
+--- PAGE_8 ---
+8 APPENDIXI • WORDSENSESANDWORDNET
+bass3, basso (an adult male singer with the lowest voice)
+=> singer, vocalist, vocalizer, vocaliser
+=> musician, instrumentalist, player
+=> performer, performing artist
+=> entertainer
+=> person, individual, someone...
+=> organism, being
+=> living thing, animate thing,
+=> whole, unit
+=> object, physical object
+=> physical entity
+=> entity
+bass7 (member with the lowest range of a family of instruments)
+=> musical instrument, instrument
+=> device
+=> instrumentality, instrumentation
+=> artifact, artefact
+=> whole, unit
+=> object, physical object
+=> physical entity
+=> entity
+FigureI.5 Hyponymy chains for two separate senses of the lemma bass. Note that the
+chainsarecompletelydistinct,onlyconvergingattheveryabstractlevelwhole,unit.
+FigureI.6 WordNetviewedasagraph.FigurefromNavigli(2016).
+I.4 Word Sense Disambiguation
+Thetaskofselectingthecorrectsenseforawordiscalledwordsensedisambigua-
+wordsense tion,orWSD.WSDalgorithmstakeasinputawordincontextandafixedinventory
+disambiguation
+WSD ofpotentialwordsensesandoutputsthecorrectwordsenseincontext.
+[TABLES]
+[['bass3, basso (an adult male singer with the lowest voice)\n=> singer, vocalist, vocalizer, vocaliser\n=> musician, instrumentalist, player\n=> performer, performing artist\n=> entertainer\n=> person, individual, someone...\n=> organism, being\n=> living thing, animate thing,\n=> whole, unit\n=> object, physical object\n=> physical entity\n=> entity\nbass7 (member with the lowest range of a family of instruments)\n=> musical instrument, instrument\n=> device\n=> instrumentality, instrumentation\n=> artifact, artefact\n=> whole, unit\n=> object, physical object\n=> physical entity\n=> entity'], ['FigureI.5']]
+[[''], ['FigureI.6']]
+
+--- PAGE_9 ---
+I.4 • WORDSENSEDISAMBIGUATION 9
+I.4.1 WSD:TheTaskandDatasets
+In this section we introduce the task setup for WSD, and then turn to algorithms.
+The inventory of sense tags depends on the task. For sense tagging in the context
+oftranslationfromEnglishtoSpanish,thesensetaginventoryforanEnglishword
+might be the set of different Spanish translations. For automatic indexing of med-
+ical articles, the sense-tag inventory might be the set of MeSH (Medical Subject
+Headings) thesaurus entries. Or we can use the set of senses from a resource like
+WordNet, or supersenses if we want a coarser-grain set. Figure I.4.1 shows some
+suchexamplesforthewordbass.
+WordNet Spanish WordNet
+Sense Translation Supersense TargetWordinContext
+bass4 lubina FOOD ...fishasPacificsalmonandstripedbassand...
+bass7 bajo ARTIFACT ...playbassbecausehedoesn’thavetosolo...
+FigureI.7 Somepossiblesensetaginventoriesforbass.
+In some situations, we just need to disambiguate a small number of words. In
+lexicalsample suchlexicalsample tasks,wehaveasmallpre-selectedsetoftargetwordsandan
+inventoryofsensesforeachwordfromsomelexicon. Sincethesetofwordsandthe
+setofsensesaresmall,simplesupervisedclassificationapproachesworkverywell.
+Morecommonly, however, wehaveaharderprobleminwhichwehavetodis-
+all-words ambiguateallthewordsinsometext. Inthisall-wordstask,thesystemisgivenan
+entiretextsandalexiconwithaninventoryofsensesforeachentryandwehaveto
+disambiguate every word in the text (or sometimes just every content word). The
+all-wordstaskissimilartopart-of-speechtagging,exceptwithamuchlargersetof
+tags since each lemma has its own set. A consequence of this larger set of tags is
+datasparseness.
+Supervisedall-worddisambiguationtasksaregenerallytrainedfromasemantic
+semantic concordance, a corpus in which each open-class word in each sentence is labeled
+concordance
+with its word sense from a specific dictionary or thesaurus, most often WordNet.
+The SemCor corpus is a subset of the Brown Corpus consisting of over 226,036
+wordsthatweremanuallytaggedwithWordNetsenses(Milleretal.1993, Landes
+etal.1998). Othersense-taggedcorporahavebeenbuiltfortheSENSEVALandSe-
+mEvalWSDtasks,suchastheSENSEVAL-3Task1Englishall-wordstestdatawith
+2282 annotations (Snyder and Palmer, 2004) or the SemEval-13 Task 12 datasets.
+LargesemanticconcordancesarealsoavailableinotherlanguagesincludingDutch
+(Vossenetal.,2011)andGerman(Henrichetal.,2012).
+Here’s an example from the SemCor corpus showing the WordNet sense num-
+bersofthetaggedwords;we’veusedthestandardWSDnotationinwhichasubscript
+marksthepartofspeech(Navigli,2009):
+(I.12) Youwillfind9thatavocado1is1unlike1other1fruit1youhaveever1tasted2
+v n v j j n r v
+Given each noun, verb, adjective, or adverb word in the hand-labeled test set (say
+fruit),theSemCor-basedWSDtaskistochoosethecorrectsensefromthepossible
+sensesinWordNet. Forfruitthiswouldmeanchoosingbetweenthecorrectanswer
+fruit1(theripenedreproductivebodyofaseedplant),andtheothertwosensesfruit2
+n n
+(yield;anamountofaproduct)andfruit3(theconsequenceofsomeeffortoraction).
+n
+Fig.I.8sketchesthetask.
+WSD systems are typically evaluated intrinsically, by computing F1 against
+hand-labeled sense tags in a held-out set, such as the SemCor corpus or SemEval
+corporadiscussedabove.
+[TABLES]
+[['WordNet Spanish WordNet\nSense Translation Supersense TargetWordinContext'], ['bass4 lubina FOOD ...fishasPacificsalmonandstripedbassand...\nbass7 bajo ARTIFACT ...playbassbecausehedoesn’thavetosolo...'], ['FigureI.7']]
+
+--- PAGE_10 ---
+10 APPENDIXI • WORDSENSESANDWORDNET
+y y
+5 6
+y
+3
+stand1: side1:
+y y
+1 bass1: 4 upright relative
+low range … region
+electric1: … player1: stand5: …
+using bass4: in game bear side3:
+electricity sea fish player2: … of body
+electric2: y … musician stand10: …
+tense 2 bass7: player3: put side11:
+electric3: instrument actor upright slope
+thrilling guitar1 … … … …
+x x x x x x
+1 2 3 4 5 6
+an electric guitar and bass player stand off to one side
+FigureI.8 The all-words WSD task, mapping from input words (x) to WordNet senses
+(y). Onlynouns,verbs,adjectives,andadverbsaremapped,andnotethatsomewords(like
+guitar in the example) only have one sense in WordNet. Figure inspired by Chaplot and
+Salakhutdinov(2018).
+mostfrequent Asurprisinglystrongbaselineissimplytochoosethemostfrequentsensefor
+sense
+eachwordfromthesensesinalabeledcorpus(Galeetal.,1992a).ForWordNet,this
+corresponds to the first sense, since senses in WordNet are generally ordered from
+most frequent to least frequent based on their counts in the SemCor sense-tagged
+corpus. The most frequent sense baseline can be quite accurate, and is therefore
+often used as a default, to supply a word sense when a supervised algorithm has
+insufficienttrainingdata.
+onesenseper A second heuristic, called one sense per discourse is based on the work of
+discourse
+Gale et al. (1992b), who noticed that a word appearing multiple times in a text or
+discourseoftenappearswiththesamesense. Thisheuristicseemstoholdbetterfor
+coarse-grainedsensesandparticularlywhenaword’ssensesareunrelated,soisn’t
+generally used as a baseline. Nonetheless various kinds of disambiguation tasks
+oftenincludesomesuchbiastowardresolvinganambiguitythesamewayinsidea
+discoursesegment.
+I.4.2 TheWSDAlgorithm: ContextualEmbeddings
+ThebestperformingWSDalgorithmisasimple1-nearest-neighboralgorithmusing
+contextualwordembeddings,duetoMelamudetal.(2016)andPetersetal.(2018).
+AttrainingtimewepasseachsentenceintheSemCorelabeleddatasetthroughany
+contextual embedding (e.g., BERT) resulting in a contextual embedding for each
+labeledtokeninSemCore. (Therearevariouswaystocomputethiscontextualem-
+beddingv foratokeni;forBERTitiscommontopoolmultiplelayersbysumming
+i
+thevectorrepresentationsofifromthelastfourBERTlayers). Thenforeachsense
+sofanywordinthecorpus,foreachofthentokensofthatsense,weaveragetheir
+ncontextualrepresentationsv toproduceacontextualsenseembeddingv fors:
+i s
+1(cid:88)
+v s = v i ∀v i ∈tokens(s) (I.13)
+n
+i
+Attesttime,givenatokenofatargetwordt incontext,wecomputeitscontextual
+embedding t and choose its nearest neighbor sense from the training set, i.e., the
+[TABLES]
+[['y y\n5 6\ny\n3\nstand1: side1:\ny y\n1 bass1: 4 upright relative\nlow range … region\nelectric1: … player1: stand5: …\nusing bass4: in game bear side3:\nelectricity sea fish player2: … of body\nelectric2: y … musician stand10: …\ntense 2 bass7: player3: put side11:\nelectric3: instrument actor upright slope\nthrilling guitar1 … … … …\nx x x x x x\n1 2 3 4 5 6\nan electric guitar and bass player stand off to one side'], ['FigureI.8']]
+[['electric1:\nusing\nelectricity\nelectric2:\ntense\nelectric3:\nthrilling', None], [None, 'guitar1']]
+
+--- PAGE_11 ---
+I.4 • WORDSENSEDISAMBIGUATION 11
+sensewhosesenseembeddinghasthehighestcosinewitht:
+sense(t)= argmax cosine(t,v s ) (I.14)
+s∈senses(t)
+Fig.I.9illustratesthemodel.
+5
+4 find v
+find
+v 1
+find
+v
+9
+find
+v
+c c c c c
+I found the jar empty
+ENCODER
+I found the jar empty
+FigureI.9 Thenearest-neighboralgorithmforWSD.Ingreenarethecontextualembed-
+dingsprecomputedforeachsenseofeachword; herewejustshowafewofthesensesfor
+find. A contextual embedding is computed for the target word found, and then the nearest
+neighborsense(inthiscasefind9)ischosen.FigureinspiredbyLoureiroandJorge(2019).
+v
+What do we do for words we haven’t seen in the sense-labeled training data?
+Afterall,thenumberofsensesthatappearinSemCorisonlyasmallfractionofthe
+wordsinWordNet.ThesimplestalgorithmistofallbacktotheMostFrequentSense
+baseline,i.e. takingthefirstsenseinWordNet. Butthat’snotverysatisfactory.
+A more powerful approach, due to Loureiro and Jorge (2019), is to impute the
+missingsenseembeddings,bottom-up,byusingtheWordNettaxonomyandsuper-
+senses. Wegetasenseembeddingforanyhigher-levelnodeintheWordNettaxon-
+omybyaveragingtheembeddingsofitschildren,thuscomputingtheembeddingfor
+eachsynsetastheaverageofitssenseembeddings,theembeddingforahypernym
+astheaverageofitssynsetembeddings,andthelexicographiccategory(supersense)
+embeddingastheaverageofthelargesetofsynsetembeddingswiththatcategory.
+Moreformally,foreachmissingsenseinWordNetsˆ∈W,letthesenseembeddings
+fortheothermembersofitssynsetbeS ,thehypernym-specificsynsetembeddings
+sˆ
+beH ,andthelexicographic(supersense-specific)synsetembeddingsbeL . Wecan
+sˆ sˆ
+thencomputethesenseembeddingforsˆasfollows:
+1 (cid:88)
+if |S sˆ |>0, v sˆ = v s ,∀v s ∈S sˆ (I.15)
+|S |
+sˆ
+1 (cid:88)
+elseif |H sˆ |>0, v sˆ = v syn ,∀v syn ∈H sˆ (I.16)
+|H |
+sˆ
+1 (cid:88)
+elseif |L sˆ |>0, v sˆ = v syn ,∀v syn ∈L sˆ (I.17)
+|L |
+sˆ
+Since all of the supersenses have some labeled data in SemCor, the algorithm is
+guaranteed to have some representation for all possible senses by the time the al-
+gorithmbacksofftothemostgeneral(supersense)information,althoughofcourse
+withaverycoarsemodel.
+[TABLES]
+[['5\n4 find v\nfind\nv 1\nfind\nv\n9\nfind\nv\nc c c c c\nI found the jar empty\nENCODER\nI found the jar empty'], ['FigureI.9']]
+[['5\n4 find v\nfind\nv 1\nfind\nv\n9\nfind\nv'], ['c c c c c\nI found the jar empty\nENCODER\nI found the jar empty']]
+
+--- PAGE_12 ---
+12 APPENDIXI • WORDSENSESANDWORDNET
+I.5 Alternate WSD algorithms and Tasks
+I.5.1 Feature-BasedWSD
+Feature-based algorithms for WSD are extremely simple and function almost as
+wellascontextuallanguagemodelalgorithms. ThebestperformingIMSalgorithm
+(ZhongandNg,2010),augmentedbyembeddings(Iacobaccietal.2016,Raganato
+etal.2017b), usesanSVMclassifiertochoosethesenseforeachinputwordwith
+thefollowingsimplefeaturesofthesurroundingwords:
+• part-of-speech tags (for a window of 3 words on each side, stopping at sen-
+tenceboundaries)
+collocation • collocation features of words or n-grams of lengths 1, 2, 3 at a particular
+location in a window of 3 words on each side (i.e., exactly one word to the
+right,orthetwowordsstarting3wordstotheleft,andsoon).
+• weighted average of embeddings (of all words in a window of 10 words on
+eachside,weightedexponentiallybydistance)
+ConsidertheambiguouswordbassinthefollowingWSJsentence:
+(I.18) Anelectricguitarandbassplayerstandofftooneside,
+Ifweusedasmall2-wordwindow,astandardfeaturevectormightincludeparts-of-
+speech,unigramandbigramcollocationfeatures,andaweightedsumgofembed-
+dings,thatis:
+[w ,POS ,w ,POS ,w ,POS ,w ,POS ,wi−1,
+i−2 i−2 i−1 i−1 i+1 i+1 i+2 i+2 i−2
+wi i + + 2 1 ,g(E(w i−2 ),E(w i−1 ),E(w i+1 ),E(w i+2 )] (I.19)
+wouldyieldthefollowingvector:
+[guitar, NN, and, CC, player, NN, stand, VB, guitar and,
+player stand, g(E(guitar),E(and),E(player),E(stand))]
+I.5.2 TheLeskAlgorithmasWSDBaseline
+GeneratingsenselabeledcorporalikeSemCorisquitedifficultandexpensive. An
+knowledge- alternative class of WSD algorithms, knowledge-based algorithms, rely solely on
+based
+WordNetorothersuchresourcesanddon’trequirelabeleddata. Whilesupervised
+algorithms generally work better, knowledge-based methods can be used in lan-
+guagesordomainswherethesaurusesordictionariesbutnotsenselabeledcorpora
+areavailable.
+Leskalgorithm The Lesk algorithm is the oldest and most powerful knowledge-based WSD
+method, andisausefulbaseline. Leskisreallyafamilyofalgorithmsthatchoose
+thesensewhosedictionaryglossordefinitionsharesthemostwordswiththetarget
+word’sneighborhood.FigureI.10showsthesimplestversionofthealgorithm,often
+SimplifiedLesk calledtheSimplifiedLeskalgorithm(KilgarriffandRosenzweig,2000).
+AsanexampleoftheLeskalgorithmatwork,considerdisambiguatingtheword
+bankinthefollowingcontext:
+(I.20) Thebankcanguaranteedepositswilleventuallycoverfuturetuitioncosts
+becauseitinvestsinadjustable-ratemortgagesecurities.
+giventhefollowingtwoWordNetsenses:
+
+--- PAGE_13 ---
+I.5 • ALTERNATEWSDALGORITHMSANDTASKS 13
+functionSIMPLIFIEDLESK(word,sentence)returnsbestsenseofword
+best-sense←mostfrequentsenseforword
+max-overlap←0
+context←setofwordsinsentence
+foreachsenseinsensesofworddo
+signature←setofwordsintheglossandexamplesofsense
+overlap←COMPUTEOVERLAP(signature,context)
+ifoverlap>max-overlapthen
+max-overlap←overlap
+best-sense←sense
+end
+return(best-sense)
+FigureI.10 TheSimplifiedLeskalgorithm.TheCOMPUTEOVERLAPfunctionreturnsthe
+numberofwordsincommonbetweentwosets,ignoringfunctionwordsorotherwordsona
+stoplist.TheoriginalLeskalgorithmdefinesthecontextinamorecomplexway.
+bank1 Gloss: a financial institution that accepts deposits and channels the
+moneyintolendingactivities
+Examples: “hecashedacheckatthebank”,“thatbankholdsthemortgage
+onmyhome”
+bank2 Gloss: slopingland(especiallytheslopebesideabodyofwater)
+Examples: “theypulledthecanoeuponthebank”,“hesatonthebankof
+theriverandwatchedthecurrents”
+Sensebank1 hastwonon-stopwordsoverlappingwiththecontextin(I.20): de-
+positsandmortgage,whilesensebank2haszerowords,sosensebank1ischosen.
+There are many obvious extensions to Simplified Lesk, such as weighing the
+overlappingwordsbyIDF(inversedocumentfrequency)(Chapter5)todownweight
+frequentwordslikefunctionwords; bestperformingistousewordembeddingco-
+sineinsteadofwordoverlaptocomputethesimilaritybetweenthedefinitionandthe
+context(Basileetal.,2014). ModernneuralextensionsofLeskusethedefinitions
+tocomputesenseembeddingsthatcanbedirectlyusedinsteadofSemCor-training
+embeddings(Kumaretal.2019,Luoetal.2018a,Luoetal.2018b).
+I.5.3 Word-in-ContextEvaluation
+WordSenseDisambiguationisamuchmorefine-grainedevaluationofwordmean-
+ingthanthecontext-freewordsimilaritytaskswedescribedinChapter5.Recallthat
+tasks like LexSim-999 require systems to match human judgments on the context-
+free similarity between two words (how similar is cup to mug?). We can think of
+WSDasakindofcontextualizedsimilaritytask,sinceourgoalistobeabletodistin-
+guishthemeaningofawordlikebassinonecontext(playingmusic)fromanother
+context(fishing).
+word-in-context Somewhereinbetweenliestheword-in-contexttask. Herethesystemisgiven
+twosentences,eachwiththesametargetwordbutinadifferentsententialcontext.
+Thesystemmustdecidewhetherthetargetwordsareusedinthesamesenseinthe
+WiC twosentencesorinadifferentsense. Fig.I.11showssamplepairsfromtheWiC
+datasetofPilehvarandCamacho-Collados(2019).
+The WiC sentences are mainly taken from the example usages for senses in
+WordNet. But WordNet senses are very fine-grained. For this reason tasks like
+[TABLES]
+[['functionSIMPLIFIEDLESK(word,sentence)returnsbestsenseofword\nbest-sense←mostfrequentsenseforword\nmax-overlap←0\ncontext←setofwordsinsentence\nforeachsenseinsensesofworddo\nsignature←setofwordsintheglossandexamplesofsense\noverlap←COMPUTEOVERLAP(signature,context)\nifoverlap>max-overlapthen\nmax-overlap←overlap\nbest-sense←sense\nend\nreturn(best-sense)'], ['FigureI.10']]
+[['bank1 Gloss: a financial institution that accepts deposits and channels the\nmoneyintolendingactivities\nExamples: “hecashedacheckatthebank”,“thatbankholdsthemortgage\nonmyhome”'], ['bank2 Gloss: slopingland(especiallytheslopebesideabodyofwater)\nExamples: “theypulledthecanoeuponthebank”,“hesatonthebankof\ntheriverandwatchedthecurrents”']]
+
+--- PAGE_14 ---
+14 APPENDIXI • WORDSENSESANDWORDNET
+F There’salotoftrashonthebedoftheriver—
+IkeepaglassofwaternexttomybedwhenIsleep
+F Justifythemargins—Theendjustifiesthemeans
+T Airpollution—Openawindowandletinsomeair
+T Theexpandedwindowwillgiveustimetocatchthethieves—
+Youhaveatwo-hourwindowofclearweathertofinishworkingonthelawn
+FigureI.11 Positive (T) and negative (F) pairs from the WiC dataset (Pilehvar and
+Camacho-Collados,2019).
+word-in-context first cluster the word senses into coarser clusters, so that the two
+sentential contexts forthe target word are marked asT if the two sensesare in the
+samecluster. WiCclustersallpairsofsensesiftheyarefirstdegreeconnectionsin
+theWordNetsemanticgraph, includingsistersenses, oriftheybelongtothesame
+supersense;wepointtoothersenseclusteringalgorithmsattheendofthechapter.
+The baseline algorithm to solve the WiC task uses contextual embeddings like
+BERT with a simple thresholded cosine. We first compute the contextual embed-
+dingsforthetargetwordineachofthetwosentences,andthencomputethecosine
+betweenthem. Ifit’saboveathresholdtunedonadevsetwerespondtrue(thetwo
+sensesarethesame)elsewerespondfalse.
+I.5.4 Wikipediaasasourceoftrainingdata
+DatasetsotherthanSemCorhavebeenusedforall-wordsWSD.Oneimportantdi-
+rection is to use Wikipedia as a source of sense-labeled data. When a concept is
+mentionedinaWikipediaarticle,thearticletextmaycontainanexplicitlinktothe
+concept’sWikipediapage, whichisnamedbyauniqueidentifier. Thislinkcanbe
+used as a sense annotation. For example, the ambiguous word bar is linked to a
+differentWikipediaarticledependingonitsmeaningincontext,includingthepage
+BAR (LAW), the page BAR (MUSIC), and so on, as in the following Wikipedia
+examples(Mihalcea,2007).
+In 1834, Sumner was admitted to the [[bar (law)|bar]] at the age of
+twenty-three,andenteredprivatepracticeinBoston.
+It is danced in 3/4 time (like most waltzes), with the couple turning
+approx. 180degreesevery[[bar(music)|bar]].
+Jengaisapopularbeerinthe[[bar(establishment)|bar]]sofThailand.
+Thesesentencescanthenbeaddedtothetrainingdataforasupervisedsystem.
+In order to use Wikipedia in this way, however, it is necessary to map from Wiki-
+pediaconceptstowhateverinventoryofsensesisrelevantfortheWSDapplication.
+Automatic algorithms that map from Wikipedia to WordNet, for example, involve
+finding the WordNet sense that has the greatest lexical overlap with the Wikipedia
+sense, bycomparingthevectorofwordsintheWordNetsynset, gloss, andrelated
+senseswiththevectorofwordsintheWikipediapagetitle,outgoinglinks,andpage
+category (Ponzetto and Navigli, 2010). The resulting mapping has been used to
+createBabelNet,alargesense-annotatedresource(NavigliandPonzetto,2012).
+
+--- PAGE_15 ---
+I.6 • USINGTHESAURUSESTOIMPROVEEMBEDDINGS 15
+I.6 Using Thesauruses to Improve Embeddings
+Thesauruses have also been used to improve both static and contextual word em-
+beddings. For example, static word embeddings have a problem with antonyms.
+A word like expensive is often very similar in embedding cosine to its antonym
+like cheap. Antonymy information from thesauruses can help solve this problem;
+Fig.I.12showsnearestneighborstosometargetwordsinGloVe,andtheimprove-
+mentafteronesuchmethod.
+Beforecounterfitting Aftercounterfitting
+east west north south eastward eastern easterly
+expensive pricey cheaper costly costly pricy overpriced
+British American Australian Britain Brits London BBC
+FigureI.12 The nearest neighbors in GloVe to east, expensive, and British include
+antonyms like west. The right side showing the improvement in GloVe nearest neighbors
+afterthecounterfittingmethod(Mrksˇic´etal.,2016).
+Therearetwofamiliesofsolutions. Thefirstrequiresretraining: wemodifythe
+embedding training to incorporate thesaurus relations like synonymy, antonym, or
+supersenses. Thiscanbedonebymodifyingthestaticembeddinglossfunctionfor
+word2vec (Yu and Dredze 2014, Nguyen et al. 2016) or by modifying contextual
+embeddingtraining(Levineetal.2020,Lauscheretal.2019).
+The second, for static embeddings, is more light-weight; after the embeddings
+have been trained we learn a second mapping based on a thesaurus that shifts the
+embeddingsofwordsinsuchawaythatsynonyms(accordingtothethesaurus)are
+retrofitting pushed closer and antonyms further apart. Such methods are called retrofitting
+(Faruquietal.2015,Lengerichetal.2018)orcounterfitting(Mrksˇic´ etal.,2016).
+I.7 Word Sense Induction
+Itisexpensiveanddifficulttobuildlargecorporainwhicheachwordislabeledfor
+itswordsense. Forthisreason,anunsupervisedapproachtosensedisambiguation,
+wordsense often called word sense induction or WSI, is an important direction. In unsu-
+induction
+pervised approaches, we don’t use human-defined word senses. Instead, the set of
+“senses” of each word is created automatically from the instances of each word in
+thetrainingset.
+Most algorithms for word sense induction follow the early work of Schu¨tze
+(Schu¨tze 1992, Schu¨tze 1998) in using some sort of clustering over word embed-
+dings. Intraining,weusethreesteps:
+1. Foreachtokenw ofwordwinacorpus,computeacontextvectorc.
+i
+2. Useaclusteringalgorithmtoclustertheseword-tokencontextvectorscinto
+apredefinednumberofgroupsorclusters. Eachclusterdefinesasenseofw.
+3. Compute the vector centroid of each cluster. Each vector centroid s is a
+j
+sensevectorrepresentingthatsenseofw.
+Sincethisisanunsupervisedalgorithm,wedon’thavenamesforeachofthese
+“senses”ofw;wejustrefertothe jthsenseofw.
+Todisambiguateaparticulartokent ofwweagainhavethreesteps:
+[TABLES]
+[['Beforecounterfitting Aftercounterfitting\neast west north south eastward eastern easterly\nexpensive pricey cheaper costly costly pricy overpriced\nBritish American Australian Britain Brits London BBC'], ['FigureI.12']]
+
+--- PAGE_16 ---
+16 APPENDIXI • WORDSENSESANDWORDNET
+1. Computeacontextvectorcfort.
+2. Retrieveallsensevectorss forw.
+j
+3. Assignt tothesenserepresentedbythesensevectors thatisclosesttot.
+j
+All we need is a clustering algorithm and a distance metric between vectors.
+Clusteringisawell-studiedproblemwithawidenumberofstandardalgorithmsthat
+canbeappliedtoinputsstructuredasvectorsofnumericalvalues(DudaandHart,
+1973). Afrequentlyusedtechniqueinlanguageapplicationsisknownasagglom-
+agglomerative erative clustering. In this technique, each of the N training instances is initially
+clustering
+assignedtoitsowncluster. Newclustersarethenformedinabottom-upfashionby
+thesuccessivemergingofthetwoclustersthataremostsimilar. Thisprocesscon-
+tinuesuntileitheraspecifiednumberofclustersisreached,orsomeglobalgoodness
+measure among the clusters is achieved. In cases in which the number of training
+instances makes this method too expensive, random sampling can be used on the
+originaltrainingsettoachievesimilarresults.
+Howcanweevaluateunsupervisedsensedisambiguationapproaches? Asusual,
+thebestwayistodoextrinsicevaluationembeddedinsomeend-to-endsystem;one
+example used in a SemEval bakeoff is to improve search result clustering and di-
+versification (Navigli and Vannella, 2013). Intrinsic evaluation requires a way to
+maptheautomaticallyderivedsenseclassesintoahand-labeledgold-standardsetso
+thatwecancompareahand-labeledtestsetwithasetlabeledbyourunsupervised
+classifier. Varioussuchmetricshavebeentested,forexampleintheSemEvaltasks
+(Manandhar et al. 2010, Navigli and Vannella 2013, Jurgens and Klapaftis 2013),
+includingclusteroverlapmetrics, ormethodsthatmapeachsenseclustertoapre-
+definedsensebychoosingthesensethat(insometrainingset)hasthemostoverlap
+withthecluster. Howeveritisfairtosaythatnoevaluationmetricforthistaskhas
+yetbecomestandard.
+I.8 Summary
+Thischapterhascoveredawiderangeofissuesconcerningthemeaningsassociated
+withlexicalitems. Thefollowingareamongthehighlights:
+• Awordsenseisthelocusofwordmeaning;definitionsandmeaningrelations
+aredefinedatthelevelofthewordsenseratherthanwordforms.
+• Manywordsarepolysemous,havingmanysenses.
+• Relations between senses include synonymy, antonymy, meronymy, and
+taxonomicrelationshyponymyandhypernymy.
+• WordNet is a large database of lexical relations for English, and WordNets
+existforavarietyoflanguages.
+• Word-sense disambiguation (WSD) is the task of determining the correct
+sense of a word in context. Supervised approaches make use of a corpus
+of sentences in which individual words (lexical sample task) or all words
+(all-wordstask)arehand-labeledwithsensesfromaresourcelikeWordNet.
+SemCoristhelargestcorpuswithWordNet-labeledsenses.
+• ThestandardsupervisedalgorithmforWSDisnearestneighborswithcontex-
+tualembeddings.
+• Feature-based algorithms using parts of speech and embeddings of words in
+thecontextofthetargetwordalsoworkwell.
+
+--- PAGE_17 ---
+HISTORICALNOTES 17
+• An important baseline for WSD is the most frequent sense, equivalent, in
+WordNet,totakethefirstsense.
+• Another baseline is a knowledge-based WSD algorithm called the Lesk al-
+gorithmwhichchoosesthesensewhosedictionarydefinitionsharesthemost
+wordswiththetargetword’sneighborhood.
+• Wordsenseinductionisthetaskoflearningwordsensesunsupervised.
+Historical Notes
+Word sense disambiguation traces its roots to some of the earliest applications of
+digitalcomputers. Theinsightthatunderliesmodernalgorithmsforwordsensedis-
+ambiguationwasfirstarticulatedbyWeaver(1949/1955)inthecontextofmachine
+translation:
+Ifoneexaminesthewordsinabook,oneatatimeasthroughanopaque
+mask with a hole in it one word wide, then it is obviously impossible
+to determine, one at a time, the meaning of the words. [...] But if
+one lengthens the slit in the opaque mask, until one can see not only
+the central word in question but also say N words on either side, then
+ifNislargeenoughonecanunambiguouslydecidethemeaningofthe
+centralword. [...] Thepracticalquestionis:“Whatminimumvalueof
+Nwill,atleastinatolerablefractionofcases,leadtothecorrectchoice
+ofmeaningforthecentralword?”
+Othernotionsfirstproposedinthisearlyperiodincludetheuseofathesaurusfordis-
+ambiguation(Masterman,1957),supervisedtrainingofBayesianmodelsfordisam-
+biguation(MadhuandLytel,1965),andtheuseofclusteringinwordsenseanalysis
+(SparckJones,1986).
+MuchdisambiguationworkwasconductedwithinthecontextofearlyAI-oriented
+naturallanguageprocessingsystems. Quillian(1968)andQuillian(1969)proposed
+a graph-based approach to language processing, in which the definition of a word
+was represented by a network of word nodes connected by syntactic and semantic
+relations, and sense disambiguation by finding the shortest path between senses in
+thegraph. Simmons(1973)isanotherinfluentialearlysemanticnetworkapproach.
+Wilksproposedoneoftheearliestnon-discretemodelswithhisPreferenceSeman-
+tics (Wilks 1975c, Wilks 1975b, Wilks 1975a), and Small and Rieger (1982) and
+Riesbeck(1975)proposedunderstandingsystemsbasedonmodelingrichprocedu-
+ral information for each word. Hirst’s ABSITY system (Hirst and Charniak 1982,
+Hirst1987,Hirst1988),whichusedatechniquecalledmarkerpassingbasedonse-
+mantic networks, represents the most advanced system of this type. As with these
+largelysymbolicapproaches, earlyneuralnetwork(atthetimecalled‘connection-
+ist’) approaches to word sense disambiguation relied on small lexicons with hand-
+codedrepresentations(Cottrell1985,Kawamoto1988).
+Theearliestimplementationofarobustempiricalapproachtosensedisambigua-
+tion is due to Kelly and Stone (1975), who directed a team that hand-crafted a set
+of disambiguation rules for 1790 ambiguous English words. Lesk (1986) was the
+firsttouseamachine-readabledictionaryforwordsensedisambiguation. Fellbaum
+(1998) collects early work on WordNet. Early work using dictionaries as lexical
+
+--- PAGE_18 ---
+18 APPENDIXI • WORDSENSESANDWORDNET
+resourcesincludeAmsler’s1981useoftheMerriamWebsterdictionaryandLong-
+man’sDictionaryofContemporaryEnglish(BoguraevandBriscoe,1989).
+Supervised approaches to disambiguation began with the use of decision trees
+byBlack(1988). InadditiontotheIMSandcontextual-embeddingbasedmethods
+forsupervisedWSD,recentsupervisedalgorithmsincludesencoder-decodermodels
+(Raganatoetal.,2017a).
+The need for large amounts of annotated text in supervised methods led early
+ontoinvestigationsintotheuseofbootstrappingmethods(Hearst1991,Yarowsky
+1995). For example the semi-supervised algorithm of Diab and Resnik (2002) is
+based on aligned parallel corpora in two languages. For example, the fact that the
+French word catastrophe might be translated as English disaster in one instance
+and tragedy in another instance can be used to disambiguate the senses of the two
+Englishwords(i.e.,tochoosesensesofdisasterandtragedythataresimilar).
+The earliest use of clustering in the study of word senses was by Sparck Jones
+(1986);PedersenandBruce(1997),Schu¨tze(1997),andSchu¨tze(1998)applieddis-
+coarsesenses tributionalmethods. Clusteringwordsensesintocoarsesenseshasalsobeenused
+to address the problem of dictionary senses being too fine-grained (Section I.5.3)
+(Dolan 1994, Chen and Chang 1998, Mihalcea and Moldovan 2001, Agirre and
+deLacalle2003,Palmeretal.2004,Navigli2006,Snowetal.2007,Pilehvaretal.
+2013). Corporawithclusteredwordsensesfortrainingsupervisedclusteringalgo-
+OntoNotes rithmsincludePalmeretal.(2006)andOntoNotes(Hovyetal.,2006).
+SeePustejovsky(1995), PustejovskyandBoguraev(1996),Martin(1986), and
+CopestakeandBriscoe(1995), interalia, forcomputationalapproachestotherep-
+generative resentation of polysemy. Pustejovsky’s theory of the generative lexicon, and in
+lexicon
+qualia particularhistheoryofthequaliastructureofwords,isawayofaccountingforthe
+structure
+dynamicsystematicpolysemyofwordsincontext.
+HistoricaloverviewsofWSDincludeAgirreandEdmonds(2006)andNavigli
+(2009).
+Exercises
+I.1 Collect a small corpus of example sentences of varying lengths from any
+newspaper or magazine. Using WordNet or any standard dictionary, deter-
+minehowmanysensesthereareforeachoftheopen-classwordsineachsen-
+tence. Howmanydistinctcombinationsofsensesarethereforeachsentence?
+Howdoesthisnumberseemtovarywithsentencelength?
+I.2 UsingWordNetorastandardreferencedictionary, tageachopen-classword
+inyourcorpuswithitscorrecttag. Waschoosingthecorrectsensealwaysa
+straightforwardtask? Reportonanydifficultiesyouencountered.
+I.3 Using your favorite dictionary, simulate the original Lesk word overlap dis-
+ambiguationalgorithmdescribedonpage13onthephraseTimeflieslikean
+arrow. Assume that the words are to be disambiguated one at a time, from
+left to right, and that the results from earlier decisions are used later in the
+process.
+I.4 Build an implementation of your solution to the previous exercise. Using
+WordNet, implement the original Lesk word overlap disambiguation algo-
+rithmdescribedonpage13onthephraseTimeflieslikeanarrow.
+
+--- PAGE_19 ---
+Exercises 19
+Agirre,E.andO.L.deLacalle.2003. ClusteringWordNet Hirst,G.1987. SemanticInterpretationandtheResolution
+wordsenses.RANLP2003. ofAmbiguity.CambridgeUniversityPress.
+Agirre,E.andP.Edmonds,eds.2006. WordSenseDisam- Hirst,G.1988.Resolvinglexicalambiguitycomputationally
+biguation:AlgorithmsandApplications.Kluwer. withspreadingactivationandpolaroidwords. InS.L.
+Small,G.W.Cottrell,andM.K.Tanenhaus,eds,Lexical
+Amsler, R. A. 1981. A taxonomy for English nouns and
+AmbiguityResolution,73–108.MorganKaufmann.
+verbs.ACL.
+Hirst,G.andE.Charniak.1982. Wordsenseandcaseslot
+Basile,P.,A.Caputo,andG.Semeraro.2014. Anenhanced
+disambiguation.AAAI.
+Leskwordsensedisambiguationalgorithmthroughadis-
+tributionalsemanticmodel.COLING. Hovy, E. H., M. P. Marcus, M. Palmer, L. A. Ramshaw,
+andR.Weischedel.2006.OntoNotes:The90%solution.
+Black,E.1988. Anexperimentincomputationaldiscrimi-
+HLT-NAACL.
+nationofEnglishwordsenses. IBMJournalofResearch
+andDevelopment,32(2):185–194. Iacobacci, I., M. T. Pilehvar, and R. Navigli. 2016. Em-
+beddingsforwordsensedisambiguation: Anevaluation
+Boguraev,B.K.andT.Briscoe,eds.1989. Computational
+study.ACL.
+LexicographyforNaturalLanguageProcessing. Long-
+man. Jurgens,D.andI.P.Klapaftis.2013.SemEval-2013task13:
+Wordsenseinductionforgradedandnon-gradedsenses.
+Chaplot, D. S. and R. Salakhutdinov. 2018. Knowledge-
+*SEM.
+based word sense disambiguation using topic models.
+Kawamoto,A.H.1988. Distributedrepresentationsofam-
+AAAI.
+biguouswordsandtheirresolutioninconnectionistnet-
+Chen, J. N. and J. S. Chang. 1998. Topical clustering of
+works. In S. L. Small, G. W. Cottrell, and M. Tanen-
+MRDsensesbasedoninformationretrievaltechniques.
+haus,eds,LexicalAmbiguityResolution,195–228.Mor-
+ComputationalLinguistics,24(1):61–96.
+ganKaufman.
+Ciaramita, M. and Y. Altun. 2006. Broad-coverage sense Kelly,E.F.andP.J.Stone.1975. ComputerRecognitionof
+disambiguationandinformationextractionwithasuper- EnglishWordSenses.North-Holland.
+sensesequencetagger.EMNLP.
+Kilgarriff,A.andJ.Rosenzweig.2000. Frameworkandre-
+Ciaramita,M.andM.Johnson.2003.Supersensetaggingof sultsforEnglishSENSEVAL. ComputersandtheHu-
+unknownnounsinWordNet.EMNLP-2003. manities,34:15–48.
+Copestake, A. and T. Briscoe. 1995. Semi-productive Kumar,S.,S.Jat,K.Saxena,andP.Talukdar.2019. Zero-
+polysemy and sense extension. Journal of Semantics, shot word sense disambiguation using sense definition
+12(1):15–68. embeddings.ACL.
+Cottrell, G. W. 1985. A Connectionist Approach to Word Landes,S.,C.Leacock,andR.I.Tengi.1998. Buildingse-
+Sense Disambiguation. Ph.D. thesis, University of manticconcordances. InC.Fellbaum,ed.,WordNet:An
+Rochester,Rochester,NY. Revisedversionpublishedby ElectronicLexicalDatabase,199–216.MITPress.
+Pitman,1989.
+Lauscher, A., I. Vulic´, E. M. Ponti, A. Korhonen, and
+Diab,M.andP.Resnik.2002. Anunsupervisedmethodfor G. Glavasˇ. 2019. Informing unsupervised pretraining
+wordsensetaggingusingparallelcorpora.ACL. with external linguistic knowledge. ArXiv preprint
+Dolan,B.1994.Wordsenseambiguation:Clusteringrelated arXiv:1909.02339.
+senses.COLING. Lengerich,B.,A.Maas,andC.Potts.2018.Retrofittingdis-
+Duda,R.O.andP.E.Hart.1973.PatternClassificationand tributionalembeddingstoknowledgegraphswithfunc-
+SceneAnalysis.JohnWileyandSons. tionalrelations.COLING.
+Lesk, M.E.1986. Automaticsensedisambiguationusing
+Faruqui,M.,J.Dodge,S.K.Jauhar,C.Dyer,E.Hovy,and
+machinereadabledictionaries: Howtotellapinecone
+N.A.Smith.2015.Retrofittingwordvectorstosemantic
+lexicons.NAACLHLT. fromanicecreamcone. Proceedingsofthe5thInterna-
+tionalConferenceonSystemsDocumentation.
+Fellbaum, C., ed. 1998. WordNet: An Electronic Lexical
+Levine, Y., B. Lenz, O. Dagan, O. Ram, D. Pad-
+Database.MITPress.
+nos, O. Sharir, S. Shalev-Shwartz, A. Shashua, and
+Gale,W.A.,K.W.Church,andD.Yarowsky.1992a. Es- Y.Shoham.2020. SenseBERT:Drivingsomesenseinto
+timatingupperandlowerboundsontheperformanceof BERT.ACL.
+word-sensedisambiguationprograms.ACL.
+Loureiro,D.andA.Jorge.2019.Languagemodellingmakes
+Gale,W.A.,K.W.Church,andD.Yarowsky.1992b. One sense: PropagatingrepresentationsthroughWordNetfor
+senseperdiscourse.HLT. full-coveragewordsensedisambiguation.ACL.
+Haber,J.andM.Poesio.2020. Assessingpolysemesense Luo,F.,T.Liu,Z.He,Q.Xia,Z.Sui,andB.Chang.2018a.
+similaritythroughco-predicationacceptabilityandcon- Leveragingglossknowledgeinneuralwordsensedisam-
+textualisedembeddingdistance.*SEM. biguationbyhierarchicalco-attention.EMNLP.
+Hearst,M.A.1991.Nounhomographdisambiguation.Pro- Luo,F.,T.Liu,Q.Xia,B.Chang,andZ.Sui.2018b. Incor-
+ceedingsofthe7thConferenceoftheUniversityofWa- poratingglossesintoneuralwordsensedisambiguation.
+terlooCentrefortheNewOEDandTextResearch. ACL.
+Henrich, V., E. Hinrichs, and T. Vodolazova. 2012. We- Madhu,S.andD.Lytel.1965.Afigureofmerittechniquefor
+bCAGe – a web-harvested corpus annotated with Ger- theresolutionofnon-grammaticalambiguity.Mechanical
+maNetsenses.EACL. Translation,8(2):9–13.
+
+--- PAGE_20 ---
+20 AppendixI • WordSensesandWordNet
+Manandhar,S.,I.P.Klapaftis,D.Dligach,andS.Pradhan. Ponzetto,S.P.andR.Navigli.2010. Knowledge-richword
+2010. SemEval-2010task14: Wordsenseinduction& sensedisambiguationrivalingsupervisedsystems.ACL.
+disambiguation.SemEval.
+Pu, X., N. Pappas, J. Henderson, and A. Popescu-Belis.
+Martin,J.H.1986.Theacquisitionofpolysemy.ICML. 2018. Integratingweaklysupervisedwordsensedisam-
+Masterman,M.1957.Thethesaurusinsyntaxandsemantics. biguationintoneuralmachinetranslation. TACL,6:635–
+MechanicalTranslation,4(1):1–2. 649.
+Melamud, O., J. Goldberger, and I. Dagan. 2016. con- Pustejovsky,J.1995.TheGenerativeLexicon.MITPress.
+text2vec:Learninggenericcontextembeddingwithbidi- Pustejovsky,J.andB.K.Boguraev,eds.1996. LexicalSe-
+rectionalLSTM.CoNLL. mantics: TheProblemofPolysemy. OxfordUniversity
+Mihalcea, R. 2007. Using Wikipedia for automatic word Press.
+sensedisambiguation.NAACL-HLT. Quillian,M.R.1968.Semanticmemory.InM.Minsky,ed.,
+Mihalcea, R.andD.Moldovan.2001. Automaticgenera- SemanticInformationProcessing,227–270.MITPress.
+tionofacoarsegrainedWordNet. NAACLWorkshopon Quillian, M. R. 1969. The teachable language compre-
+WordNetandOtherLexicalResources. hender: Asimulationprogramandtheoryoflanguage.
+Miller, G. A., C. Leacock, R. I. Tengi, and R. T. Bunker. CACM,12(8):459–476.
+1993.Asemanticconcordance.HLT.
+Raganato,A.,C.D.Bovi,andR.Navigli.2017a.Neuralse-
+Morris,W.,ed.1985. AmericanHeritageDictionary,2nd quencelearningmodelsforwordsensedisambiguation.
+collegeeditionedition.HoughtonMifflin. EMNLP.
+Mrksˇic´,N.,D.O´.Se´aghdha,B.Thomson,M.Gasˇic´,L.M.
+Raganato,A.,J.Camacho-Collados,andR.Navigli.2017b.
+Rojas-Barahona,P.-H.Su,D.Vandyke,T.-H.Wen,and Wordsensedisambiguation:Aunifiedevaluationframe-
+S.Young.2016. Counter-fittingwordvectorstolinguis- workandempiricalcomparison.EACL.
+ticconstraints.NAACLHLT.
+Riesbeck,C.K.1975.Conceptualanalysis.InR.C.Schank,
+Navigli, R. 2006. Meaningful clustering of senses helps ed.,ConceptualInformationProcessing,83–156.Ameri-
+boost word sense disambiguation performance. COL- canElsevier,NewYork.
+ING/ACL.
+Schneider,N.,J.D.Hwang,V.Srikumar,J.Prange,A.Blod-
+Navigli, R. 2009. Word sense disambiguation: A survey. gett, S. R. Moeller, A. Stern, A. Bitan, and O. Abend.
+ACMComputingSurveys,41(2). 2018. ComprehensivesupersensedisambiguationofEn-
+Navigli,R.2016. Chapter20.ontologies. InR.Mitkov,ed., glishprepositionsandpossessives.ACL.
+TheOxfordhandbookofcomputationallinguistics.Ox- Schu¨tze,H.1992. Dimensionsofmeaning. Proceedingsof
+fordUniversityPress. Supercomputing’92.IEEEPress.
+Navigli,R.andS.P.Ponzetto.2012. BabelNet: Theauto-
+Schu¨tze,H.1997.AmbiguityResolutioninLanguageLearn-
+maticconstruction,evaluationandapplicationofawide-
+ing: ComputationalandCognitiveModels. CSLIPubli-
+coveragemultilingualsemanticnetwork. ArtificialIntel-
+cations,Stanford,CA.
+ligence,193:217–250.
+Schu¨tze, H. 1998. Automatic word sense discrimination.
+Navigli,R.andD.Vannella.2013. SemEval-2013task11:
+ComputationalLinguistics,24(1):97–124.
+Wordsenseinductionanddisambiguationwithinanend-
+userapplication.*SEM. Simmons, R. F. 1973. Semantic networks: Their compu-
+tationanduseforunderstandingEnglishsentences. In
+Nguyen, K.A., S.SchulteimWalde, andN.T.Vu.2016.
+R.C.SchankandK.M.Colby,eds,ComputerModelsof
+Integratingdistributionallexicalcontrastintowordem-
+ThoughtandLanguage,61–113.W.H.Freeman&Co.
+beddingsforantonym-synonymdistinction.ACL.
+Small,S.L.andC.Rieger.1982. Parsingandcomprehend-
+Palmer,M.,O.Babko-Malaya,andH.T.Dang.2004. Dif-
+ing with Word Experts. In W. G. Lehnert and M. H.
+ferentsensegranularitiesfordifferentapplications.HLT-
+Ringle,eds,StrategiesforNaturalLanguageProcessing,
+NAACLWorkshoponScalableNaturalLanguageUnder-
+89–147.LawrenceErlbaum.
+standing.
+Snow, R., S. Prakash, D. Jurafsky, and A. Y. Ng. 2007.
+Palmer, M., H.T.Dang, andC.Fellbaum.2006. Making
+Learningtomergewordsenses.EMNLP/CoNLL.
+fine-grainedandcoarse-grainedsensedistinctions, both
+manuallyandautomatically.NaturalLanguageEngineer- Snyder,B.andM.Palmer.2004.TheEnglishall-wordstask.
+ing,13(2):137–163. SENSEVAL-3.
+Pedersen,T.andR.Bruce.1997.Distinguishingwordsenses SparckJones,K.1986. SynonymyandSemanticClassifica-
+inuntaggedtext.EMNLP. tion.EdinburghUniversityPress,Edinburgh.Republica-
+Peters,M.,M.Neumann,M.Iyyer,M.Gardner,C.Clark, tionof1964PhDThesis.
+K.Lee,andL.Zettlemoyer.2018. Deepcontextualized Tsvetkov,Y.,N.Schneider,D.Hovy,A.Bhatia,M.Faruqui,
+wordrepresentations.NAACLHLT. andC.Dyer.2014.AugmentingEnglishadjectivesenses
+Pilehvar,M.T.andJ.Camacho-Collados.2019. WiC:the withsupersenses.LREC.
+word-in-context dataset for evaluating context-sensitive Vossen,P.,A.Go¨ro¨g,F.Laan,M.VanGompel,R.Izquierdo,
+meaningrepresentations.NAACLHLT. andA.VanDenBosch.2011. Dutch-semcor:buildinga
+Pilehvar, M.T., D.Jurgens, andR.Navigli.2013. Align, semanticallyannotatedcorpusfordutch. Proceedingsof
+disambiguateandwalk: Aunifiedapproachformeasur- eLex.
+ingsemanticsimilarity.ACL.
+
+--- PAGE_21 ---
+Exercises 21
+Weaver, W.1949/1955. Translation. InW.N.Lockeand
+A.D.Boothe, eds, MachineTranslationofLanguages,
+15–23.MITPress. Reprintedfromamemorandumwrit-
+tenbyWeaverin1949.
+Wilks,Y.1975a.Anintelligentanalyzerandunderstanderof
+English.CACM,18(5):264–274.
+Wilks, Y.1975b. Preferencesemantics. InE.L.Keenan,
+ed., The Formal Semantics of Natural Language, 329–
+350.CambridgeUniv.Press.
+Wilks, Y. 1975c. A preferential, pattern-seeking, seman-
+ticsfornaturallanguageinference.ArtificialIntelligence,
+6(1):53–74.
+Yarowsky,D.1995. Unsupervisedwordsensedisambigua-
+tionrivalingsupervisedmethods.ACL.
+Yu,M.andM.Dredze.2014.Improvinglexicalembeddings
+withsemanticknowledge.ACL.
+Zhong, Z. and H. T. Ng. 2010. It makes sense: A wide-
+coveragewordsensedisambiguationsystemforfreetext.
+ACL.
+
+============================================================
+FILE: 1 Vector Semantics _Final.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Computational Semantics and Semantic Parsing 
+
+
+--- SLIDE_2 ---
+What Is Semantic Analysis in NLP?
+To understand the meaning of Natural Language
+
+Captures the meaning of the given text while considering context, logical structuring of sentences and grammar roles
+
+Due to the vast complexity and subjectivity involved in human language, interpreting it is quite a complicated task for machines
+
+--- SLIDE_3 ---
+What is Semantics ? Word
+A single distinct meaningful element of speech or writing, used with others to form a sentence.
+
+
+Words that occur in similar contexts tend to have similar meanings.
+
+
+Words which are synonyms (like oculist and eye-doctor) tended to occur in the same environment.
+
+
+--- SLIDE_4 ---
+
+
+--- SLIDE_5 ---
+
+
+--- SLIDE_6 ---
+
+
+--- SLIDE_7 ---
+
+
+--- SLIDE_8 ---
+Vector Semantics:
+It represent a word as a point in some multidimensional semantic space. 
+
+Vectors for representing words are generally called embeddings, because the word is embedded in a particular vector space.
+
+Vector semantic models can be learned automatically from text without any complex labeling or supervision.
+
+ As a result of these advantages, vector models is now a standard way to represent the meaning of words in NLP.
+
+
+--- SLIDE_9 ---
+
+
+--- SLIDE_10 ---
+Vector Space
+
+--- SLIDE_11 ---
+Word Space
+Target words: automobile, car, soccer, football
+Term vocabulary: wheel, transport, passenger, tournament, London, goal, match
+
+--- SLIDE_12 ---
+Constructing Word spaces
+
+
+Informal algorithm for constructing word spaces
+Pick the words you are interested in:  target words
+Define a context window, number of words surrounding target word
+The context can in general be defined in terms of documents, paragraphs or sentences.
+Count number of times the target word co-occurs with the context words: co-occurrence matrix
+Build vectors out of (a function of) these co-occurrence counts
+
+--- SLIDE_13 ---
+Constructing Word spaces: distributional vectors
+
+--- SLIDE_14 ---
+
+Vector Space
+
+--- SLIDE_15 ---
+
+Computing similarity
+
+--- SLIDE_16 ---
+Vector Space Model without distributional similarity
+
+Words are treated as atomic symbols
+One-hot representation
+
+
+--- SLIDE_17 ---
+Building a DSM step-by-step
+
+--- SLIDE_18 ---
+Building a DSM step-by-step
+
+--- SLIDE_19 ---
+
+Many design choices
+
+--- SLIDE_20 ---
+The parameter space
+
+--- SLIDE_21 ---
+Documents as context: Word × document
+
+--- SLIDE_22 ---
+Words as context: Word × Word
+
+--- SLIDE_23 ---
+
+
+--- SLIDE_24 ---
+fool
+
+--- SLIDE_25 ---
+Context weighting: documents as context
+
+--- SLIDE_26 ---
+
+
+--- SLIDE_27 ---
+Bag of Words 
+
+--- SLIDE_28 ---
+Bag of words Model
+Text modelling technique .
+
+Convert a text into its equivalent vector of numbers.
+
+It is a method of feature extraction with text data.
+
+
+--- SLIDE_29 ---
+Understanding Bag of Words with an example
+
+Example(1) without preprocessing: 
+
+Sentence 1:  ”Welcome to Great Learning, Now start learning”
+
+
+Sentence 2: “Learning is a good practice”
+
+
+--- SLIDE_30 ---
+Solution:
+Example:
+Sentence 1:  ”Welcome to Great Learning, Now start learning”​
+
+
+Sentence 2: “Learning is a good practice”
+
+Bag of Words with an example
+
+
+--- SLIDE_31 ---
+Step 1: Go through all the words in the above text and make a list of all the words in our model vocabulary.
+
+Welcome
+To
+Great
+Learning
+,
+Now
+start
+learning
+is
+a
+good
+practice
+
+
+--- SLIDE_32 ---
+Frequency Table for both sentences
+writing the above frequencies in the vector form
+Sentence 1 ➝ [ 1,1,1,1,1,1,1,1,0,0,0 ] 
+Sentence 2 ➝ [ 0,0,0,0,0,0,0,1,1,1,1,1 ] 
+
+--- SLIDE_33 ---
+Example(2) with preprocessing:
+Example(2) with preprocessing:
+Sentence 1: ”Welcome to Great Learning, Now start learning”
+Sentence 2: “Learning is a good practice”
+
+Step 1: Convert the above sentences in lower case as the case of the word does not hold any information.
+
+Step 2: Remove special characters and stopwords from the text. Stopwords are the words that do not contain much information about text like ‘is’, ‘a’,’the and many more’.
+
+
+
+--- SLIDE_34 ---
+
+
+
+
+Occurrence matrix 
+
+Writing the above frequencies in the vector 
+Sentence 1 ➝ [ 1,1,2,1,1,0,0 ] 
+Sentence 2 ➝ [ 0,0,1,0,0,1,1 ] 
+
+--- SLIDE_35 ---
+Disadvantages of bag of Words 
+Treats all words equally → Common words (e.g., the, is, and) get same importance as meaningful words.
+No importance weighting → Cannot highlight rare but informative words.
+High frequency bias → Words appearing many times dominate even if not meaningful.
+No document-level context → Doesn’t consider how unique a word is across documents.
+Sparse and noisy features → Large vocabulary with many low-value words.
+
+
+--- SLIDE_36 ---
+Disadvantages of bag of Words 
+
+
+--- SLIDE_37 ---
+
+
+--- SLIDE_38 ---
+
+
+--- SLIDE_39 ---
+
+
+--- SLIDE_40 ---
+Practice Problem
+Compute TFIDF value for word Cat given in a small corpus with three documents:
+Document 1: "The cat sat on the mat"
+Document 2: "The dog sat on the log"
+Document 3: "The cat and the dog played"
+
+
+--- SLIDE_41 ---
+ Compute Term Frequency (TF)
+
+The Term Frequency (TF) is calculated as:
+
+TF = Number of times term appears in document / Total terms in document
+
+Let’s compute TF for the word "cat" in each document:
+Document 1: "The cat sat on the mat"Total words = 6, Occurrences of "cat" = 1TF(cat, D1) = 1/6 = 0.1667
+
+Document 2: "The dog sat on the log"Total words = 6, Occurrences of "cat" = 0TF(cat, D2) = 0/6 = 0
+
+Document 3: "The cat and the dog played"Total words = 7, Occurrences of "cat" = 1TF(cat, D3) = 1/7 = 0.1429
+
+
+--- SLIDE_42 ---
+Step 3: Compute Inverse Document Frequency (IDF)
+
+The Inverse Document Frequency (IDF) is calculated as:
+
+IDF = log ( Total number of documents / Number of documents containing the term )
+
+For the term "cat":
+The total number of documents = 3
+Documents containing "cat" = 2 (D1 and D3)
+IDF(cat) = log (3/2) = log(1.5) ≈ 0.1761
+
+
+--- SLIDE_43 ---
+
+
+Compute TF-IDF Score
+
+The TF-IDF score is obtained by multiplying TF and IDF:
+TFIDF = TF × IDF
+
+For "cat":
+
+Document 1:TFIDF(cat, D1) = 0.1667 × 0.1761 = 0.0294
+
+Document 2:TFIDF(cat, D2) = 0 × 0.1761 = 0
+
+Document 3:TFIDF(cat, D3) = 0.1429 × 0.1761 = 0.0251
+
+Final TF-IDF Scores for "cat"
+
+
+
+--- SLIDE_44 ---
+
+Example :TFIDF 
+News Article Classification Problem 
+
+
+--- SLIDE_45 ---
+
+Example :TFIDF 
+News Article Classification Problem 
+
+
+--- SLIDE_46 ---
+Consider The Document Frequency 
+Inverse Document Frequency :-
+
+
+--- SLIDE_47 ---
+TF-IDF 
+
+--- SLIDE_48 ---
+Why Log of IDF
+
+--- SLIDE_49 ---
+Numerical TF-IDF 
+Consider 3 documents:
+D1: "data science is fun"
+D2: "machine learning is fun"
+D3: "data mining and machine learning"
+Step 1: Vocabulary (Unique Terms)
+data, science, is, fun, machine, learning, mining, and
+
+
+--- SLIDE_50 ---
+
+Step 2: Term Frequency (TF)
+TF = (Number of times term appears in document) / (Total terms in that document)
+
+
+Document D1: "data science is fun"
+
+
+Document D2: "machine learning is fun"
+
+
+Document D3: "data mining and machine learning"
+
+
+
+--- SLIDE_51 ---
+Step 3: Document Frequency (DF)
+
+
+
+--- SLIDE_52 ---
+
+
+--- SLIDE_53 ---
+TF–IDF for D2
+
+
+TF–IDF for D3
+
+
+
+--- SLIDE_54 ---
+Final TF–IDF Vector Form
+
+--- SLIDE_55 ---
+Point Mutual Information
+An alternative weighting function to tf-idf
+
+Ask whether a context word is particularly informative about the target word.
+
+Pointwise mutual information is one of the most important concepts in NLP.
+
+It is a measure of how often two events x and y occur, compared with what we would expect if they were independent
+
+
+--- SLIDE_56 ---
+Do events x and y co-occur more than if they were independent?
+
+PMI(X, Y) = log₂ ( P(x, y) / (P(x) P(y)) )
+
+PMI between two words: (Church & Hanks 1989)
+
+Do words word₁ and word₂ co-occur more than if they were independent?
+
+PMI(word₁, word₂) = log₂ ( P(word₁, word₂) / (P(word₁) P(word₂)) )
+
+Pointwise mutual information:
+
+
+--- SLIDE_57 ---
+Computing PPMI on a term-context matrix
+Matrix F with W rows (words) and C columns (contexts)
+fij is # of times wi occurs in context cj
+57
+
+--- SLIDE_58 ---
+p(w=information , c=data) = 
+p(w=information) =
+p(c=data) =
+
+58
+= .3399
+3982/111716
+7703/11716
+= .6575
+5673/11716
+= .4842
+
+--- SLIDE_59 ---
+59
+PMI(information,data) = 
+Resulting PPMI matrix (negatives replaced by 0) 
+
+--- SLIDE_60 ---
+Weighting PMI
+PMI is biased toward infrequent events
+Very rare words have very high PMI values
+Two solutions:
+Give rare words slightly higher probabilities
+Use add-one smoothing (which has a similar effect)
+
+
+60
+
+--- SLIDE_61 ---
+Weighting PMI: Giving rare context words slightly higher probability
+61
+
+--- SLIDE_62 ---
+p(w=information,c=data) =  6/19 p(w=information) =  11/19  = .58 p(c=data) = 7/19  = .37
+p(w,context)
+p(w)
+= .32
+ij
+p	
+fij
+W	C
+ fij
+i1 j1
+
+i
+p(w ) 
+C
+ fij
+ j1	
+N
+p(cj )   i1	
+W
+ fij
+N
+
+--- SLIDE_63 ---
+ij
+pmi	 log
+2
+pij
+p	p
+i*	* j
+
+pmi(information,data) = log2 ( .32 /	(.37*.58) ) = .57
+
+PPMI(w,context)
+p(w,context)
+p(w)
+
+--- SLIDE_64 ---
+Add-2 Smoothed Count
+(w,context
+p(w,context) [add02]
+p(w)
+
+
+--- SLIDE_65 ---
+PPMI versus add-2 smoothed PPMI
+PPMI(w,context)
+
+--- SLIDE_66 ---
+Numerical Example: Consider the following word-context frequencies from a corpus:
+
+--- SLIDE_67 ---
+
+
+--- SLIDE_68 ---
+PPMI and Rare Words
+
+
+PPMI tends to favor rare co-occurrences, which means it gives higher scores to words that rarely occur but co-occur with certain context words more often than expected by chance.
+
+Example:
+Let’s say we have the following corpus:
+markdown
+
+1. The dog barked at the cat. 
+2. The cat sat on the mat. 
+3. The dog and the cat watched the **unicorn**. 
+
+"dog", "cat": These words are common and occur in several sentences.
+"unicorn": This word is rare—it appears only once, in a single unique sentence.
+
+--- SLIDE_69 ---
+PPMI Calculation:​
+
+
+Even though "unicorn" is rare, it gets a high PPMI score with the context "cat" because it occurs with "cat" more frequently than expected (given the general rarity of "unicorn").​
+
+
+This is useful in some NLP tasks (e.g., word similarity) because rare but important relationships are highlighted.​
+
+PPMI Example Value:​
+
+PPMI("unicorn", "cat")=3.5(High value)
+
+PPMI("dog", "cat")=0.2(Low value due to frequent co-occurrence)
+
+--- SLIDE_70 ---
+Weighting PMI
+PMI is biased toward infrequent events
+Very rare words have very high PMI values
+
+Two solutions:
+Give rare words slightly higher probabilities
+Use add-one smoothing (which has a similar effect)
+
+--- SLIDE_71 ---
+How PPMI is Different from TF-IDF
+
+--- SLIDE_72 ---
+Computing word similarity: Dot product and cosine
+The dot product between two vectors is a scalar:
+
+
+The dot product tends to be high when the two vectors have large values in the same dimensions
+Dot product can thus be a useful similarity metric between vectors
+
+
+--- SLIDE_73 ---
+Problem with raw dot-product
+Dot product favors long vectors
+Dot product is higher if a vector is longer (has higher values in many dimension)
+Vector length:
+
+
+Frequent words (of, the, you) have long vectors (since they occur many times with other words).
+So dot product overly favors frequent words
+
+--- SLIDE_74 ---
+Alternative: cosine for computing word similarity
+Based on the definition of the dot product between two vectors a and b 
+
+
+--- SLIDE_75 ---
+Cosine as a similarity metric
+-1: vectors point in opposite directions 
++1:  vectors point in same directions
+0: vectors are orthogonal
+
+
+But since raw frequency values are non-negative, the cosine for term-term matrix vectors ranges from 0–1 
+
+
+
+75
+
+--- SLIDE_76 ---
+Cosine examples
+76
+
+--- SLIDE_77 ---
+Visualizing cosines (well, angles)
+
+--- SLIDE_78 ---
+Word2Vec
+Word Embedding is a language modeling technique used for mapping words to vectors of real numbers. 
+
+
+It represents words or phrases in vector space with several dimensions. 
+
+
+Word embeddings can be generated using various methods like neural networks, co-occurrence matrix, probabilistic models, etc. 
+
+--- SLIDE_79 ---
+Word2Vec
+Word2Vec creates vectors of the words that are distributed numerical representations of word features
+
+these word features could comprise of words that represent the context of the individual words present in our vocabulary. 
+
+Word embeddings eventually help in establishing the association of a word with another similar meaning word through the created vectors.
+
+--- SLIDE_80 ---
+Word2Vec
+Word2Vec consists of models for generating word embedding.
+
+ These models are shallow two-layer neural networks having one input layer, one hidden layer, and one output layer. 
+
+Word2Vec utilizes two architectures :
+CBOW (Continuous Bag of Words)
+Skip Gram 
+
+--- SLIDE_81 ---
+
+
+--- SLIDE_82 ---
+Issues in BOW /TF_IDF
+Semantics meaning is not captured 
+Similar words should have similar kind of vectors 
+
+Sparse Matrix is generated 
+
+Increase no of dimensions 
+
+Vectors created in word2Vec
+Limited dimension 
+Sparsity is reduce ( Create dense vector )
+Semantic Meaning is maintained 
+
+
+--- SLIDE_83 ---
+
+
+--- SLIDE_84 ---
+How does CBOW work?
+Word2Vec is an unsupervised model 
+
+you can give a corpus without any label information and the model can create dense word embeddings, 
+
+Word2Vec internally leverages a supervised classification model to get these embeddings from the corpus.
+
+--- SLIDE_85 ---
+How does CBOW work
+The CBOW architecture comprises a deep learning classification model in which we take in context words as input, X, and try to predict our target word, Y.
+
+--- SLIDE_86 ---
+
+
+--- SLIDE_87 ---
+Architecture of CBOW 
+
+--- SLIDE_88 ---
+Math Behind The Above Calculation 
+
+--- SLIDE_89 ---
+Skip-Gram Model
+The skip-gram model is a simple neural network with one hidden layer trained in order to predict the probability of a given word being present when an input word is present.
+
+ Intuitively, you can imagine the skip-gram model being the opposite of the CBOW model. 
+
+In this architecture, it takes the current word as an input and tries to accurately predict the words before and after this current word. 
+
+This model essentially tries to learn and predict the context words around the specified input word.
+
+--- SLIDE_90 ---
+
+
+============================================================
+FILE: 2 SemanticAnalysisPart2.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Semantic Analysis
+---
+Lexical Semantics
+
+--- SLIDE_2 ---
+WORDNET:
+WordNet is a database of lexical relations for English (Fellbaum, 1998).
+ WordNet consists of Three databases: Noun, Verb, Adjective & Adverb. 
+
+--- SLIDE_3 ---
+WORDNET:
+A hierarchically organized lexical database
+• On-line thesaurus + aspects of a dictionary
+• Word senses and sense relations
+• Some other languages available or under development(Arabic, Finnish, German, Portuguese…)
+
+--- SLIDE_4 ---
+
+
+
+--- SLIDE_5 ---
+
+
+
+--- SLIDE_6 ---
+SYNSETS
+Different words with similar meaning is a set of synonms representing a sense 
+Example:
+Chump🡪 person who is gullible & easy to take advantage of
+{Chump1 , fool 2, gull 1, guy 1, mark 9}
+9th sense of mark is this meaning
+1st sense of guy is same as 2nd sense of fool
+
+--- SLIDE_7 ---
+
+2
+Relationships between word  meanings
+Homonymy
+Polysemy
+Synonymy
+Antonymy
+Hypernomy
+Hyponomy
+Meronomy
+
+--- SLIDE_8 ---
+lemma and wordform
+
+Semantic Analysis
+8
+
+--- SLIDE_9 ---
+Lemmas have senses
+One lemma “bank” can have many meanings:
+Sense 1:
+• ...a bank can hold the investments in a custodial 1
+Account...
+Sense 2:
+“...as agriculture burgeons on the east bank the river will shrink even more” 2
+
+• Sense (or word sense)
+• A discrete representationof an aspect of a word’s meaning.
+• The lemma bank here has two senses 14
+
+Semantic Analysis
+9
+
+--- SLIDE_10 ---
+Lemma Pepper
+Sense 1: spice from pepper plant  
+Sense 2: the pepper plant itself
+Sense 3: another similar plant (Jamaican pepper) 
+ Sense 4: another plant with peppercorns  (California pepper)
+Sense 5: capsicum (i.e. chili, paprika, bell pepper,  etc)
+A sense or word sense is discrete representation of one aspect of  meaning of word.
+
+--- SLIDE_11 ---
+Word Senses
+A sense is discrete representation of one aspect of meaning of  word.
+
+
+A sense or “concept” is the meaning component of a word
+
+There are relations between senses
+
+
+
+
+Semantic Analysis
+
+9
+
+--- SLIDE_12 ---
+
+Although a form can have more than one meaning,  there is always a primary or original meaning that  is expresses.
+
+The original meaning of a form in a language is normally
+called “denotation”.
+
+With respect to words (lexical terms), the primary  (original) meaning is the meaning that we can find in a  dictionary.
+
+Example: “Rose” “A garden plant with thorns on its stem
+and pleasant-smelling flowers, or a flower from this plant”.
+⚫
+Semantic Analysis
+12
+“Denotation” (Primary Dictionary Meaning)
+
+--- SLIDE_13 ---
+
+
+Besides, there are additional meaning, which is known as “connotation”.
+	With respect to words, connotation or additional meanings of a  word are not listed in a dictionary; and therefore, we cannot find  them in a dictionary
+
+	Normally, a person expresses a connotative meaning through a  word, phrase, clause or sentence based on certain  characteristics of the entity or event that he/she is referring to.
+
+  Example: one may call a beautiful girl a “rose” or a “lily”.
+13
+Connotation
+
+--- SLIDE_14 ---
+HOMONYMY
+
+Sense relation in which one form has different meaning; Same Spelling has different Meaning (treated as  such in dictionaries)
+
+no relatedness in meaning
+e.g. bank1-side of a river
+bank2-financial institution
+Semantic Analysis
+14
+
+--- SLIDE_15 ---
+
+Semantic Analysis
+15
+
+--- SLIDE_16 ---
+
+Semantic Analysis
+16
+
+--- SLIDE_17 ---
+POLYSEMY
+
+One word (Same Spelling)  having several closely related senses
+Native speaker has clear intuition that the  different senses are related to each other
+Polysemy-close relatedness in m. which is usually  connected to metaphorical extension
+meaning relatedness has to be synchronic
+Semantic Analysis
+17
+
+--- SLIDE_18 ---
+The following sentences contain some examples of polysemy.
+He drank a glass of milk.
+He forgot to milk the cow.
+His cottage is near a small wood.
+The statue was made out of a block of wood.
+He fixed his hair.
+They fixed a date for the wedding.
+
+Semantic Analysis
+18
+
+--- SLIDE_19 ---
+
+25
+Polysemy
+The bank is constructed from red brick  I withdrew the money from the bank
+Are those the same sense?
+Which sense of bank is this?
+Is it distinct from (homonymous with) the river bank sense?
+How about the savings bank sense?
+A single lexeme with multiple related meanings (bank the building,  bank the finantial institution)
+
+--- SLIDE_20 ---
+
+Semantic Analysis
+20
+
+--- SLIDE_21 ---
+
+Polysemy is the state or phenomenon in which the words  that have more than one meaning. 
+
+In other words, it can  be described as multiple meanings of words.The words  are considered to be related etymologically.
+
+The concrete form of polysemy is called “polyseme”.
+Examples: Simple (e.g. English is extremely plain  subject).
+Plain With nothing added/not decorated in any way  (e.g.This blouse is too plain)
+Semantic Analysis
+21
+
+--- SLIDE_22 ---
+HOMONYMY-POLYSEMY DISTINCTION
+
+Homonymy-polysemy distinction: closeness or  relatedness of senses of ambiguous w.
+Homonymy- different senses of an ambiguous
+are far apart from each other and not related via
+speaker’s intuition;
+matter of accident or coincidence e.g. bank, mug; kit, bar
+Semantic Analysis
+22
+
+--- SLIDE_23 ---
+
+Semantic Analysis
+23
+
+--- SLIDE_24 ---
+Relation: Synonymy
+Synonyms have the same meaning in some or all  contexts.
+filbert / hazelnut
+couch / sofa
+big / large
+automobile / car
+vomit / throw up
+Water / H20
+
+--- SLIDE_25 ---
+Relation: Synonymity
+Note that there are probably no examples of  perfect synonymy.
+
+Even if many aspects of meaning are identical
+Still may not preserve the acceptability based on  notions of politeness, slang, register, genre, etc.
+
+The Linguistic Principle of Contrast:
+Difference in form -> difference in meaning
+
+--- SLIDE_26 ---
+Synonymy is a relation
+between senses rather than words
+Consider the words big and large
+•  Are they synonyms?
+How big is that plane?
+Would I be flying on a large or small plane?
+•	How about here:
+Miss Nelson became a kind of big sister to Benjamin.
+?Miss Nelson became a kind of large sister to Benjamin.
+• Why?
+big has a sense that means being older, or grown up • large
+lacks this sense
+
+Semantic Analysis
+26
+
+--- SLIDE_27 ---
+Hyponymy and Hypernymy
+
+One sense is a hyponym of another if the first sense is more  specific, deno(ng a subclass of the other
+• car is a hyponym of vehicle 
+• mango is a hyponym of fruit
+Conversely hypernym/superordinate (“hyper is super”)
+vehicle is a hypernym of car
+fruit is a hypernym of mango
+Semantic Analysis
+27
+
+--- SLIDE_28 ---
+Hyponymy (i.e. category membership)
+It may be problematic to identify the superordinate terms:
+
+brother & sister < sibling (formal)
+uncle & aunt < ?
+cow & bull < cow/cattle (collective)/bovine (technical)
+human being & animal < animal (vs. vegetable, mineral)
+fish
+snapper
+trout	bass [bæs]	sole
+salmon [ˈsæm ən]
+chinook [(ˌ)tʃɪ ˈnuːk]
+spring  coho [ˈkəʊ həʊ]
+king
+sockeye [ˈsɒk aɪ]
+
+
+
+hypernym
+
+(co)hyponyms
+
+--- SLIDE_29 ---
+Hyponymy more formally
+Extensional:
+The class denoted by the superordinate extensionally
+includes the class denoted by the hyponym
+Entailment:
+A sense A is a hyponym of sense B if being an A entails being a B •
+Hyponymy is usually transitive
+(A hypo B and B hypo C entails A hypo C)
+• Another name: the IS-A hierarchy
+A IS-A B	(or A ISA B)
+B subsumes A
+Semantic Analysis
+
+43
+
+--- SLIDE_30 ---
+Antonyms
+Senses that are opposites with respect to one feature of  meaning
+Otherwise, they are very similar!
+dark/light short/long fast/slow rise/fall hot/cold up/down  in/out
+• More formally: antonyms can • define a binary opposition or
+be at opposite ends of a scale
+• long/short, fast/slow
+• Be reversives:
+rise/fall,up/down
+Semantic Analysis
+
+44
+
+--- SLIDE_31 ---
+
+Metaphor and Metonymy
+
+31
+
+Specific types of polysemy
+Metaphor:
+Germany will pull Slovenia out of its economic slump.(compares Slovenia's economic difficulties to a physical "slump" or pit,)
+I spent 2 hours on that homework.(time being treated as money or a resource)
+
+Metonymy	-the act of referring to something by the name of  something else that is closely connected with it, for example using  the White House for the US President
+The White House announced yesterday.
+This chapter talks about part-of-speech tagging
+Bank (building) and bank (financial institution)
+
+--- SLIDE_32 ---
+
+How do we know when a word has  more than one sense?
+
+32
+
+ATIS examples
+Which flights serve breakfast?
+Does America West serve Philadelphia?
+The “zeugma” test:
+
+?Does United serve breakfast and San Jose?
+
+--- SLIDE_33 ---
+
+Synonyms
+33
+
+Word that have the same meaning in some or all contexts.
+hazelnut  adolescent  large
+filbert
+youth
+big
+automobile car
+Two lexemes are synonyms if they can be successfully substituted for  each other in all situations
+
+--- SLIDE_34 ---
+
+Synonyms
+
+34
+
+But there are few (or no) examples of perfect synonymy.
+Why should that be?
+Even if many aspects of meaning are identical
+Still may not preserve the acceptability based on notions of politeness, slang,  register, genre, etc.
+Example:
+Big and large?
+That’s my big sister
+That’s my large sister
+
+--- SLIDE_35 ---
+
+Antonyms
+
+35
+
+light
+Words that are opposites with respect to one feature of their  meaning
+Otherwise, they are very similar!
+Dark
+Boy	girl
+Hot cold
+Up
+In
+down  out
+
+--- SLIDE_36 ---
+
+Word Similarity Computation
+
+36
+
+For various computational applications it’s useful to find words which
+are similar to another word.
+Machine translation (to find near-synonyms)
+Information retrieval (to do “query expansion”)
+Two ways to do this:
+Automatic computation based on distributional similarity
+Lsa.colorado.edu
+Use a thesaurus which lists similar words.
+WordNet (we’ll return to this in a few slides)
+
+============================================================
+FILE: 3 Word Sense Disambiguation.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Word Sense Disambiguation
+
+
+--- SLIDE_2 ---
+
+
+--- SLIDE_3 ---
+Word Sense Disambiguation Problem 
+WSD is the problem of identifying which “sense” (meaning) of a word is activated by the use of the word in a particular context or scenario. 
+
+deals with determining the intended meaning of a word in a given context.
+
+ It is the process of identifying the correct sense of a word from a set of possible senses, based on the context in which the word appears.
+
+--- SLIDE_4 ---
+Sense ambiguity
+
+Many words have several meanings or senses
+
+The meaning of bass depends on the context
+
+Are we talking about music, or fish?
+
+An electric guitar and bass player stand off to one side, not really part of the scene, just as a sort of nod to gringo expectations perhaps.
+
+And it all started when fishermen decided the striped bass in Lake Mead were too skinny.
+Disambiguation
+The task of disambiguation is to determine which of the senses of an ambiguous word is invoked in a particular use of the word.
+
+--- SLIDE_5 ---
+Application
+
+Machine Translation
+Information Retrieval
+Question Answering
+Text Summarization
+Sentiment Analysis
+Chatbots & Virtual Assistants
+Search Engines
+Example:
+Apple released a new product.
+Is Apple → fruit 🍎 or company 🏢?
+
+
+--- SLIDE_6 ---
+Algorithms
+
+Knowledge Based Approaches
+
+Overlap Based Approaches
+
+
+Machine Learning Based Approaches
+
+Supervised Approaches
+Semi-supervised Algorithms
+Unsupervised Algorithms
+
+Hybrid Approaches
+
+--- SLIDE_7 ---
+
+
+Approaches:
+
+• Dictionary- and knowledge-based methods: These rely primarily on dictionaries, 
+thesauri, and lexical knowledge bases, without using any corpus evidence.
+
+
+• Supervised methods: These make use of sense-annotated corpora to train from.
+
+
+• Semi-supervised or minimally-supervised methods: These make use of a 
+secondary source of knowledge such as a small annotated corpus as seed data in a 
+bootstrapping process, or a word-aligned bilingual corpus
+
+--- SLIDE_8 ---
+WORDNET:
+WordNet is a database of lexical relations for English (Fellbaum, 1998).
+ WordNet consists of Three databases: Noun, Verb, Adjective & Adverb. 
+
+--- SLIDE_9 ---
+WORDNET:
+A hierarchically organized lexical database
+• On-line thesaurus + aspects of a dictionary
+• Word senses and sense relations
+• Some other languages available or under development(Arabic, Finnish, German, Portuguese…)
+
+--- SLIDE_10 ---
+
+
+
+--- SLIDE_11 ---
+
+
+
+--- SLIDE_12 ---
+SYNSETS
+Different words with similar meaning is a set of synonms representing a sense 
+Example:
+Chump🡪 person who is gullible & easy to take advantage of
+{Chump1 , fool 2, gull 1, guy 1, mark 9}
+9th sense of mark is this meaning
+1st sense of guy is same as 2nd sense of fool
+
+--- SLIDE_13 ---
+HIERARCHICAL SYNSET RELATIONS: NOUNS
+Hypernym/hyponym (between concepts)
+The more general ‘meal’ is a hypernym of the more specific ‘breakfast’
+Instance hypernym/hyponym (between concepts and instances)
+Austen is an instance hyponym of author
+Member holonym/meronym (groups and members)
+professor is a member meronym of (a university’s) faculty
+Part holonym/meronym (wholes and parts)
+wheel is a part meronym of (is a part of) car.
+Substance meronym/holonym (substances and components)
+flour is a substance meronym of (is made of) bread
+
+--- SLIDE_14 ---
+HIERARCHICAL SYNSET RELATIONS: VERBS
+Hypernym/troponym (between events):
+travel/fly, walk/stroll
+Flying is a troponym of traveling:
+it denotes a specific manner of traveling
+Entailment (between events):
+snore/sleep
+Snoring entails (presupposes) sleeping
+
+--- SLIDE_15 ---
+
+
+
+--- SLIDE_16 ---
+
+
+
+--- SLIDE_17 ---
+
+Dictionary-based WSD: Lesk algorithm 
+
+--- SLIDE_18 ---
+
+
+
+--- SLIDE_19 ---
+Dictionary / Knowledge /Thesaurus Based Approaches
+Lesk algorithm
+Walkers algorithm
+
+We have a dictionary/thesaurus that contains glosses and examples: 
+bank1 
+Gloss: a financial institution that accepts deposits and channels the money into lending activities 
+Examples: “he cashed the check at the bank”, “that bank holds the mortgage on my home” 
+bank2 
+Gloss: sloping land (especially the slope beside a body of water) 
+Examples: “they pulled the canoe up on the bank”, “he sat on the bank of the river and watched the current”
+We could use anything in the thesaurus
+§ Example sentences
+§ Derivational relations and sentence frames
+
+
+
+--- SLIDE_20 ---
+Knowledge Based Approaches
+
+Overlap Based Approaches
+
+Require a Machine Readable Dictionary (MRD).
+	For Example WordNet (all the information should in form that machine can understand)
+
+Steps:
+Take the ambiguous word.
+List all possible senses from dictionary.
+Compare definition words with surrounding context.
+Select sense with maximum word overlap.
+
+Find the overlap between the features of different senses of an ambiguous word (sense bag) and the features of the words in its context (context bag).
+
+The features could be sense definitions, example sentences, hypernyms etc.
+
+The features could also be given weights.
+
+The sense which has the maximum overlap is selected as the contextually appropriate sense.
+
+
+--- SLIDE_21 ---
+Lesk’s Algorithm
+
+Sense Bag: contains the words in the definition of a candidate sense of the ambiguous word.
+
+
+Context Bag: contains the words in the definition of each sense of each context word.
+
+Example :-On burning coal we get ash.
+
+--- SLIDE_22 ---
+She drank Some Milk 
+
+
+
+She drank Some books
+
+
+
+--- SLIDE_23 ---
+Walker’s Algorithm  
+
+A Thesaurus Based approach
+
+What is Thesaurus ?
+A thesaurus is a book, software program, or online service that provides alternative or similar words to a word. 
+
+
+For example, searching for "hope" may return synonyms like "achievement," "faith," "ambition," and "optimism.“
+
+Thesaurus vs. dictionary
+A thesaurus is used to group different words with the same meaning (synonyms) and similar words. 
+
+On the other hand, a dictionary explains the definition of a word. 
+
+For example, looking up the word "computer" in a thesaurus may give words like PC, CPU, calculator, abacus, and laptop that could be used in place of the word computer. 
+
+Looking up the word "computer" in a dictionary would define the word like what is found on our computer definition.
+
+
+
+--- SLIDE_24 ---
+Walker’s Algorithm -A Thesaurus Based approach
+Steps
+Identify the ambiguous word.
+Extract all possible senses of the word from a dictionary / WordNet.
+Identify context words surrounding the ambiguous word.
+Measure semantic similarity between each sense of the ambiguous word and each context word.
+Select the sense with maximum total similarity score.
+
+semantic similarity Calculation:
+Step 1: For each sense of the target word find the thesaurus category to which that sense belongs
+Step 2: Calculate the score for each sense by using the context words.
+A context word will add 1 to the score of the sense if the thesaurus
+category of the word matches that of the sense.
+
+E.g. The money in this bank fetches an interest of 8% per annum
+Target word: bank
+Clue words from the context: money, interest, annum, fetch
+
+
+--- SLIDE_25 ---
+Key Differences:
+
+--- SLIDE_26 ---
+MRD – A Resource for Knowledge-based WSD
+For each word in the language vocabulary, an MRD provides:
+A list of meanings
+Definitions (for all word meanings)
+Typical usage examples (for most word meanings)
+WordNet definitions/examples for the noun plant
+buildings for carrying on industrial labor; "they built a large plant to  manufacture automobiles“
+a living organism lacking the power of locomotion
+something planted secretly for discovery by another; "the police used a plant to
+trick the thieves"; "he claimed that the evidence against him was a plant"
+an actor situated in the audience whose acting is rehearsed but seems  spontaneous to the audience
+
+
+--- SLIDE_27 ---
+
+
+--- SLIDE_28 ---
+
+
+--- SLIDE_29 ---
+
+
+--- SLIDE_30 ---
+1.Constructing the Graph:
+Identify ambiguous words in the sentence.
+Extract all their possible senses using WordNet / BabelNet.
+Build a semantic graph connecting all senses.
+Add weighted edges based on semantic relationships.
+Run graph algorithms to compute node importance.
+Choose highest-ranked sense.
+E.g.
+The sentence "She drank some milk" contains two key words: "drink" and "milk".
+These words are inserted into a graph.
+Each word has multiple senses (meanings), which are represented as nodes (e.g., "drink₁", "drink₂", etc., and "milk₁", "milk₂", etc.).
+Directed edges link the words to their possible senses.
+Additional edges connect the senses based on their relationships, such as synonyms, hypernyms, or other lexical relations.
+Edge Weights can be assigned based on Semantic similarity, Relation type, Path length
+
+2. Choosing the Most Central Sense:
+The algorithm assigns some initial probability to each word ("drink" and "milk").
+Using PageRank, a centrality algorithm, the most important or frequently visited sense in the graph is identified.
+The sense with the highest PageRank score is chosen as the correct meaning.   (good page rank is given based on Connectivity , Edge weights, Importance of neighboring nodes)
+
+
+
+--- SLIDE_31 ---
+WSD Using Random Walk Algorithm
+
+
+--- SLIDE_32 ---
+
+
+--- SLIDE_33 ---
+
+
+--- SLIDE_34 ---
+Page rank Algorithm :->
+
+
+--- SLIDE_35 ---
+
+
+--- SLIDE_36 ---
+KB Approaches –Conclusions
+36
+CF
+Drawbacks of WSD using Selectional Restrictions
+Needs exhaustive Knowledge Base.
+Drawbacks of Overlap based approaches
+Dictionary definitions are generally very small.
+Dictionary entries rarely take into account the distributional constraints  of different word senses (e.g. selectional preferences, kinds of  prepositions, etc.  cigarette and ash never co-occur in a dictionary).
+Suffer from the problem of sparse match.
+Proper nouns are not present in a MRD. Hence these approaches fail to  capture the strong clues provided by proper nouns.
+E.g. “Sachin Tendulkar” will be a strong indicator of the category “sports”.
+Sachin Tendulkar plays cricket.
+
+--- SLIDE_37 ---
+Supervised methods
+ Supervised methods assumes that the context can provide enough evidence on its own to disambiguate words 
+
+ Probably every machine learning algorithm  has been applied to WSD, including associated techniques such as feature selection, parameter optimization, and ensemble learning. 
+
+Support vector machines and memory-based learning have been shown to be the most successful approaches, to date, probably because they can cope with the high dimensionality of the feature space. 
+
+However, these supervised methods are subject to a new knowledge acquisition bottleneck since they rely on substantial amounts of manually sense tagged corpora for training, which are laborious and expensive to create.
+
+--- SLIDE_38 ---
+
+
+--- SLIDE_39 ---
+Word Sense  Disambiguation
+Classification
+
+--- SLIDE_40 ---
+Dan  Jurafsky
+Classification:  definition
+Input:
+a word w and some features f
+a fixed set of classes C = {c1, c2,…, cJ}
+
+Output: a predicted class c∈C
+
+--- SLIDE_41 ---
+Dan  Jurafsky
+Classification Methods:  Supervised Machine
+Learning
+Input:
+a word w in a text window d (which we’ll call a  “document”)
+a fixed set of classes	C = {c1, c2,…, cJ}
+A training set of m hand-‐labeled text windows again  called	“documents” (d1,c1),....,(dm,cm)
+Output:
+a learned classifier γ:d  c
+2
+2
+
+--- SLIDE_42 ---
+Dan  Jurafsky
+Classification Methods:  Supervised Machine Learning
+Any kind of classifier
+Naive Bayes
+Logistic regression
+Neural Networks
+Support-‐vector  machines
+k-‐Nearest Neighbors
+
+…
+
+--- SLIDE_43 ---
+Applying Naive Bayes to WSD
+P(c) is the prior probability of that sense
+Counting in a labeled training set.
+P(w|c)	conditional probability of a word given a  particular sense
+P(w|c) = count(w,c)/count(c)
+We get both of these from a tagged corpus like SemCor
+
+Can also generalize to look at other features besides  words.
+Then it would be P(f|c)
+Conditional probability of a feature given a sense
+
+--- SLIDE_44 ---

@@ -1,0 +1,445 @@
+
+============================================================
+FILE: Introduction to Reinforcement Learning-Module 1.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Machine Learning – III (Reinforcement Learning)(DJS23DCPC601)
+Scheme & Syllabus
+
+--- Slide 2 ---
+
+Subject Orientation
+Pre-requisite: Machine Learning-I, Machine Learning-II and Artificial Intelligence.
+Course Objectives: To make students learn to build programs that act in a stochastic environment, based on experience using various Reinforcement Learning methods.
+Outcomes: Students will be able to
+Analyze basic and advanced Reinforcement Learning techniques.
+Identify suitable learning tasks to which Reinforcement learning and Deep Reinforcement Learning techniques can be applied.
+Apply appropriate Reinforcement Learning method to solve a given problem.
+
+--- Slide 3 ---
+
+
+--- Slide 4 ---
+
+
+--- Slide 5 ---
+
+Suggested List of Experiments:
+
+--- Slide 6 ---
+
+Introduction to Reinforcement Learning
+Module 1
+
+--- Slide 7 ---
+
+Table of Content
+Reinforcement Learning(RL)
+Elements of RL
+Reinforcement Learning vs Supervised Learning
+Approaches of Solving Reinforcement Learning
+Exploration-Exploitation Dilemma
+Evolutionary Methods
+Immediate Reinforcement Learning
+
+--- Slide 8 ---
+
+What is Reinforcement Learning?
+
+--- Slide 9 ---
+
+What is Reinforcement Learning?
+The idea behind Reinforcement Learning is that an agent will learn from the environment by interacting with it and receiving rewards for performing actions.
+
+--- Slide 10 ---
+
+
+--- Slide 11 ---
+
+Let us understand the Idea by an example.
+Learning from interaction with the environment comes from our natural experiences. Imagine you’re a child in a living room. You see a fireplace, and you approach it.
+
+--- Slide 12 ---
+
+Let us understand the Idea by an example.
+You are at a distance you feel warm, it’s positive, you feel good (Positive Reward +1). 
+You understand that fire is a positive thing.
+
+--- Slide 13 ---
+
+Let us understand the Idea by an example.
+But then you try to touch the fire. Ouch! It burns your hand (Negative reward -1). You’ve just understood that fire is positive when you are a sufficient distance away, because it produces warmth. But get too close to it and you will be burned..
+
+--- Slide 14 ---
+
+Let us understand the Idea by an example.
+That’s how humans learn, through interaction. 
+Reinforcement Learning is just a computational approach of learning from action
+
+--- Slide 15 ---
+
+Supervised vs UnSupervised vs Reinforcement
+A reinforcement learning system has four main subelements:
+
+- a policy
+- a reward signal
+- a value function
+- and optionally, a model of the environment
+
+--- Slide 16 ---
+
+Supervised vs UnSupervised vs Reinforcement
+
+--- Slide 17 ---
+
+Supervised vs Unsupervised vs Reinforcement Learning
+A reinforcement learning system has four main subelements:
+
+- a policy
+- a reward signal
+- a value function
+- and optionally, a model of the environment
+
+--- Slide 18 ---
+
+Supervised vs Unsupervised vs Reinforcement
+Supervised learning involves learning from labeled data with a clear input-output mapping.
+Unsupervised learning deals with discovering patterns or structures in unlabeled data without explicit output labels.
+Reinforcement learning focuses on training agents to make sequential decisions in an environment, optimizing for a cumulative reward signal through interaction and feedback.
+
+--- Slide 19 ---
+
+Terms in RL
+Agent. The program you train, with the aim of doing a job you specify.
+Environment. The world, real or virtual, in which the agent performs actions.
+Action. A move made by the agent, which causes a status change in the environment.
+Rewards. The evaluation of an action, which can be positive or negative
+
+--- Slide 20 ---
+
+Terms in RL
+State
+q-value
+Value
+Policy
+
+--- Slide 21 ---
+
+The Reinforcement Learning Framework
+
+--- Slide 22 ---
+
+RL Framework
+
+--- Slide 23 ---
+
+RL Framework
+Let’s imagine an agent learning to play Super Mario Bros as a working example. The Reinforcement Learning (RL) process can be modeled as a loop that works like this:
+Our Agent receives state S0 from the Environment (In our case we receive the first frame of our game (state) from Super Mario Bros (environment).
+Based on that state S0, agent takes an action A0 (our agent will move right)
+Environment transitions to a new state S1 (new frame)
+Environment gives some reward R1 to the agent (not dead: +1)
+
+--- Slide 24 ---
+
+Find the Agent, Action, Environment, Reward?
+Agent. The program you train, with the aim of doing a job you specify.
+Environment. The world, real or virtual, in which the agent performs actions.
+Action. A move made by the agent, which causes a status change in the environment.
+Rewards. The evaluation of an action, which can be positive or negative
+
+--- Slide 25 ---
+
+Let me do this one for you.
+Agent. The program making decisions on how many ads are appropriate for a page.
+Environment.The web page.
+Action. One of three: (1) putting another ad on the page; (2) dropping an ad from the page; (3) neither adding nor removing
+Rewards.  Positive when revenue increases; negative when revenue drops
+
+--- Slide 26 ---
+
+Find the Terms of RL in this example?
+Agent. The program you train, with the aim of doing a job you specify.
+Environment. The world, real or virtual, in which the agent performs actions.
+Action. A move made by the agent, which causes a status change in the environment.
+Rewards. The evaluation of an action, which can be positive or negative
+
+--- Slide 27 ---
+
+Did you get this one right?
+Agent. The program that decides what to show next in an online learning catalog
+Environment.The learning system
+Action. Playing a new class video and an advertisement
+Rewards. Positive if the user chooses to click the class video presented; greater positive reward if the user chooses to click the advertisement; negative if the user goes away
+
+--- Slide 28 ---
+
+Finding it Tough? A simple one now
+Agent. The program you train, with the aim of doing a job you specify.
+Environment. The world, real or virtual, in which the agent performs actions.
+Action. A move made by the agent, which causes a status change in the environment.
+Rewards. The evaluation of an action, which can be positive or negative
+
+--- Slide 29 ---
+
+Did you get this one right?
+Agent. The program controlling a walking robot
+Environment.The real world.
+Action. One out of four moves (1) forward; (2) backward; (3) left; and (4) right.
+Rewards. Positive when it approaches the target destination; negative when it wastes time, goes in the wrong direction or falls down
+
+--- Slide 30 ---
+
+Elements of RL
+A reinforcement learning system has four main Elements:
+- a policy
+- a reward signal
+- a value function
+- a model of the environment
+
+--- Slide 31 ---
+
+Policy
+Policy: A policy can be defined as a way how an agent behaves at a given time. It maps the perceived states of the environment to the actions taken on those states. 
+A policy is the core element of the RL as it alone can define the behavior of the agent. In some cases, it may be a simple function or a lookup table, whereas, for other cases, it may involve general computation as a search process. 
+It could be deterministic or a stochastic policy:
+For deterministic policy: a = π(s)For stochastic policy: π(a | s) = P[At =a | St = s]
+
+--- Slide 32 ---
+
+Example of Policy
+Let’s now see an example of policy in a practical scenario, to better understand how it works. In this example, an agent has to forage food from the environment in order to satisfy its hunger. It then receives rewards on the basis of the fruit it eats:
+
+--- Slide 33 ---
+
+Example of Policy
+The agent then considers two policies  and . If we simplify slightly the notation, we can indicate a policy as a sequence of actions starting from the state of the agent at :
+
+--- Slide 34 ---
+
+Example of Policy
+
+--- Slide 35 ---
+
+Deterministic Policy
+For deterministic policy: a = π(s)
+
+--- Slide 36 ---
+
+Deterministic Policy
+The advantage of a deterministic policy is that it is easy to interpret and implement. It is also suitable for tasks where the same action should be taken for the same state every time. For example, in a chess game, the best move for a given board configuration is always the same. A deterministic policy can be the best choice to play the game optimally in such cases.
+Another example that crystallizes the idea is walking along a tightrope. There is a narrow range of actions that will keep an agent balanced and moving forward. Even though the agent has many action choices, the agent only has a single choice.
+
+--- Slide 37 ---
+
+Stochastic Policy
+For stochastic policy: π(a | s) = P[At =a | St = s]
+
+--- Slide 38 ---
+
+Stochastic Policy
+The advantage of a stochastic policy is that it can capture the uncertainty in the environment. 
+For example, in a poker game, the agent may not always take the same action in response to the same hand since there is a probability of winning or losing depending on the opponent’s hand and how the betting has proceeded. In such cases, a stochastic policy learns the best strategy based on the probability of winning.
+There are also games where a deterministic policy is exploitable, particularly if play is repeated. Take, for example, the game Rock, Paper, Scissors. A 2-player game where each player chooses an item in secret, either Rock, Paper, or Scissors, and simultaneously reveals their choice to the opponent. Each item ties with itself, loses to one item, and wins against another. In such a game, the best strategy is a stochastic strategy, choosing each item a third of the time.
+
+--- Slide 39 ---
+
+Reward Signal
+Reward: A reward is a scalar feedback signal it indicates how well the agent is doing at step t. The agent’s sole objective is to  maximize the total reward it receives over the long run.
+
+The reward signal is the primary basis for altering the policy.
+
+R(s) indicates the reward for simply being in the state S.
+
+R(S,a) indicates the reward for being in a state S and taking  an action a.
+
+R(S, a, S’) indicates the reward for being in a state S, taking action a and moving to a new state s'.
+
+--- Slide 40 ---
+
+Value Function
+Value functions are functions of states, or of state-action pairs, that  estimate how good it is for an agent to be in a given state, or how good  it is for the agent to perform a given action in a given state.
+This notion of how good a state or state-action pair is given in terms of  expected return.
+The rewards an agent expects to receive are dependent on what actions  the agent takes in given states. So, value functions are defined with  respect to specific ways of acting.
+Since the way an agent acts is influenced by the policy it's following, then  we can see that value functions are defined with respect to policies.
+
+--- Slide 41 ---
+
+State-Value vs Action-Value Function
+
+--- Slide 42 ---
+
+State Value Function
+
+--- Slide 43 ---
+
+Action Value Function
+
+--- Slide 44 ---
+
+Model Based Vs Model Free
+The last element of reinforcement learning is the model, which mimics the behavior of the environment. With the help of the model, one can make inferences about how the environment will behave. Such as, if a state and an action are given, then a model can predict the next state and reward.
+The model is used for planning, which means it provides a way to take a course of action by considering all future situations before actually experiencing those situations. The approaches for solving the RL problems with the help of the model are termed as the model-based approach. Comparatively, an approach without using a model is called a model-free approach.
+RL algorithms can be either Model-free (MF) or Model-based (MB). If the agent can learn by making predictions about the consequences of its actions, then it is MB. If it can only learn through experience then it is MF.
+
+--- Slide 45 ---
+
+Approaches of Implementing RL
+There are mainly three ways to implement reinforcement-learning in ML, which are:
+Value-Based
+Policy-Based
+Model-Based
+
+--- Slide 46 ---
+
+Value-Based
+The value-based approach is about to find the optimal value function, which is the maximum value at a state under any policy. 
+Therefore, the agent expects the long-term return at any state(s) under policy π.
+The agent will follow a policy π∗ that selects actions leading to states with higher values
+
+--- Slide 47 ---
+
+Policy Based
+Policy-based approach is to find the optimal policy for the maximum future rewards without using the value function. In this approach, the agent tries to apply such a policy that the action performed in each step helps to maximize the future reward.
+The policy-based approach has mainly two types of policy:
+Deterministic: The same action is produced by the policy (π) at any state.
+Stochastic: In this policy, probability determines the produced action.
+
+--- Slide 48 ---
+
+Model Based
+To classify as model-based, the agent must go beyond implementing a model of the environment. That is, the agent needs to make predictions of the possible rewards associated with certain actions.
+This provides many benefits. For example, the agent interacts with the environment a few times. Then, the model uses this information to simulate subsequent iterations without needing to interact with the environment.
+In the model-based approach, a virtual model is created for the environment, and the agent explores that environment to learn it. There is no particular solution or algorithm for this approach because the model representation is different for each environment.
+
+--- Slide 49 ---
+
+Exploration-Exploitation Dilemma
+Exploitation is defined as a greedy approach in which agents try to get more rewards by using estimated value but not the actual value. So, in this technique, agents make the best decision based on current information.
+
+Unlike exploitation, in exploration techniques, agents primarily focus on improving their knowledge about each action instead of getting more rewards so that they can get long-term benefits. So, in this technique, agents work on gathering more information to make the best overall decision.
+
+--- Slide 50 ---
+
+Exploration-Exploitation Dilemma
+
+--- Slide 51 ---
+
+The Friend-Diamond Digging Problem
+In the Friend-Diamond Digging problem, you play the role of an adventurer who has a friend, and both of you are trying to find valuable diamonds in a desert. The dilemma arises from the following setup:
+
+Multiple Digging Sites: In the desert, there are several digging sites. Each site has the potential to yield diamonds, but their exact probabilities of success are unknown
+
+--- Slide 52 ---
+
+The Friend-Diamond Digging Problem
+Here's where the exploration-exploitation dilemma comes into play:
+Exploitation: You want to exploit the digging sites that have provided diamonds in the past or seem promising based on the information you have. Exploitation means focusing your efforts on known or potentially rewarding sites to maximize your immediate rewards.
+Exploration: On the other hand, you also want to explore new digging sites to gather more information about their potential rewards. This exploration is essential for improving your decision-making in the long run.
+
+--- Slide 53 ---
+
+
+--- Slide 54 ---
+
+Evolutionary Method (EA)
+An evolutionary method functions through the selection process in which the least fit members of the population set are eliminated, whereas the fit members are allowed to survive and continue until better solutions are determined. In other words, evolutionary algorithms are computer applications which mimic biological processes in order to solve complex problems. Over time, the successful members evolve to present the optimized solution to the problem.
+
+--- Slide 55 ---
+
+What are RL and EA?
+Reinforcement Learning (RL): An agent interacts with the environment and learns from rewards.
+Evolutionary Algorithms (EA): A population of solutions evolves over generations through selection, mutation, and crossover.
+
+--- Slide 56 ---
+
+Example: Teaching a Robot to Walk
+Goal: Train a robot to walk efficiently without falling.
+
+--- Slide 57 ---
+
+Reinforcement Learning Approach
+The robot takes random steps.
+Receives positive rewards for good actions (e.g., moving forward).
+Receives negative rewards for bad actions (e.g., falling down).
+Over time, learns from both successes and failures.
+
+--- Slide 58 ---
+
+Evolutionary Algorithm Approach
+Start with 100 robots, each with different walking strategies.
+Test performance and eliminate the worst-performing robots.
+The best robots ‘reproduce’ (combine strategies) to create a new generation.
+Repeat for multiple generations until the best walking strategy evolves.
+
+--- Slide 59 ---
+
+Evolutionary Method vs RL
+Reinforcement learning uses the concept of one agent, and the agent learns by interacting with the environment in different ways. In evolutionary algorithms, they usually start with many "agents" and only the "strong ones survive" (the agents with characteristics that yield the lowest loss).
+Reinforcement learning agent(s) learns both positive and negative actions, but evolutionary algorithms only learns the optimal, and the negative or suboptimal solution information are discarded and lost.
+
+--- Slide 60 ---
+
+RL learns from both success and failure; EA discards bad solutions.
+RL uses a single agent; EA uses a population of agents.
+RL is better for adapting to new environments; EA is better for optimization.
+
+--- Slide 61 ---
+
+Example
+You want to build an algorithm to regulate the temperature in the room.
+The room is 15 °C, and you want it to be 23 °C.
+Using Reinforcement learning, the agent will try a bunch of different actions to increase and decrease the temperature. Eventually, it learns that increasing the temperature yields a good reward. But it also learns that reducing the temperature will yield a bad reward.
+For evolutionary algorithms, it initiates with a bunch of random agents that all have a preprogrammed set of actions it is going to do. Then the agents that has the "increase temperature" action survives, and moves onto the next generation. Eventually, only agents that increase the temperature survive and are deemed the best solution. However, the algorithm does not know what happens if you decrease the temperature.
+
+--- Slide 62 ---
+
+Immediate RL
+Immediate RL, or immediate reinforcement learning, is a type of reinforcement learning where an agent receives immediate rewards or penalties for its actions at each time step without considering the long-term consequences. 
+
+The agent's goal is to maximize its cumulative rewards over time
+
+--- Slide 63 ---
+
+Example of Immediate RL
+The simple Subway Surfer game where a player controls a character to collect coins, the agent receives a positive reward when it collects a coin and a negative reward when it runs into an obstacle. 
+
+Immediate RL focuses on learning effective actions based on these immediate rewards without considering the entire game's strategy and planning ahead.
+
+--- Slide 64 ---
+
+References
+https://towardsdatascience.com/introduction-to-reinforcement-learning-rl-part-1-introduction-c0d55c1240a3
+https://www.datacamp.com/tutorial/introduction-reinforcement-learning
+https://towardsdatascience.com/reinforcement-learning-made-simple-part-2-solution-approaches-7e37cbf2334e
+https://www.javatpoint.com/reinforcement-learning#:~:text=Reward%20%28%29%3A%20A%20feedback%20returned%20to%20the%20agent,discount%20factor%20and%20opposite%20to%20the%20short-term%20reward.
+https://archive.nptel.ac.in/courses/106/106/106106143/
+https://medium.com/@durgeshpatel2372001/immediate-rl-reinforcement-learning-2466cf8eb630
+
+============================================================
+FILE: Module1_notesforReference.pdf
+============================================================
+
+
+--- Page 1 ---
+
+
+--- Page 2 ---
+
+
+--- Page 3 ---
+
+
+--- Page 4 ---
+
+
+--- Page 5 ---
+
+
+--- Page 6 ---
+
+
+--- Page 7 ---

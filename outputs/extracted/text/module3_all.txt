@@ -1,0 +1,1783 @@
+
+============================================================
+FILE: Naive Bayes Classifiers.pdf
+============================================================
+
+
+--- PAGE_1 ---
+Speech and Language Processing. Daniel Jurafsky & James H. Martin. Copyright © 2026. All
+rights reserved. Draft of January 6, 2026.
+CHAPTER
+B Naive Bayes, Text Classification,
+and Sentiment
+Classification lies at the heart of both human and machine intelligence. Deciding
+what letter, word, or image has been presented to our senses, recognizing faces
+or voices, sorting mail, assigning grades to homeworks; these are all examples of
+assigningacategorytoaninput.Thepotentialchallengesofthistaskarehighlighted
+bythefabulistJorgeLuisBorges(1964),whoimaginedclassifyinganimalsinto:
+(a)thosethatbelongtotheEmperor,(b)embalmedones,(c)thosethat
+aretrained,(d)sucklingpigs,(e)mermaids,(f)fabulousones,(g)stray
+dogs, (h) those that are included in this classification, (i) those that
+trembleasiftheyweremad,(j)innumerableones,(k)thosedrawnwith
+averyfinecamel’shairbrush,(l)others,(m)thosethathavejustbroken
+aflowervase,(n)thosethatresemblefliesfromadistance.
+Manylanguageprocessingtasksinvolveclassification,althoughluckilyourclasses
+aremucheasiertodefinethanthoseofBorges.Inthischapterweintroducethenaive
+text Bayesalgorithmandapplyittotextcategorization,thetaskofassigningalabelor
+categorization
+categorytoanentiretextordocument.
+sentiment Wefocusononecommontextcategorizationtask,sentimentanalysis,theex-
+analysis
+traction of sentiment, the positive or negative orientation that a writer expresses
+towardsomeobject.Areviewofamovie,book,orproductonthewebexpressesthe
+author’ssentimenttowardtheproduct,whileaneditorialorpoliticaltextexpresses
+sentimenttowardacandidateorpoliticalaction. Extractingconsumerorpublicsen-
+timentisthusrelevantforfieldsfrommarketingtopolitics.
+The simplest version of sentiment analysis is a binary classification task, and
+thewordsofthereviewprovideexcellentcues. Consider,forexample,thefollow-
+ingphrasesextractedfrompositiveandnegativereviewsofmoviesandrestaurants.
+Wordslikegreat,richly,awesome,andpathetic,andawfulandridiculouslyarevery
+informativecues:
++ ...zanycharactersandrichlyappliedsatire,andsomegreatplottwists
+− Itwaspathetic. Theworstpartaboutitwastheboxingscenes...
++ ...awesomecaramelsauceandsweettoastyalmonds. Ilovethisplace!
+− ...awfulpizzaandridiculouslyoverpriced...
+spamdetection Spam detection is another important commercial application, the binary clas-
+sification task of assigning an email to one of the two classes spam or not-spam.
+Manylexicalandotherfeaturescanbeusedtoperformthisclassification. Forex-
+ampleyoumightquitereasonablybesuspiciousofanemailcontainingphraseslike
+“onlinepharmaceutical”or“WITHOUTANYCOST”or“DearWinner”.
+Another thing we might want to know about a text is the language it’s written
+in. Texts on social media, for example, can be in any number of languages and
+languageid we’ll need to apply different processing. The task of language id is thus the first
+stepinmostlanguageprocessingpipelines. Relatedtextclassificationtaskslikeau-
+authorship thorshipattribution—determiningatext’sauthor—arealsorelevanttothedigital
+attribution
+humanities,socialsciences,andforensiclinguistics.
+
+--- PAGE_2 ---
+2 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+Finally, one of the oldest tasks in text classification is assigning a library sub-
+ject category or topic label to a text. Deciding whether a research paper concerns
+epidemiologyorinstead,perhaps,embryology,isanimportantcomponentofinfor-
+mationretrieval.Varioussetsofsubjectcategoriesexist,suchastheMeSH(Medical
+SubjectHeadings) thesaurus. Infact,aswewillsee,subjectcategoryclassification
+isthetaskforwhichthenaiveBayesalgorithmwasinventedin1961(Maron,1961).
+Classification is essential for tasks below the level of the document as well.
+We’vealreadyseenperioddisambiguation(decidingifaperiodistheendofasen-
+tence or part of a word), and word tokenization (deciding if a character should be
+a word boundary). Even language modeling can be viewed as classification: each
+wordcanbethoughtofasaclass,andsopredictingthenextwordisclassifyingthe
+context-so-farintoaclassforeachnextword. Apart-of-speechtagger(Chapter17)
+classifieseachoccurrenceofawordinasentenceas,e.g.,anounoraverb.
+The goal of classification is to take a single observation, extract some useful
+features, and thereby classify the observation into one of a set of discrete classes.
+One method for classifying text is to use rules handwritten by humans. Handwrit-
+tenrule-basedclassifierscanbecomponentsofstate-of-the-artsystemsinlanguage
+processing. Butrulescanbefragile,assituationsordatachangeovertime,andfor
+sometaskshumansaren’tnecessarilygoodatcomingupwiththerules.
+The most common way of doing text classification in language processing is
+supervised
+machine insteadviasupervisedmachinelearning,thesubjectofthischapter. Insupervised
+learning
+learning,wehaveadatasetofinputobservations,eachassociatedwithsomecorrect
+output (a ‘supervision signal’). The goal of the algorithm is to learn how to map
+fromanewobservationtoacorrectoutput.
+Formally, the task of supervised classification is to take an input x and a fixed
+set of output classes Y ={y ,y ,...,y } and return a predicted class y∈Y. For
+1 2 M
+text classification, we’ll sometimes talk about c (for “class”) instead of y as our
+output variable, and d (for “document”) instead of x as our input variable. In the
+supervisedsituationwehaveatrainingsetofNdocumentsthathaveeachbeenhand-
+labeledwithaclass: {(d ,c ),....,(d ,c )}. Ourgoalistolearnaclassifierthatis
+1 1 N N
+capable of mapping from a new document d to its correct class c∈C, whereC is
+somesetofusefuldocumentclasses.Aprobabilisticclassifieradditionallywilltell
+us the probability of the observation being in the class. This full distribution over
+the classes can be useful information for downstream decisions; avoiding making
+discretedecisionsearlyoncanbeusefulwhencombiningsystems.
+Many kinds of machine learning algorithms are used to build classifiers. This
+chapter introduces naive Bayes; the following one introduces logistic regression.
+Theseexemplifytwowaysofdoingclassification. Generativeclassifierslikenaive
+Bayes build a model of how a class could generate some input data. Given an ob-
+servation, theyreturntheclassmostlikelytohavegeneratedtheobservation. Dis-
+criminativeclassifierslikelogisticregressioninsteadlearnwhatfeaturesfromthe
+inputaremostusefultodiscriminatebetweenthedifferentpossibleclasses. While
+discriminative systems are often more accurate and hence more commonly used,
+generativeclassifiersstillhavearole.
+B.1 Naive Bayes Classifiers
+naiveBayes In this section we introduce the multinomial naive Bayes classifier, so called be-
+classifier
+cause it is a Bayesian classifier that makes a simplifying (naive) assumption about
+
+--- PAGE_3 ---
+B.1 • NAIVEBAYESCLASSIFIERS 3
+howthefeaturesinteract.
+TheintuitionoftheclassifierisshowninFig.B.1. Werepresentatextdocument
+bagofwords as if it were a bag of words, that is, an unordered set of words with their position
+ignored,keepingonlytheirfrequencyinthedocument. Intheexampleinthefigure,
+insteadofrepresentingthewordorderinallthephraseslike“Ilovethismovie”and
+“I would recommend it”, we simply note that the word I occurred 5 times in the
+entireexcerpt,thewordit6times,thewordslove,recommend,andmovieonce,and
+soon.
+adventure 1
+and 3
+fairy 1
+I love this movie! It's sweet,
+fairy it genre 1
+but with satirical humor. The always loveto
+it great 1
+dialogue is great and the whimsical it I
+adventure scenes are fun... and seen are anyone have 1
+It manages to be whimsical frien h d appy dialogue humor 1
+recommend I 5
+and romantic while laughing adventure
+at the conventions of the who sweet of m sa o t v ir ie ical it i s t atirical 6 1
+f r a e i c ry o m ta m le e g n e d n i r t e to . I j u w s o t u a ld b out sev i e t ra I l but to y r e o t mantic I seen 2
+anyone. I've seen it several again it the humor sweet 1
+the seen would the 4
+times, and I'm always happy to scenes I themanages times 1
+to see it again whenever I the
+have a friend who hasn't fun I and times and to 3
+seen it yet! whenever about while whimsical 1
+have would 1
+conventions
+with yet 1
+… …
+FigureB.1 IntuitionofthemultinomialnaiveBayesclassifierappliedtoamoviereview.Thepositionofthe
+wordsisignored(thebag-of-wordsassumption)andwemakeuseofthefrequencyofeachword.
+NaiveBayesisaprobabilisticclassifier, meaningthatforadocumentd, outof
+allclassesc∈C theclassifierreturnstheclasscˆwhichhasthemaximumposterior
+ˆ probabilitygiventhedocument. InEq.B.1weusethehatnotationˆ tomean“our
+argmax estimateofthecorrectclass”,andweuseargmaxtomeananoperationthatselects
+the argument (in this case the class c) that maximizes a function (in this case the
+probabilityP(c|d)).
+cˆ = argmaxP(c|d) (B.1)
+c∈C
+Bayesian This idea of Bayesian inference has been known since the work of Bayes (1763),
+inference
+and was first applied to text classification by Mosteller and Wallace (1964). The
+intuition of Bayesian classification is to use Bayes’ rule to transform Eq. B.1 into
+other probabilities that have some useful properties. Bayes’ rule is presented in
+Eq. B.2; it gives us a way to break down any conditional probability P(x|y) into
+threeotherprobabilities:
+P(y|x)P(x)
+P(x|y)= (B.2)
+P(y)
+WecanthensubstituteEq.B.2intoEq.B.1togetEq.B.3:
+P(d|c)P(c)
+cˆ=argmaxP(c|d)=argmax (B.3)
+P(d)
+c∈C c∈C
+[TABLES]
+[[''], ["adventure 1\nand 3\nfairy 1\nI love this movie! It's sweet,\nfairy it genre 1\nbut with satirical humor. The always loveto\nit great 1\ndialogue is great and the whimsical it I\nadventure scenes are fun... and seen are anyone have 1\nIt manages to be whimsical frien h d appy dialogue humor 1\nrecommend I 5\nand romantic while laughing adventure\nat the conventions of the who sweet of m sa o t v ir ie ical it i s t atirical 6 1\nf r a e i c ry o m ta m le e g n e d n i r t e to . I j u w s o t u a ld b out sev i e t ra I l but to y r e o t mantic I seen 2\nanyone. I've seen it several again it the humor sweet 1\nthe seen would the 4\ntimes, and I'm always happy to scenes I themanages times 1\nto see it again whenever I the\nhave a friend who hasn't fun I and times and to 3\nseen it yet! whenever about while whimsical 1\nhave would 1\nconventions\nwith yet 1\n… …"], ['']]
+
+--- PAGE_4 ---
+4 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+WecanconvenientlysimplifyEq.B.3bydroppingthedenominatorP(d). This
+ispossiblebecausewewillbecomputing P(d|c)P(c) foreachpossibleclass.ButP(d)
+P(d)
+doesn’tchangeforeachclass;wearealwaysaskingaboutthemostlikelyclassfor
+the same document d, which must have the same probability P(d). Thus, we can
+choosetheclassthatmaximizesthissimplerformula:
+cˆ=argmaxP(c|d)=argmaxP(d|c)P(c) (B.4)
+c∈C c∈C
+WecallNaiveBayesagenerativemodelbecausewecanreadEq.B.4asstating
+a kind of implicit assumption about how a document is generated: first a class is
+sampledfromP(c),andthenthewordsaregeneratedbysamplingfromP(d|c). (In
+factwecouldimaginegeneratingartificialdocuments,oratleasttheirwordcounts,
+byfollowingthisprocess). We’llsaymoreaboutthisintuitionofgenerativemodels
+inChapter4.
+To return to classification: we compute the most probable class cˆ given some
+documentdbychoosingtheclasswhichhasthehighestproductoftwoprobabilities:
+prior thepriorprobabilityoftheclassP(c)andthelikelihoodofthedocumentP(d|c):
+probability
+likelihood
+likelihood prior
+(cid:122) (cid:125)(cid:124) (cid:123) (cid:122)(cid:125)(cid:124)(cid:123)
+cˆ=argmax P(d|c) P(c) (B.5)
+c∈C
+Without loss of generality, we can represent a document d as a set of features
+f ,f ,...,f :
+1 2 n
+likelihood prior
+(cid:122) (cid:125)(cid:124) (cid:123) (cid:122)(cid:125)(cid:124)(cid:123)
+cˆ=argmaxP(f ,f ,....,f |c) P(c) (B.6)
+1 2 n
+c∈C
+Unfortunately, Eq.B.6isstilltoohardtocomputedirectly: withoutsomesim-
+plifying assumptions, estimating the probability of every possible combination of
+features(forexample,everypossiblesetofwordsandpositions)wouldrequirehuge
+numbers of parameters and impossibly large training sets. Naive Bayes classifiers
+thereforemaketwosimplifyingassumptions.
+Thefirstisthebag-of-wordsassumptiondiscussedintuitivelyabove:weassume
+positiondoesn’tmatter,andthattheword“love”hasthesameeffectonclassification
+whether it occurs as the 1st, 20th, or last word in the document. Thus we assume
+thatthefeatures f ,f ,...,f onlyencodewordidentityandnotposition.
+1 2 n
+naiveBayes ThesecondiscommonlycalledthenaiveBayesassumption: thisisthecondi-
+assumption
+tionalindependenceassumptionthattheprobabilitiesP(f|c)areindependentgiven
+i
+theclasscandhencecanbe‘naively’multipliedasfollows:
+P(f 1 ,f 2 ,....,f n |c) = P(f 1 |c)·P(f 2 |c)·...·P(f n |c) (B.7)
+ThefinalequationfortheclasschosenbyanaiveBayesclassifieristhus:
+(cid:89)
+c NB = argmaxP(c) P(f|c) (B.8)
+c∈C
+f∈F
+ToapplythenaiveBayesclassifiertotext,wewilluseeachwordinthedocuments
+asafeature,assuggestedabove,andweconsidereachofthewordsinthedocument
+
+--- PAGE_5 ---
+B.2 • TRAININGTHENAIVEBAYESCLASSIFIER 5
+bywalkinganindexthrougheverywordpositioninthedocument:
+positions ← allwordpositionsintestdocument
+(cid:89)
+c NB = argmaxP(c) P(w i |c) (B.9)
+c∈C
+i∈positions
+NaiveBayescalculations, likecalculationsforlanguagemodeling, aredoneinlog
+space, to avoid underflow and increase speed. Thus Eq. B.9 is generally instead
+expressed1as
+(cid:88)
+c NB = argmaxlogP(c)+ logP(w i |c) (B.10)
+c∈C
+i∈positions
+Byconsideringfeaturesinlogspace,Eq.B.10computesthepredictedclassasalin-
+earfunctionofinputfeatures. Classifiersthatusealinearcombinationoftheinputs
+to make a classification decision —like naive Bayes and also logistic regression—
+linear arecalledlinearclassifiers.
+classifiers
+B.2 Training the Naive Bayes Classifier
+HowcanwelearntheprobabilitiesP(c)andP(f|c)? Let’sfirstconsiderthemaxi-
+i
+mumlikelihoodestimate. We’llsimplyusethefrequenciesinthedata. Fortheclass
+priorP(c)weaskwhatpercentageofthedocumentsinourtrainingsetareineach
+class c. Let N be the number of documents in our training data with class c and
+c
+N bethetotalnumberofdocuments. Then:
+doc
+N
+Pˆ(c)= c (B.11)
+N
+doc
+TolearntheprobabilityP(f|c),we’llassumeafeatureisjusttheexistenceofaword
+i
+in the document’s bag of words, and so we’ll want P(w|c), which we compute as
+i
+thefractionoftimesthewordw appearsamongallwordsinalldocumentsoftopic
+i
+c. Wefirstconcatenatealldocumentswithcategorycintoonebig“categoryc”text.
+Thenweusethefrequencyofw inthisconcatenateddocumenttogiveamaximum
+i
+likelihoodestimateoftheprobability:
+count(w,c)
+Pˆ(w i |c) = (cid:80) i (B.12)
+count(w,c)
+w∈V
+HerethevocabularyV consistsoftheunionofallthewordtypesinallclasses,not
+justthewordsinoneclassc.
+There is a problem, however, with maximum likelihood training. Imagine we
+aretryingtoestimatethelikelihoodoftheword“fantastic”givenclasspositive,but
+supposetherearenotrainingdocumentsthatbothcontaintheword“fantastic”and
+are classified as positive. Perhaps the word “fantastic” happens to occur (sarcasti-
+cally?) intheclass negative. Insuchacasetheprobabilityforthisfeaturewillbe
+zero:
+count(“fantastic”,positive)
+Pˆ(“fantastic”|positive) = (cid:80) =0 (B.13)
+count(w,positive)
+w∈V
+1 Inpracticethroughoutthisbook,we’lluselogtomeannaturallog(ln)whenthebaseisnotspecified.
+
+--- PAGE_6 ---
+6 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+But since naive Bayes naively multiplies all the feature likelihoods together, zero
+probabilities in the likelihood term for any class will cause the probability of the
+classtobezero,nomattertheotherevidence!
+The simplest solution is the add-one (Laplace) smoothing introduced in Chap-
+ter3.WhileLaplacesmoothingisusuallyreplacedbymoresophisticatedsmoothing
+algorithms in language modeling, it is commonly used in naive Bayes text catego-
+rization:
+count(w,c)+1 count(w,c)+1
+Pˆ(w i |c) = (cid:80)
+(coun
+i
+t(w,c)+1)
+= (cid:0)(cid:80)
+count
+i
+(w,c)
+(cid:1)
++|V|
+(B.14)
+w∈V w∈V
+NoteonceagainthatitiscrucialthatthevocabularyV consistsoftheunionofallthe
+wordtypesinallclasses,notjustthewordsinoneclassc(trytoconvinceyourself
+whythismustbetrue;seetheexerciseattheendofthechapter).
+Whatdowedoaboutwordsthatoccurinourtestdatabutarenotinourvocab-
+ularyatallbecausetheydidnotoccurinanytrainingdocumentinanyclass? The
+unknownword solution for such unknown words is to ignore them—remove them from the test
+documentandnotincludeanyprobabilityforthematall.
+Finally,somesystemschoosetocompletelyignoreanotherclassofwords: stop
+stopwords words,veryfrequentwordsliketheanda. Thiscanbedonebysortingthevocabu-
+larybyfrequencyinthetrainingset,anddefiningthetop10–100vocabularyentries
+asstopwords,oralternativelybyusingoneofthemanypredefinedstopwordlists
+available online. Then each instance of these stop words is simply removed from
+bothtrainingandtestdocumentsasifithadneveroccurred. Inmosttextclassifica-
+tionapplications,however,usingastopwordlistdoesn’timproveperformance,and
+soitismorecommontomakeuseoftheentirevocabularyandnotuseastopword
+list.
+Fig.B.2showsthefinalalgorithm.
+B.3 Worked example
+Let’s walk through an example of training and testing naive Bayes with add-one
+smoothing. We’ll use a sentiment analysis domain with the two classes positive
+(+) and negative (-), and take the following miniature training and test documents
+simplifiedfromactualmoviereviews.
+Cat Documents
+Training - justplainboring
+- entirelypredictableandlacksenergy
+- nosurprisesandveryfewlaughs
++ verypowerful
++ themostfunfilmofthesummer
+Test ? predictablewithnofun
+ThepriorP(c)forthetwoclassesiscomputedviaEq.B.11as Nc :
+Ndoc
+3 2
+P(−)= P(+)=
+5 5
+The word with doesn’t occur in the training set, so we drop it completely (as
+mentionedabove, wedon’tuseunknownwordmodelsfornaiveBayes). Thelike-
+lihoodsfromthetrainingsetfortheremainingthreewords“predictable”,“no”,and
+[TABLES]
+[['', 'Cat', 'Documents'], ['Training', '-', 'justplainboring'], ['', '-', 'entirelypredictableandlacksenergy'], ['', '-', 'nosurprisesandveryfewlaughs'], ['', '+', 'verypowerful'], ['', '+', 'themostfunfilmofthesummer'], ['Test', '?', 'predictablewithnofun']]
+
+--- PAGE_7 ---
+B.4 • OPTIMIZINGFORSENTIMENTANALYSIS 7
+functionTRAINNAIVEBAYES(D,C)returnsV, log P(c),log P(w|c)
+foreachclassc∈C #CalculateP(c)terms
+N =numberofdocumentsinD
+doc
+Nc=numberofdocumentsfromDinclassc
+Nc
+logprior[c]← log
+N
+doc
+V←vocabularyofD
+bigdoc[c]←append(d)ford∈Dwithclassc
+foreachwordwinV # CalculateP(w|c)terms
+count(w,c)←#ofoccurrencesofwinbigdoc[c]
+count(w,c) + 1
+loglikelihood[w,c]← log (cid:80) (count(w(cid:48),c) + 1)
+w(cid:48)inV
+returnlogprior,loglikelihood,V
+functionTESTNAIVEBAYES(testdoc,logprior,loglikelihood,C,V)returnsbestc
+foreachclassc∈C
+sum[c]← logprior[c]
+foreachpositioniintestdoc
+word←testdoc[i]
+ifword∈V
+sum[c]←sum[c]+loglikelihood[word,c]
+returnargmax sum[c]
+c
+FigureB.2 ThenaiveBayesalgorithm,usingadd-1smoothing. Touseadd-α smoothing
+instead,changethe+1to+αforloglikelihoodcountsintraining.
+“fun”,areasfollows,fromEq.B.14(computingtheprobabilitiesfortheremainder
+ofthewordsinthetrainingsetisleftasanexerciseforthereader):
+1+1 0+1
+P(“predictable”|−)= P(“predictable”|+)=
+14+20 9+20
+1+1 0+1
+P(“no”|−)= P(“no”|+)=
+14+20 9+20
+0+1 1+1
+P(“fun”|−)= P(“fun”|+)=
+14+20 9+20
+ForthetestsentenceS=“predictablewithnofun”,afterremovingtheword‘with’,
+thechosenclass,viaEq.B.9,isthereforecomputedasfollows:
+3 2×2×1
+P(−)P(S|−) = × =6.1×10−5
+5 343
+2 1×1×2
+P(+)P(S|+) = × =3.2×10−5
+5 293
+Themodelthuspredictstheclassnegativeforthetestsentence.
+B.4 Optimizing for Sentiment Analysis
+WhilestandardnaiveBayestextclassificationcanworkwellforsentimentanalysis,
+somesmallchangesaregenerallyemployedthatimproveperformance.
+[TABLES]
+[['functionTRAINNAIVEBAYES(D,C)returnsV, log P(c),log P(w|c)\nforeachclassc∈C #CalculateP(c)terms\nN =numberofdocumentsinD\ndoc\nNc=numberofdocumentsfromDinclassc\nNc\nlogprior[c]← log\nN\ndoc\nV←vocabularyofD\nbigdoc[c]←append(d)ford∈Dwithclassc\nforeachwordwinV # CalculateP(w|c)terms\ncount(w,c)←#ofoccurrencesofwinbigdoc[c]\ncount(w,c) + 1\nloglikelihood[w,c]← log (cid:80) (count(w(cid:48),c) + 1)\nw(cid:48)inV\nreturnlogprior,loglikelihood,V\nfunctionTESTNAIVEBAYES(testdoc,logprior,loglikelihood,C,V)returnsbestc\nforeachclassc∈C\nsum[c]← logprior[c]\nforeachpositioniintestdoc\nword←testdoc[i]\nifword∈V\nsum[c]←sum[c]+loglikelihood[word,c]\nreturnargmax sum[c]\nc'], ['FigureB.2']]
+
+--- PAGE_8 ---
+8 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+First,forsentimentclassificationandanumberofothertextclassificationtasks,
+whetherawordoccursornotseemstomattermorethanitsfrequency. Thusitoften
+improves performance to clip the word counts in each document at 1 (see the end
+ofthechapterforpointerstotheseresults). Thisvariantiscalledbinarymultino-
+binarynaive mialnaiveBayesorbinarynaiveBayes. Thevariantusesthesamealgorithmasin
+Bayes
+Fig.B.2exceptthatforeachdocumentweremoveallduplicatewordsbeforecon-
+catenating them into the single big document during training and we also remove
+duplicate words from test documents. Fig. B.3 shows an example in which a set
+of four documents (shortened and text-normalized for this example) are remapped
+to binary, with the modified counts shown in the table on the right. The example
+is worked without add-1 smoothing to make the differences clearer. Note that the
+resultscountsneednotbe1; thewordgreathasacountof2evenforbinarynaive
+Bayes,becauseitappearsinmultipledocuments.
+NB Binary
+Counts Counts
+Fouroriginaldocuments: + − + −
+− it was pathetic the worst part was the and 2 0 1 0
+boxing 0 1 0 1
+boxingscenes
+film 1 0 1 0
+− noplottwistsorgreatscenes
+great 3 1 2 1
++ andsatireandgreatplottwists it 0 1 0 1
++ greatscenesgreatfilm no 0 1 0 1
+or 0 1 0 1
+Afterper-documentbinarization: part 0 1 0 1
+pathetic 0 1 0 1
+− it was pathetic the worst part boxing
+plot 1 1 1 1
+scenes
+satire 1 0 1 0
+− noplottwistsorgreatscenes scenes 1 2 1 2
++ andsatiregreatplottwists the 0 2 0 1
++ greatscenesfilm twists 1 1 1 1
+was 0 2 0 1
+worst 0 1 0 1
+FigureB.3 AnexampleofbinarizationforthebinarynaiveBayesalgorithm.
+Asecondimportantadditioncommonlymadewhendoingtextclassificationfor
+sentimentistodealwithnegation. ConsiderthedifferencebetweenIreallylikethis
+movie(positive)andIdidn’tlikethismovie(negative). Thenegationexpressedby
+didn’t completely alters the inferences we draw from the predicate like. Similarly,
+negationcanmodifyanegativewordtoproduceapositivereview(don’tdismissthis
+film,doesn’tletusgetbored).
+Averysimplebaselinethatiscommonlyusedinsentimentanalysistodealwith
+negation is the following: during text normalization, prepend the prefix NOT to
+everywordafteratokenoflogicalnegation(n’t,not,no,never)untilthenextpunc-
+tuationmark. Thusthephrase
+didn’t like this movie , but I
+becomes
+didn’t NOT_like NOT_this NOT_movie , but I
+Newly formed ‘words’ like NOT like, NOT recommend will thus occur more
+often in negative document and act as cues for negative sentiment, while words
+likeNOT bored, NOT dismisswillacquirepositiveassociations. Syntacticparsing
+(Chapter18)canbeusedtodealmoreaccuratelywiththescoperelationshipbetween
+[TABLES]
+[['NB Binary\nCounts Counts\nFouroriginaldocuments: + − + −\n− it was pathetic the worst part was the and 2 0 1 0\nboxing 0 1 0 1\nboxingscenes\nfilm 1 0 1 0\n− noplottwistsorgreatscenes\ngreat 3 1 2 1\n+ andsatireandgreatplottwists it 0 1 0 1\n+ greatscenesgreatfilm no 0 1 0 1\nor 0 1 0 1\nAfterper-documentbinarization: part 0 1 0 1\npathetic 0 1 0 1\n− it was pathetic the worst part boxing\nplot 1 1 1 1\nscenes\nsatire 1 0 1 0\n− noplottwistsorgreatscenes scenes 1 2 1 2\n+ andsatiregreatplottwists the 0 2 0 1\n+ greatscenesfilm twists 1 1 1 1\nwas 0 2 0 1\nworst 0 1 0 1'], ['FigureB.3']]
+[['and', '2', '0', '', '1', '0']]
+[['great', '3', '1', '', '2', '1']]
+[['the', '0', '2', '', '0', '1']]
+[['was', '0', '2', '', '0', '1']]
+
+--- PAGE_9 ---
+B.5 • NAIVEBAYESFOROTHERTEXTCLASSIFICATIONTASKS 9
+thesenegationwordsandthepredicatestheymodify,butthissimplebaselineworks
+quitewellinpractice.
+Finally, in some situations we might have insufficient labeled training data to
+trainaccuratenaiveBayesclassifiersusingallwordsinthetrainingsettoestimate
+positive and negative sentiment. In such cases we can instead derive the positive
+sentiment and negative word features from sentiment lexicons, lists of words that are pre-
+lexicons
+annotatedwithpositiveornegativesentiment.FourpopularlexiconsaretheGeneral
+General Inquirer(Stoneetal.,1966),LIWC(Pennebakeretal.,2007),theopinionlexicon
+Inquirer
+LIWC ofHuandLiu(2004)andtheMPQASubjectivityLexicon(Wilsonetal.,2005).
+For example the MPQA subjectivity lexicon has 6885 words each marked for
+whetheritisstronglyorweaklybiasedpositiveornegative. Someexamples:
++ : admirable,beautiful,confident,dazzling,ecstatic,favor,glee,great
+− : awful,bad,bias,catastrophe,cheat,deny,envious,foul,harsh,hate
+A common way to use lexicons in a naive Bayes classifier is to add a feature
+that is counted whenever a word from that lexicon occurs. Thus we might add a
+feature called ‘this word occurs in the positive lexicon’, and treat all instances of
+words in the lexicon as counts for that one feature, instead of counting each word
+separately. Similarly, we might add as a second feature ‘this word occurs in the
+negativelexicon’ofwordsinthenegativelexicon. Ifwehavelotsoftrainingdata,
+andifthetestdatamatchesthetrainingdata,usingjusttwofeatureswon’tworkas
+wellasusingallthewords. Butwhentrainingdataissparseornotrepresentativeof
+thetestset,usingdenselexiconfeaturesinsteadofsparseindividual-wordfeatures
+maygeneralizebetter.
+We’ll return to this use of lexicons in Chapter 22, showing how these lexicons
+canbelearnedautomatically,andhowtheycanbeappliedtomanyothertasksbe-
+yondsentimentclassification.
+B.5 Naive Bayes for other text classification tasks
+In the previous section we pointed out that naive Bayes doesn’t require that our
+classifieruseallthewordsinthetrainingdataasfeatures. Infactfeaturesinnaive
+Bayescanexpressanypropertyoftheinputtextwewant.
+spamdetection Consider the task of spam detection, deciding if a particular piece of email is
+anexampleofspam(unsolicitedbulkemail)—oneofthefirstapplicationsofnaive
+Bayestotextclassification(Sahamietal.,1998).
+Acommonsolutionhere,ratherthanusingallthewordsasindividualfeatures,
+is to predefine likely sets of words or phrases as features, combined with features
+that are not purely linguistic. For example the open-source SpamAssassin tool2
+predefinesfeatureslikethephrase“onehundredpercentguaranteed”,orthefeature
+mentionsmillionsofdollars,whichisaregularexpressionthatmatchessuspiciously
+largesumsofmoney. ButitalsoincludesfeatureslikeHTMLhasalowratiooftext
+to image area, that aren’t purely linguistic and might require some sophisticated
+computation, or totally non-linguistic features about, say, the path that the email
+tooktoarrive. MoresampleSpamAssassinfeatures:
+• Emailsubjectlineisallcapitalletters
+• Containsphrasesofurgencylike“urgentreply”
+2 https://spamassassin.apache.org
+
+--- PAGE_10 ---
+10 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+• Emailsubjectlinecontains“onlinepharmaceutical”
+• HTMLhasunbalanced“head”tags
+• Claimsyoucanberemovedfromthelist
+languageid For other tasks, like language id—determining what language a given piece
+of text is written in—the most effective naive Bayes features are not words at all,
+but charactern-grams, 2-grams (‘zw’)3-grams (‘nya’, ‘Vo’), or4-grams (‘iez’,
+‘thei’),or,evensimplerbyten-grams,whereinsteadofusingthemultibyteUnicode
+characterrepresentationscalledcodepoints,wejustpretendeverythingisastringof
+rawbytes. Becausespacescountasabyte,byten-gramscanmodelstatisticsabout
+thebeginningorendingofwords. AwidelyusednaiveBayessystem,langid.py
+(LuiandBaldwin,2012)beginswithallpossiblen-gramsoflengths1-4,usingfea-
+tureselectiontowinnowdowntothemostinformative7000finalfeatures.
+LanguageIDsystemsaretrainedonmultilingualtext,suchasWikipedia(Wiki-
+pedia text in 68 different languages was used by (Lui and Baldwin, 2011)), or
+newswire. To make sure that this multilingual text correctly reflects different re-
+gions, dialects, and socioeconomic classes, systems also add Twitter text in many
+languagesgeotaggedtomanyregions(importantforgettingworldEnglishdialects
+fromcountrieswithlargeAnglophonepopulationslikeNigeriaorIndia),Bibleand
+Qurantranslations,slangwebsiteslikeUrbanDictionary,corporaofAfricanAmer-
+icanVernacularEnglish(Blodgettetal.,2016),andsoon(Jurgensetal.,2017).
+B.6 Naive Bayes as a Language Model
+Aswesawintheprevioussection,naiveBayesclassifierscanuseanysortoffeature:
+dictionaries, URLs, email addresses, network features, phrases, and so on. But if,
+asinSectionB.3,weuseonlyindividualwordfeatures,andweuseallofthewords
+inthetext(notasubset), thennaiveBayeshasanimportantsimilaritytolanguage
+modeling. Specifically,anaiveBayesmodelcanbeviewedasasetofclass-specific
+unigramlanguagemodels,inwhichthemodelforeachclassinstantiatesaunigram
+languagemodel.
+SincethelikelihoodfeaturesfromthenaiveBayesmodelassignaprobabilityto
+eachwordP(word|c),themodelalsoassignsaprobabilitytoeachsentence:
+(cid:89)
+P(s|c)= P(w|c) (B.15)
+i
+i∈positions
+ThusconsideranaiveBayesmodelwiththeclassespositive(+)andnegative(-)
+andthefollowingmodelparameters:
+w P(w|+) P(w|-)
+I 0.1 0.2
+love 0.1 0.001
+this 0.01 0.01
+fun 0.05 0.005
+film 0.1 0.1
+... ... ...
+Eachofthetwocolumnsaboveinstantiatesalanguagemodelthatcanassigna
+probabilitytothesentence“Ilovethisfunfilm”:
+[TABLES]
+[['w', 'P(w|+)', 'P(w|-)'], ['I', '0.1', '0.2'], ['love', '0.1', '0.001'], ['this', '0.01', '0.01'], ['fun', '0.05', '0.005'], ['film', '0.1', '0.1'], ['...', '...', '...']]
+
+--- PAGE_11 ---
+B.7 • EVALUATION: PRECISION,RECALL,F-MEASURE 11
+P(“Ilovethisfunfilm”|+) = 0.1×0.1×0.01×0.05×0.1=5×10−7
+P(“Ilovethisfunfilm”|−) = 0.2×0.001×0.01×0.005×0.1=1.0×10−9
+As it happens, the positive model assigns a higher probability to the sentence:
+P(s|pos)>P(s|neg). Note that this is just the likelihood part of the naive Bayes
+model; once we multiply in the prior a full naive Bayes model might well make a
+differentclassificationdecision.
+B.7 Evaluation: Precision, Recall, F-measure
+Tointroducethemethodsforevaluatingtextclassification,let’sfirstconsidersome
+simplebinarydetectiontasks. Forexample, inspamdetection, ourgoalistolabel
+every text as being in the spam category (“positive”) or not in the spam category
+(“negative”). For each item (email document) we therefore need to know whether
+oursystemcalleditspamornot.Wealsoneedtoknowwhethertheemailisactually
+spamornot,i.e. thehuman-definedlabelsforeachdocumentthatwearetryingto
+goldlabels match. Wewillrefertothesehumanlabelsasthegoldlabels.
+Orimagineyou’retheCEOoftheDeliciousPieCompanyandyouneedtoknow
+whatpeoplearesayingaboutyourpiesonsocialmedia,soyoubuildasystemthat
+detects tweets concerning Delicious Pie. Here the positive class is tweets about
+DeliciousPieandthenegativeclassisallothertweets.
+In both cases, we need a metric for knowing how well our spam detector (or
+pie-tweet-detector) is doing. To evaluate any system for detecting things, we start
+confusion bybuildingaconfusionmatrixliketheoneshowninFig.B.4. Aconfusionmatrix
+matrix
+isatableforvisualizinghowanalgorithmperformswithrespecttothehumangold
+labels,usingtwodimensions(systemoutputandgoldlabels),andeachcelllabeling
+asetofpossibleoutcomes. Inthespamdetectioncase, forexample, truepositives
+are documents that are indeed spam (indicated by human-created gold labels) that
+oursystemcorrectlysaidwerespam. Falsenegativesaredocumentsthatareindeed
+spambutoursystemincorrectlylabeledasnon-spam.
+To the bottom right of the table is the equation for accuracy, which asks what
+percentageofalltheobservations(forthespamorpieexamplesthatmeansallemails
+or tweets) our system labeled correctly. Although accuracy might seem a natural
+metric,wegenerallydon’tuseitfortextclassificationtasks.That’sbecauseaccuracy
+doesn’tworkwellwhentheclassesareunbalanced(asindeedtheyarewithspam,
+whichisalargemajorityofemail,orwithtweets,whicharemainlynotaboutpie).
+To make this more explicit, imagine that we looked at a million tweets, and
+let’s say that only 100 of them are discussing their love (or hatred) for our pie,
+whiletheother999,900aretweetsaboutsomethingcompletelyunrelated.Imaginea
+simpleclassifierthatstupidlyclassifiedeverytweetas“notaboutpie”.Thisclassifier
+wouldhave999,900truenegativesandonly100falsenegativesforanaccuracyof
+999,900/1,000,000or99.99%! Whatanamazingaccuracylevel! Surelyweshould
+be happy with this classifier? But of course this fabulous ‘no pie’ classifier would
+becompletelyuseless,sinceitwouldn’tfindasingleoneofthecustomercomments
+wearelookingfor. Inotherwords,accuracyisnotagoodmetricwhenthegoalis
+todiscoversomethingthatisrare,oratleastnotcompletelybalancedinfrequency,
+whichisaverycommonsituationintheworld.
+
+--- PAGE_12 ---
+12 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+gold standard labels
+gold positive gold negative
+system p s o y s s i t t e i m ve true positive false positive precision = tp t + p fp
+output
+system
+labels negative false negative true negative
+tp tp+tn
+recall = accuracy =
+tp+fn tp+fp+tn+fn
+FigureB.4 Aconfusionmatrixforvisualizinghowwellabinaryclassificationsystemper-
+formsagainstgoldstandardlabels.
+That’swhyinsteadofaccuracywegenerallyturntotwoothermetricsshownin
+precision Fig.B.4: precisionandrecall. Precisionmeasuresthepercentageoftheitemsthat
+thesystemdetected(i.e.,thesystemlabeledaspositive)thatareinfactpositive(i.e.,
+arepositiveaccordingtothehumangoldlabels). Precisionisdefinedas
+truepositives
+Precision=
+truepositives+falsepositives
+recall Recallmeasuresthepercentageofitemsactuallypresentintheinputthatwere
+correctlyidentifiedbythesystem. Recallisdefinedas
+truepositives
+Recall=
+truepositives+falsenegatives
+Precision and recall will help solve the problem with the useless “nothing is
+pie” classifier. This classifier, despite having a fabulous accuracy of 99.99%, has
+a terrible recall of 0 (since there are no true positives, and 100 false negatives, the
+recallis0/100). Youshouldconvinceyourselfthattheprecisionatfindingrelevant
+tweetsisequallyproblematic.Thusprecisionandrecall,unlikeaccuracy,emphasize
+truepositives: findingthethingsthatwearesupposedtobelookingfor.
+Therearemanywaystodefineasinglemetricthatincorporatesaspectsofboth
+F-measure precision and recall. The simplest of these combinations is the F-measure (van
+Rijsbergen,1975),definedas:
+(β2+1)PR
+F =
+β β2P+R
+The β parameter differentially weights the importance of recall and precision,
+based perhaps on the needs of an application. Values of β >1 favor recall, while
+valuesofβ <1favorprecision. Whenβ =1,precisionandrecallareequallybal-
+F1 anced;thisisthemostfrequentlyusedmetric,andiscalledF β=1 orjustF 1 :
+2PR
+F = (B.16)
+1
+P+R
+F-measurecomesfromaweightedharmonicmeanofprecisionandrecall. The
+harmonicmeanofasetofnumbersisthereciprocalofthearithmeticmeanofrecip-
+rocals:
+n
+HarmonicMean(a ,a ,a ,a ,...,a )= (B.17)
+1 2 3 4 n 1 + 1 + 1 +...+ 1
+a1 a2 a3 an
+[TABLES]
+[['gold standard labels\ngold positive gold negative\nsystem p s o y s s i t t e i m ve true positive false positive precision = tp t + p fp\noutput\nsystem\nlabels negative false negative true negative\ntp tp+tn\nrecall = accuracy =\ntp+fn tp+fp+tn+fn'], ['FigureB.4']]
+[['true positive', 'false positive'], ['false negative', 'true negative'], ['tp\nrecall =\ntp+fn', '']]
+
+--- PAGE_13 ---
+B.7 • EVALUATION: PRECISION,RECALL,F-MEASURE 13
+andhenceF-measureis
+1 (cid:18) 1−α (cid:19) (β2+1)PR
+F = or withβ2= F = (B.18)
+α1+(1−α)1 α β2P+R
+P R
+Harmonic mean is used because the harmonic mean of two values is closer to the
+minimumofthetwovaluesthanthearithmeticmeanis. Thusitweighsthelowerof
+thetwonumbersmoreheavily,whichismoreconservativeinthissituation.
+B.7.1 Evaluatingwithmorethantwoclasses
+Uptonowwehavebeendescribingtextclassificationtaskswithonlytwoclasses.
+But lots of classification tasks in language processing have more than two classes.
+Forsentimentanalysiswegenerallyhave3classes(positive,negative,neutral)and
+even more classes are common for tasks like part-of-speech tagging, word sense
+disambiguation, semantic role labeling, emotion detection, and so on. Luckily the
+naiveBayesalgorithmisalreadyamulti-classclassificationalgorithm.
+gold labels
+urgent normal spam
+8
+urgent 8 10 1 precisionu=
+8+10+1
+system 60
+output normal 5 60 50 precisionn=
+5+60+50
+200
+spam 3 30 200 precisions=
+3+30+200
+recallu = recalln = recalls =
+8 60 200
+8+5+3 10+60+30 1+50+200
+FigureB.5 Confusionmatrixforathree-classcategorizationtask,showingforeachpairof
+classes(c ,c ),howmanydocumentsfromc were(in)correctlyassignedtoc .
+1 2 1 2
+But we’ll need to slightly modify our definitions of precision and recall. Con-
+sider the sample confusion matrix for a hypothetical 3-way one-of email catego-
+rizationdecision(urgent, normal, spam)showninFig.B.5. Thematrixshows, for
+example,thatthesystemmistakenlylabeledonespamdocumentasurgent,andwe
+haveshownhowtocomputeadistinctprecisionandrecallvalueforeachclass. In
+ordertoderiveasinglemetricthattellsushowwellthesystemisdoing,wecancom-
+macroaveraging bine these values in two ways. In macroaveraging, we compute the performance
+microaveraging foreachclass,andthenaverageoverclasses. Inmicroaveraging,wecollectthede-
+cisionsforallclassesintoasingleconfusionmatrix,andthencomputeprecisionand
+recallfromthattable. Fig.B.6showstheconfusionmatrixforeachclassseparately,
+andshowsthecomputationofmicroaveragedandmacroaveragedprecision.
+Asthefigureshows,amicroaverageisdominatedbythemorefrequentclass(in
+this case spam), since the counts are pooled. The macroaverage better reflects the
+statisticsofthesmallerclasses,andsoismoreappropriatewhenperformanceonall
+theclassesisequallyimportant.
+[TABLES]
+[['gold labels\nurgent normal spam\n8\nurgent 8 10 1 precisionu=\n8+10+1\nsystem 60\noutput normal 5 60 50 precisionn=\n5+60+50\n200\nspam 3 30 200 precisions=\n3+30+200\nrecallu = recalln = recalls =\n8 60 200\n8+5+3 10+60+30 1+50+200'], ['FigureB.5']]
+[['8', '10', '1'], ['5', '60', '50'], ['3', '30', '200']]
+
+--- PAGE_14 ---
+14 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+Class 1: Urgent Class 2: Normal Class 3: Spam Pooled
+true true true true true true true true
+urgent not normal not spam not yes no
+system system system system
+8 11 60 55 200 33 268 99
+urgent normal spam yes
+system 8 340 system 40 212 system 51 83 system 99 635
+not not not no
+8 60 200 microaverage 268
+precision = = .42 precision = = .52 precision = = .86 = = .73
+8+11 60+55 200+33 precision 268+99
+macroaverage .42+.52+.86
+= = .60
+precision 3
+FigureB.6 Separateconfusionmatricesforthe3classesfromthepreviousfigure,showingthepooledcon-
+fusionmatrixandthemicroaveragedandmacroaveragedprecision.
+B.8 Test sets and Cross-validation
+Thetrainingandtestingprocedurefortextclassificationfollowswhatwesawwith
+languagemodeling(Section??): weusethetrainingsettotrainthemodel,thenuse
+development the development test set (also called a devset) to perhaps tune some parameters,
+testset
+devset andingeneraldecidewhatthebestmodelis. Oncewecomeupwithwhatwethink
+isthebestmodel,werunitonthe(hithertounseen)testsettoreportitsperformance.
+While the use of a devset avoids overfitting the test set, having a fixed train-
+ing set, devset, and test set creates another problem: in order to save lots of data
+fortraining, thetestset(ordevset)mightnotbelargeenoughtoberepresentative.
+Wouldn’titbebetterifwecouldsomehowuseallourdatafortrainingandstilluse
+cross-validation allourdatafortest? Wecandothisbycross-validation.
+Incross-validation,wechooseanumberk,andpartitionourdataintokdisjoint
+folds subsets called folds. Now we choose one of those k folds as a test set, train our
+classifier on the remaining k−1 folds, and then compute the error rate on the test
+set. Thenwerepeatwithanotherfoldasthetestset,againtrainingontheotherk−1
+folds. Wedothissamplingprocessk timesandaveragethetestseterrorratefrom
+these k runs to get an average error rate. If we choose k=10, we would train 10
+different models (each on 90% of our data), test the model 10 times, and average
+10-fold these10values. Thisiscalled10-foldcross-validation.
+cross-validation
+The only problem with cross-validation is that because all the data is used for
+testing, we need the whole corpus to be blind; we can’t examine any of the data
+to suggest possible features and in general see what’s going on, because we’d be
+peekingatthetestset,andsuchcheatingwouldcauseustooverestimatetheperfor-
+mance of our system. However, looking at the corpus to understand what’s going
+onisimportantindesigningNLPsystems! Whattodo? Forthisreason,itiscom-
+montocreateafixedtrainingsetandtestset,thendo10-foldcross-validationinside
+the training set, but compute error rate the normal way in the test set, as shown in
+Fig.B.7.
+[TABLES]
+[['Class 1: Urgent Class 2: Normal Class 3: Spam Pooled\ntrue true true true true true true true\nurgent not normal not spam not yes no\nsystem system system system\n8 11 60 55 200 33 268 99\nurgent normal spam yes\nsystem 8 340 system 40 212 system 51 83 system 99 635\nnot not not no\n8 60 200 microaverage 268\nprecision = = .42 precision = = .52 precision = = .86 = = .73\n8+11 60+55 200+33 precision 268+99\nmacroaverage .42+.52+.86\n= = .60\nprecision 3'], ['FigureB.6']]
+[['8', '11'], ['8', '340']]
+[['60', '55'], ['40', '212']]
+[['200', '33'], ['51', '83']]
+[['268', '99'], ['99', '635']]
+
+--- PAGE_15 ---
+B.9 • STATISTICALSIGNIFICANCETESTING 15
+Training Iterations Testing
+1 Dev Training
+2 Dev Training
+3 Dev Training
+4 Dev Training
+Test
+5 Training Dev Training
+Set
+6 Training Dev
+7 Training Dev
+8 Training Dev
+9 Training Dev
+10 Training Dev
+FigureB.7 10-foldcross-validation
+B.9 Statistical Significance Testing
+Inbuildingsystemsweoftenneedtocomparetheperformanceoftwosystems.How
+can we know if the new system we just built is better than our old one? Or better
+thansomeothersystemdescribedintheliterature? Thisisthedomainofstatistical
+hypothesistesting, andinthissectionweintroducetestsforstatisticalsignificance
+forNLPclassifiers,drawingespeciallyontheworkofDroretal.(2020)andBerg-
+Kirkpatricketal.(2012).
+Supposewe’recomparingtheperformanceofclassifiersAandBonametricM
+such as F , or accuracy. Perhaps we want to know if our logistic regression senti-
+1
+mentclassifierA(Chapter4)getsahigherF scorethanournaiveBayessentiment
+1
+classifierBonaparticulartestsetx. Let’scallM(A,x)thescorethatsystemAgets
+ontestsetx,andδ(x)theperformancedifferencebetweenAandBonx:
+δ(x)=M(A,x)−M(B,x) (B.19)
+We would like to know if δ(x)>0, meaning that our logistic regression classifier
+effectsize hasahigherF 1 thanournaiveBayesclassifieronx. δ(x)iscalledtheeffectsize;a
+biggerδ meansthatAseemstobewaybetterthanB; asmallδ meansAseemsto
+beonlyalittlebetter.
+Why don’t we just check if δ(x) is positive? Suppose we do, and we find that
+theF scoreofAishigherthanB’sby.04. CanwebecertainthatAisbetter? We
+1
+cannot!That’sbecauseAmightjustbeaccidentallybetterthanBonthisparticularx.
+Weneedsomethingmore:wewanttoknowifA’ssuperiorityoverBislikelytohold
+againifwecheckedanothertestsetx(cid:48),orundersomeothersetofcircumstances.
+Intheparadigmofstatisticalhypothesistesting,wetestthisbyformalizingtwo
+hypotheses.
+H : δ(x)≤0
+0
+H 1 : δ(x)>0 (B.20)
+nullhypothesis ThehypothesisH 0 ,calledthenullhypothesis,supposesthatδ(x)isactuallynega-
+tiveorzero,meaningthatAisnotbetterthanB. Wewouldliketoknowifwecan
+confidentlyruleoutthishypothesis,andinsteadsupportH ,thatAisbetter.
+1
+WedothisbycreatingarandomvariableX rangingoveralltestsets. Nowwe
+askhowlikelyisit,ifthenullhypothesisH wascorrect,thatamongthesetestsets
+0
+[TABLES]
+[['Train', 'ing Iterations Testing\n1 Dev Training\n2 Dev Training\n3 Dev Training\n4 Dev Training\nTest\n5 Training Dev Training\nSet\n6 Training Dev\n7 Training Dev\n8 Training Dev\n9 Training Dev\n10 Training Dev'], ['FigureB', '.7']]
+[['Dev', 'Training', None, None, None, None, None, None, None, None], ['', 'Dev', 'Training', None, None, None, None, None, None, None], ['', None, 'Dev', 'Training', None, None, None, None, None, None], ['', None, None, 'Dev', 'Training', None, None, None, None, None], ['Training', None, None, None, 'Dev', 'Training', None, None, None, None], ['Training', None, None, None, None, 'Dev', '', None, None, None], ['Training', None, None, None, None, None, 'Dev', '', None, None], ['Training', None, None, None, None, None, None, 'Dev', '', None], ['Training', None, None, None, None, None, None, None, 'Dev', ''], ['Training', None, None, None, None, None, None, None, None, 'Dev']]
+
+--- PAGE_16 ---
+16 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+wewouldencounterthevalueofδ(x)thatwefound,ifwerepeatedtheexperiment
+p-value a great many times. We formalize this likelihood as the p-value: the probability,
+assumingthenullhypothesisH istrue,ofseeingtheδ(x)thatwesaworoneeven
+0
+greater
+P(δ(X)≥δ(x)|H 0 istrue) (B.21)
+Soinourexample,thisp-valueistheprobabilitythatwewouldseeδ(x)assuming
+A is not better than B. If δ(x) is huge (let’s say A has a very respectable F of .9
+1
+andBhasaterribleF ofonly.2onx),wemightbesurprised,sincethatwouldbe
+1
+extremelyunlikelytooccurifH wereinfacttrue,andsothep-valuewouldbelow
+0
+(unlikelytohavesuchalargeδ ifAisinfactnotbetterthanB). Butifδ(x)isvery
+small,itmightbelesssurprisingtousevenifH weretrueandAisnotreallybetter
+0
+thanB,andsothep-valuewouldbehigher.
+A very small p-value means that the difference we observed is very unlikely
+underthenullhypothesis,andwecanrejectthenullhypothesis.Whatcountsasvery
+small? Itiscommontousevalueslike.05or.01asthethresholds. Avalueof.01
+meansthatifthep-value(theprobabilityofobservingtheδ wesawassumingH is
+0
+true)islessthan.01,werejectthenullhypothesisandassumethatAisindeedbetter
+statistically thanB. Wesaythataresult(e.g.,“AisbetterthanB”)isstatisticallysignificantif
+significant
+the δ we saw has a probability that is below the threshold and we therefore reject
+thisnullhypothesis.
+Howdowecomputethisprobabilityweneedforthep-value? InNLPwegen-
+erally don’t use simple parametric tests like t-tests or ANOVAs that you might be
+familiarwith. Parametrictestsmakeassumptionsaboutthedistributionsofthetest
+statistic (such as normality) that don’t generally hold in our cases. So in NLP we
+usuallyusenon-parametrictestsbasedonsampling: weartificiallycreatemanyver-
+sionsoftheexperimentalsetup. Forexample,ifwehadlotsofdifferenttestsetsx(cid:48)
+wecouldjustmeasurealltheδ(x(cid:48))forallthex(cid:48). Thatgivesusadistribution. Now
+we set a threshold (like .01) and if we see in this distribution that 99% or more of
+thosedeltasaresmallerthanthedeltaweobserved,i.e.,thatp-value(x)—theproba-
+bilityofseeingaδ(x)asbigastheonewesaw—islessthan.01,thenwecanreject
+thenullhypothesisandagreethatδ(x)wasasufficientlysurprisingdifferenceand
+AisreallyabetteralgorithmthanB.
+There are two common non-parametric tests used in NLP: approximate ran-
+approximate domization (Noreen, 1989) and the bootstrap test. We will describe bootstrap
+randomization
+below,showingthepairedversionofthetest,whichagainismostcommoninNLP.
+paired Pairedtestsarethoseinwhichwecomparetwosetsofobservationsthatarealigned:
+eachobservationinonesetcanbepairedwithanobservationinanother. Thishap-
+pensnaturallywhenwearecomparingtheperformanceoftwosystemsonthesame
+test set; we can pair the performance of system A on an individual observation x
+i
+withtheperformanceofsystemBonthesamex.
+i
+B.9.1 ThePairedBootstrapTest
+bootstraptest Thebootstraptest(EfronandTibshirani,1993)canapplytoanymetric;frompre-
+cision, recall, or F1 to the BLEU metric used in machine translation. The word
+bootstrapping bootstrappingreferstorepeatedlydrawinglargenumbersofsampleswithreplace-
+ment(calledbootstrapsamples)fromanoriginalset. Theintuitionofthebootstrap
+testisthatwecancreatemanyvirtualtestsetsfromanobservedtestsetbyrepeat-
+edly sampling from it. The method only makes the assumption that the sample is
+representativeofthepopulation.
+
+--- PAGE_17 ---
+B.9 • STATISTICALSIGNIFICANCETESTING 17
+Consideratinytextclassificationexamplewithatestsetxof10documents.The
+first row of Fig. B.8 shows the results of two classifiers (A and B) on this test set.
+Eachdocumentislabeledbyoneofthefourpossibilities(AandBbothright,both
+wrong, A right and B wrong, A wrong and B right). A slash through a letter ((cid:19)B)
+meansthatthatclassifiergottheanswerwrong. OnthefirstdocumentbothAand
+Bgetthecorrectclass(AB),whileontheseconddocumentAgotitrightbutBgot
+it wrong (A(cid:19)B). If we assume for simplicity that our metric is accuracy, A has an
+accuracyof.70andBof.50,soδ(x)is.20.
+Nowwecreatealargenumberb(perhaps105)ofvirtualtestsetsx(i),eachofsize
+n=10. Fig.B.8showsacoupleofexamples. Tocreateeachvirtualtestsetx(i),we
+repeatedly(n=10times)selectacellfromrowxwithreplacement.Forexample,to
+createthefirstcellofthefirstvirtualtestsetx(1),ifwehappenedtorandomlyselect
+the second cell of the x row, we would copy the value A(cid:19)B into our new cell, and
+moveontocreatethesecondcellofx(1),eachtimesampling(randomlychoosing)
+fromtheoriginalxwithreplacement.
+1 2 3 4 5 6 7 8 9 10 A% B% δ()
+x AB AB(cid:19)(cid:19) AB (cid:0)(cid:0)AB AB(cid:19)(cid:19) (cid:0)(cid:0)AB AB(cid:19)(cid:19) AB (cid:0)(cid:0)AB(cid:19)(cid:19) AB(cid:19)(cid:19) .70 .50 .20
+x(1) AB(cid:19)(cid:19) AB AB(cid:19)(cid:19) (cid:0)(cid:0)AB (cid:0)(cid:0)AB AB(cid:19)(cid:19) (cid:0)(cid:0)AB AB (cid:0)(cid:0)AB(cid:19)(cid:19) AB .60 .60 .00
+x(2) AB(cid:19)(cid:19) AB (cid:0)(cid:0)AB(cid:19)(cid:19) (cid:0)(cid:0)AB (cid:0)(cid:0)AB AB (cid:0)(cid:0)AB AB(cid:19)(cid:19) AB AB .60 .70 -.10
+...
+x(b)
+FigureB.8 The paired bootstrap test: Examples of b pseudo test sets x(i) being created
+fromaninitialtruetestsetx. Eachpseudotestsetiscreatedbysamplingn=10timeswith
+replacement; thusanindividualsampleisasinglecell, adocumentwithitsgoldlabeland
+thecorrectorincorrectperformanceofclassifiersAandB.Ofcourserealtestsetsdon’thave
+only10examples,andbneedstobelargeaswell.
+Nowthat wehave theb testsets, providingasampling distribution, wecan do
+statistics on how often A has an accidental advantage. There are various ways to
+compute this advantage; here we follow the version laid out in Berg-Kirkpatrick
+et al. (2012). Assuming H (A isn’t better than B), we would expect that δ(X),
+0
+estimatedovermanytestsets,wouldbezeroornegative;amuchhighervaluewould
+besurprising,sinceH specificallyassumesAisn’tbetterthanB.Tomeasureexactly
+0
+howsurprisingourobservedδ(x)is,wewouldinothercircumstancescomputethe
+p-valuebycountingovermanytestsetshowoftenδ(x(i))exceedstheexpectedzero
+valuebyδ(x)ormore:
+b
+1(cid:88) (cid:16) (cid:17)
+p-value(x)= 1 δ(x(i))−δ(x)≥0
+b
+i=1
+(We use the notation 1(x) to mean “1 if x is true, and 0 otherwise”.) However,
+although it’s generally true that the expected value of δ(X) over many test sets,
+(again assuming A isn’t better than B) is 0, this isn’t true for the bootstrapped test
+sets we created. That’s because we didn’t draw these samples from a distribution
+with0mean;wehappenedtocreatethemfromtheoriginaltestsetx,whichhappens
+to be biased (by .20) in favor of A. So to measure how surprising is our observed
+δ(x), we actually compute the p-value by counting over many test sets how often
+[TABLES]
+[['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'A%', 'B%', 'δ()'], ['x', 'AB', 'AB(cid:19)(cid:19)', 'AB', '(cid:0)(cid:0)AB', 'AB(cid:19)(cid:19)', '(cid:0)(cid:0)AB', 'AB(cid:19)(cid:19)', 'AB', '(cid:0)(cid:0)AB(cid:19)(cid:19)', 'AB(cid:19)(cid:19)', '.70', '.50', '.20'], ['x(1)', 'AB(cid:19)(cid:19)', 'AB', 'AB(cid:19)(cid:19)', '(cid:0)(cid:0)AB', '(cid:0)(cid:0)AB', 'AB(cid:19)(cid:19)', '(cid:0)(cid:0)AB', 'AB', '(cid:0)(cid:0)AB(cid:19)(cid:19)', 'AB', '.60', '.60', '.00'], ['x(2)', 'AB(cid:19)(cid:19)', 'AB', '(cid:0)(cid:0)AB(cid:19)(cid:19)', '(cid:0)(cid:0)AB', '(cid:0)(cid:0)AB', 'AB', '(cid:0)(cid:0)AB', 'AB(cid:19)(cid:19)', 'AB', 'AB', '.60', '.70', '-.10'], ['...', '', '', '', '', '', '', '', '', '', '', '', '', ''], ['x(b)', '', '', '', '', '', '', '', '', '', '', '', '', ''], ['FigureB.8', None, None, None, None, None, None, None, None, None, None, None, None, None]]
+
+--- PAGE_18 ---
+18 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+δ(x(i))exceedstheexpectedvalueofδ(x)byδ(x)ormore:
+b
+1(cid:88) (cid:16) (cid:17)
+p-value(x) = 1 δ(x(i))−δ(x)≥δ(x)
+b
+i=1
+b
+1(cid:88) (cid:16) (cid:17)
+= 1 δ(x(i))≥2δ(x) (B.22)
+b
+i=1
+Soifforexamplewehave10,000testsetsx(i)andathresholdof.01,andinonly47
+ofthetestsetsdowefindthatAisaccidentallybetterδ(x(i))≥2δ(x),theresulting
+p-valueof.0047issmallerthan.01,indicatingthatthedeltawefound,δ(x)isindeed
+sufficientlysurprisingandunlikelytohavehappenedbyaccident,andwecanreject
+thenullhypothesisandconcludeAisbetterthanB.
+functionBOOTSTRAP(testsetx, numofsamplesb)returnsp-value(x)
+Calculateδ(x) #howmuchbetterdoesalgorithmAdothanBonx
+s=0
+fori= 1tobdo
+forj=1tondo #Drawabootstrapsamplex(i)ofsizen
+Selectamemberofxatrandomandaddittox(i)
+Calculateδ(x(i)) # howmuchbetterdoesalgorithmAdothanBonx(i)
+s←s+1ifδ(x(i)) ≥ 2δ(x)
+p-value(x)≈ s # onwhat%ofthebsamplesdidalgorithmAbeatexpectations?
+b
+returnp-value(x) #ifveryfewdid,ourobservedδ isprobablynotaccidental
+FigureB.9 AversionofthepairedbootstrapalgorithmafterBerg-Kirkpatricketal.(2012).
+ThefullalgorithmforthebootstrapisshowninFig.B.9. Itisgivenatestsetx,a
+numberofsamplesb,andcountsthepercentageofthebbootstraptestsetsinwhich
+δ(x(i))>2δ(x). Thispercentagethenactsasaone-sidedempiricalp-value.
+B.10 Avoiding Harms in Classification
+Itisimportanttoavoidharmsthatmayresultfromclassifiers,harmsthatexistboth
+for naive Bayes classifiers and for the other classification algorithms we introduce
+inlaterchapters.
+representational Oneclassofharmsisrepresentationalharms(Crawford2017,Blodgettetal.
+harms
+2020),harmscausedbyasystemthatdemeansasocialgroup,forexamplebyper-
+petuating negative stereotypes about them. For example Kiritchenko and Moham-
+mad(2018)examinedtheperformanceof200sentimentanalysissystemsonpairsof
+sentencesthatwereidenticalexceptforcontainingeitheracommonAfricanAmer-
+ican first name (like Shaniqua) or a common European American first name (like
+Stephanie), chosen from the Caliskan et al. (2017) study discussed in Chapter 5.
+Theyfoundthatmostsystemsassignedlowersentimentandmorenegativeemotion
+tosentenceswithAfricanAmericannames,reflectingandperpetuatingstereotypes
+thatassociateAfricanAmericanswithnegativeemotions(Poppetal.,2003).
+In other tasks classifiers may lead to both representational harms and other
+harms,suchassilencing. Forexampletheimportanttextclassificationtaskoftox-
+[TABLES]
+[['functionBOOTSTRAP(testsetx, numofsamplesb)returnsp-value(x)\nCalculateδ(x) #howmuchbetterdoesalgorithmAdothanBonx\ns=0\nfori= 1tobdo\nforj=1tondo #Drawabootstrapsamplex(i)ofsizen\nSelectamemberofxatrandomandaddittox(i)\nCalculateδ(x(i)) # howmuchbetterdoesalgorithmAdothanBonx(i)\ns←s+1ifδ(x(i)) ≥ 2δ(x)\np-value(x)≈ s # onwhat%ofthebsamplesdidalgorithmAbeatexpectations?\nb\nreturnp-value(x) #ifveryfewdid,ourobservedδ isprobablynotaccidental'], ['FigureB.9']]
+
+--- PAGE_19 ---
+B.11 • SUMMARY 19
+toxicity icity detection is the task of detecting hate speech, abuse, harassment, or other
+detection
+kinds of toxic language. While the goal of such classifiers is to help reduce soci-
+etalharm,toxicityclassifierscanthemselvescauseharms. Forexample,researchers
+haveshownthatsomewidelyusedtoxicityclassifiersincorrectlyflagasbeingtoxic
+sentencesthatarenon-toxicbutsimplymentionidentitieslikewomen(Parketal.,
+2018), blind people (Hutchinson et al., 2020) or gay people (Dixon et al., 2018;
+DiasOlivaetal.,2021), orsimplyuselinguisticfeaturescharacteristicofvarieties
+like African-American Vernacular English (Sap et al. 2019, Davidson et al. 2019).
+Suchfalsepositiveerrorscouldleadtothesilencingofdiscoursebyoraboutthese
+groups.
+Thesemodelproblemscanbecausedbybiasesorotherproblemsinthetraining
+data; in general, machine learning systems replicate and even amplify the biases
+in their training data. But these problems can also be caused by the labels (for
+exampleduetobiasesinthehumanlabelers),bytheresourcesused(likelexicons,
+or model components like pretrained embeddings), or even by model architecture
+(like what the model is trained to optimize). While the mitigation of these biases
+(forexamplebycarefullyconsideringthetrainingdatasources)isanimportantarea
+ofresearch,wecurrentlydon’thavegeneralsolutions.Forthisreasonit’simportant,
+when introducing any NLP model, to study these kinds of factors and make them
+modelcard clear. One way to do this is by releasing a model card (Mitchell et al., 2019) for
+eachversionofamodel. Amodelcarddocumentsamachinelearningmodelwith
+informationlike:
+• trainingalgorithmsandparameters
+• trainingdatasources,motivation,andpreprocessing
+• evaluationdatasources,motivation,andpreprocessing
+• intendeduseandusers
+• model performance across different demographic or other groups and envi-
+ronmentalsituations
+B.11 Summary
+This chapter introduced the naive Bayes model for classification and applied it to
+thetextcategorizationtaskofsentimentanalysis.
+• Manylanguageprocessingtaskscanbeviewedastasksofclassification.
+• Textcategorization,inwhichanentiretextisassignedaclassfromafiniteset,
+includessuchtasksassentimentanalysis,spamdetection,languageidenti-
+fication,andauthorshipattribution.
+• Sentimentanalysisclassifiesatextasreflectingthepositiveornegativeorien-
+tation(sentiment)thatawriterexpressestowardsomeobject.
+• NaiveBayesisagenerativemodelthatmakesthebag-of-wordsassumption
+(positiondoesn’tmatter)andtheconditionalindependenceassumption(words
+areconditionallyindependentofeachothergiventheclass)
+• NaiveBayeswithbinarizedfeaturesseemstoworkbetterformanytextclas-
+sificationtasks.
+• Classifiersareevaluatedbasedonprecisionandrecall.
+• Classifiersaretrainedusingdistincttraining,dev,andtestsets,includingthe
+useofcross-validationinthetrainingset.
+
+--- PAGE_20 ---
+20 APPENDIXB • NAIVEBAYES,TEXTCLASSIFICATION,ANDSENTIMENT
+• Statistical significance tests should be used to determine whether we can be
+confidentthatoneversionofaclassifierisbetterthananother.
+• Designers of classifiers should carefully consider harms that may be caused
+by the model, including its training data and other components, and report
+modelcharacteristicsinamodelcard.
+Historical Notes
+Multinomial naive Bayes text classification was proposed by Maron (1961) at the
+RANDCorporationforthetaskofassigningsubjectcategoriestojournalabstracts.
+His model introduced most of the features of the modern form presented here, ap-
+proximating the classification task with one-of categorization, and implementing
+add-δ smoothingandinformation-basedfeatureselection.
+TheconditionalindependenceassumptionsofnaiveBayesandtheideaofBayes-
+iananalysisoftextseemstohavearisenmultipletimes. ThesameyearasMaron’s
+paper, Minsky (1961) proposed a naive Bayes classifier for vision and other arti-
+ficial intelligence problems, and Bayesian techniques were also applied to the text
+classificationtaskofauthorshipattributionbyMostellerandWallace(1963). Ithad
+long been known that Alexander Hamilton, John Jay, and James Madison wrote
+theanonymously-publishedFederalistpapersin1787–1788topersuadeNewYork
+to ratify the United States Constitution. Yet although some of the 85 essays were
+clearly attributable to one author or another, the authorship of 12 were in dispute
+betweenHamiltonandMadison. MostellerandWallace(1963)trainedaBayesian
+probabilistic model on the writing of Hamilton and another model on the writings
+ofMadison,thencomputedthemaximum-likelihoodauthorforeachofthedisputed
+essays. NaiveBayeswasfirstappliedtospamdetectioninHeckermanetal.(1998).
+Metsis et al. (2006), Pang et al. (2002), and Wang and Manning (2012) show
+that using boolean attributes with multinomial naive Bayes works better than full
+counts.BinarymultinomialnaiveBayesissometimesconfusedwithanothervariant
+of naive Bayes that also uses a binary representation of whether a term occurs in
+a document: Multivariate Bernoulli naive Bayes. The Bernoulli variant instead
+estimates P(w|c) as the fraction of documents that contain a term, and includes a
+probabilityforwhetheratermisnotinadocument. McCallumandNigam(1998)
+andWangandManning(2012)showthatthemultivariateBernoullivariantofnaive
+Bayesdoesn’tworkaswellasthemultinomialalgorithmforsentimentorothertext
+tasks.
+There are a variety of sources covering the many kinds of text classification
+tasks. ForsentimentanalysisseePangandLee(2008),andLiuandZhang(2012).
+Stamatatos(2009)surveysauthorshipattributealgorithms. Onlanguageidentifica-
+tion see Jauhiainen et al. (2019); Jaech et al. (2016) is an important early neural
+system. Thetaskofnewswireindexingwasoftenusedasatestcasefortextclassi-
+ficationalgorithms,basedontheReuters-21578collectionofnewswirearticles.
+SeeManningetal.(2008)andAggarwalandZhai(2012)ontextclassification;
+classificationingeneraliscoveredinmachinelearningtextbooks(Hastieetal.2001,
+WittenandFrank2005,Bishop2006,Murphy2012).
+Non-parametricmethodsforcomputingstatisticalsignificancewereusedfirstin
+NLP in the MUC competition (Chinchor et al., 1993), and even earlier in speech
+recognition (Gillick and Cox 1989, Bisani and Ney 2004). Our description of the
+bootstrap draws on the description in Berg-Kirkpatrick et al. (2012). Recent work
+hasfocusedonissuesincludingmultipletestsetsandmultiplemetrics(Søgaardetal.
+
+--- PAGE_21 ---
+EXERCISES 21
+2014,Droretal.2017).
+Featureselectionisamethodofremovingfeaturesthatareunlikelytogeneralize
+well.Featuresaregenerallyrankedbyhowinformativetheyareabouttheclassifica-
+information tiondecision. Averycommonmetric,informationgain,tellsushowmanybitsof
+gain
+informationthepresenceofthewordgivesusforguessingtheclass. Otherfeature
+selection metrics include χ2, pointwise mutual information, and GINI index; see
+YangandPedersen(1997)foracomparisonandGuyonandElisseeff(2003)foran
+introductiontofeatureselection.
+Exercises
+B.1 Assume the following likelihoods for each word being part of a positive or
+negativemoviereview,andequalpriorprobabilitiesforeachclass.
+pos neg
+I 0.09 0.16
+always 0.07 0.06
+like 0.29 0.06
+foreign 0.04 0.15
+films 0.08 0.11
+What class will Naive bayes assign to the sentence “I always like foreign
+films.”?
+B.2 Given the following short movie reviews, each labeled with a genre, either
+comedyoraction:
+1. fun,couple,love,love comedy
+2. fast,furious,shoot action
+3. couple,fly,fast,fun,fun comedy
+4. furious,shoot,shoot,fun action
+5. fly,fast,shoot,love action
+andanewdocumentD:
+fast,couple,shoot,fly
+computethemostlikelyclassforD.AssumeanaiveBayesclassifieranduse
+add-1smoothingforthelikelihoods.
+B.3 Traintwomodels, multinomialnaiveBayesandbinarizednaiveBayes, both
+with add-1 smoothing, on the following document counts for key sentiment
+words,withpositiveornegativeclassassignedasnoted.
+doc “good” “poor” “great” (class)
+d1. 3 0 3 pos
+d2. 0 1 2 pos
+d3. 1 3 0 neg
+d4. 1 5 2 neg
+d5. 0 2 0 neg
+UsebothnaiveBayesmodelstoassignaclass(posorneg)tothissentence:
+Agood,goodplotandgreatcharacters,butpooracting.
+Recallfrompage6thatwithnaiveBayestextclassification,wesimplyignore
+(throwout)anywordthatneveroccurredinthetrainingdocument. (Wedon’t
+throwoutwordsthatappearinsomeclassesbutnotothers; that’swhatadd-
+onesmoothingisfor.) Dothetwomodelsagreeordisagree?
+
+--- PAGE_22 ---
+22 AppendixB • NaiveBayes,TextClassification,andSentiment
+Aggarwal,C.C.andC.Zhai.2012. Asurveyoftextclassi- Heckerman,D.,E.Horvitz,M.Sahami,andS.T.Dumais.
+ficationalgorithms. InC.C.AggarwalandC.Zhai,eds, 1998.Abayesianapproachtofilteringjunke-mail.AAAI-
+Miningtextdata,163–222.Springer. 98WorkshoponLearningforTextCategorization.
+Bayes,T.1763. AnEssayTowardSolvingaProbleminthe Hu,M.andB.Liu.2004.Miningandsummarizingcustomer
+DoctrineofChances,volume53.ReprintedinFacsimiles reviews.KDD.
+ofTwoPapersbyBayes,HafnerPublishing,1963. Hutchinson, B., V. Prabhakaran, E. Denton, K. Webster,
+Berg-Kirkpatrick, T., D.Burkett, andD.Klein.2012. An Y. Zhong, and S. Denuyl. 2020. Social biases in NLP
+empiricalinvestigationofstatisticalsignificanceinNLP. modelsasbarriersforpersonswithdisabilities.ACL.
+EMNLP. Jaech,A.,G.Mulcaire,S.Hathi,M.Ostendorf,andN.A.
+Bisani,M.andH.Ney.2004. Bootstrapestimatesforconfi- Smith.2016.Hierarchicalcharacter-wordmodelsforlan-
+denceintervalsinASRperformanceevaluation.ICASSP. guageidentification. ACLWorkshoponNLPforSocial
+Media.
+Bishop,C.M.2006.Patternrecognitionandmachinelearn-
+ing.Springer. Jauhiainen, T., M. Lui, M. Zampieri, T. Baldwin, and
+K.Linde´n.2019. Automaticlanguageidentificationin
+Blodgett,S.L.,S.Barocas,H.Daume´III,andH.Wallach.
+texts:Asurvey.JAIR,65(1):675–682.
+2020. Language(technology)ispower:Acriticalsurvey
+of“bias”inNLP.ACL. Jurgens,D.,Y.Tsvetkov,andD.Jurafsky.2017. Incorpo-
+ratingdialectalvariabilityforsociallyequitablelanguage
+Blodgett,S.L.,L.Green,andB.O’Connor.2016. Demo-
+identification.ACL.
+graphicdialectalvariationinsocialmedia: Acasestudy
+ofAfrican-AmericanEnglish.EMNLP. Kiritchenko, S. and S. M. Mohammad. 2018. Examining
+genderandracebiasintwohundredsentimentanalysis
+Borges,J.L.1964.Theanalyticallanguageofjohnwilkins.
+systems.*SEM.
+In Other inquisitions 1937–1952. University of Texas
+Press.Trans.RuthL.C.Simms. Liu,B.andL.Zhang.2012.Asurveyofopinionminingand
+sentimentanalysis. InC.C.AggarwalandC.Zhai,eds,
+Caliskan,A.,J.J.Bryson,andA.Narayanan.2017.Seman-
+Miningtextdata,415–464.Springer.
+ticsderivedautomaticallyfromlanguagecorporacontain
+human-likebiases.Science,356(6334):183–186. Lui,M.andT.Baldwin.2011. Cross-domainfeatureselec-
+tionforlanguageidentification.IJCNLP.
+Chinchor,N.,L.Hirschman,andD.L.Lewis.1993. Eval-
+uatingMessageUnderstandingsystems: Ananalysisof Lui,M.andT.Baldwin.2012.langid.py:Anoff-the-shelf
+thethirdMessageUnderstandingConference. Computa- languageidentificationtool.ACL.
+tionalLinguistics,19(3):409–449. Manning,C.D.,P.Raghavan,andH.Schu¨tze.2008. Intro-
+Crawford, K. 2017. The trouble with bias. Keynote at ductiontoInformationRetrieval.Cambridge.
+NeurIPS. Maron,M.E.1961. Automaticindexing: anexperimental
+Davidson,T.,D.Bhattacharya,andI.Weber.2019. Racial inquiry.JournaloftheACM,8(3):404–417.
+bias in hate speech and abusive language detection McCallum,A.andK.Nigam.1998. Acomparisonofevent
+datasets.ThirdWorkshoponAbusiveLanguageOnline. modelsfornaivebayestextclassification.AAAI/ICML-98
+DiasOliva,T.,D.Antonialli,andA.Gomes.2021.Fighting WorkshoponLearningforTextCategorization.
+hatespeech,silencingdragqueens?artificialintelligence Metsis, V., I. Androutsopoulos, and G. Paliouras. 2006.
+in content moderation and risks to lgbtq voices online. Spam filtering with naive bayes-which naive bayes?
+Sexuality&Culture,25:700–732. CEAS.
+Dixon,L.,J.Li,J.Sorensen,N.Thain,andL.Vasserman. Minsky,M.1961. Stepstowardartificialintelligence. Pro-
+2018. Measuringandmitigatingunintendedbiasintext ceedingsoftheIRE,49(1):8–30.
+classification.2018AAAI/ACMConferenceonAI,Ethics,
+Mitchell,M.,S.Wu,A.Zaldivar,P.Barnes,L.Vasserman,
+andSociety.
+B.Hutchinson,E.Spitzer,I.D.Raji,andT.Gebru.2019.
+Dror,R.,G.Baumer,M.Bogomolov,andR.Reichart.2017. Modelcardsformodelreporting.ACMFAccT.
+Replicability analysis for natural language processing:
+Mosteller,F.andD.L.Wallace.1963. Inferenceinanau-
+Testingsignificancewithmultipledatasets.TACL,5:471–
+thorshipproblem:Acomparativestudyofdiscrimination
+–486.
+methodsappliedtotheauthorshipofthedisputedfeder-
+Dror, R., L. Peled-Cohen, S. Shlomov, and R. Reichart. alistpapers.JournaloftheAmericanStatisticalAssocia-
+2020. Statistical Significance Testing for Natural Lan- tion,58(302):275–309.
+guage Processing, volume 45 of Synthesis Lectures on
+Mosteller,F.andD.L.Wallace.1964. InferenceandDis-
+HumanLanguageTechnologies.Morgan&Claypool.
+putedAuthorship:TheFederalist.Springer-Verlag.1984
+Efron,B.andR.J.Tibshirani.1993. Anintroductiontothe 2ndedition:AppliedBayesianandClassicalInference.
+bootstrap.CRCpress.
+Murphy,K.P.2012. Machinelearning:Aprobabilisticper-
+Gillick,L.andS.J.Cox.1989.Somestatisticalissuesinthe spective.MITPress.
+comparisonofspeechrecognitionalgorithms.ICASSP.
+Noreen,E.W.1989.ComputerIntensiveMethodsforTesting
+Guyon,I.andA.Elisseeff.2003.Anintroductiontovariable Hypothesis.Wiley.
+andfeatureselection.JMLR,3:1157–1182.
+Pang,B.andL.Lee.2008. Opinionminingandsentiment
+Hastie,T.,R.J.Tibshirani,andJ.H.Friedman.2001. The analysis.Foundationsandtrendsininformationretrieval,
+ElementsofStatisticalLearning.Springer. 2(1-2):1–135.
+
+--- PAGE_23 ---
+Exercises 23
+Pang, B., L. Lee, and S. Vaithyanathan. 2002. Thumbs
+up?Sentimentclassificationusingmachinelearningtech-
+niques.EMNLP.
+Park,J.H.,J.Shin,andP.Fung.2018.Reducinggenderbias
+inabusivelanguagedetection.EMNLP.
+Pennebaker, J. W., R. J. Booth, and M. E. Francis. 2007.
+LinguisticInquiryandWordCount:LIWC2007.Austin,
+TX.
+Popp,D.,R.A.Donovan,M.Crawford,K.L.Marsh,and
+M.Peele.2003. Gender,race,andspeechstylestereo-
+types.SexRoles,48(7-8):317–325.
+Sahami,M.,S.T.Dumais,D.Heckerman,andE.Horvitz.
+1998.ABayesianapproachtofilteringjunke-mail.AAAI
+WorkshoponLearningforTextCategorization.
+Sap,M.,D.Card,S.Gabriel,Y.Choi,andN.A.Smith.2019.
+Theriskofracialbiasinhatespeechdetection.ACL.
+Søgaard,A.,A.Johannsen,B.Plank,D.Hovy,andH.M.
+Alonso.2014.What’sinap-valueinNLP?CoNLL.
+Stamatatos,E.2009.Asurveyofmodernauthorshipattribu-
+tionmethods.JASIST,60(3):538–556.
+Stone, P., D. Dunphry, M. Smith, and D. Ogilvie. 1966.
+TheGeneralInquirer:AComputerApproachtoContent
+Analysis.MITPress.
+vanRijsbergen,C.J.1975. InformationRetrieval. Butter-
+worths.
+Wang,S.andC.D.Manning.2012. Baselinesandbigrams:
+Simple,goodsentimentandtopicclassification.ACL.
+Wilson, T., J. Wiebe, and P. Hoffmann. 2005. Recogniz-
+ingcontextualpolarityinphrase-levelsentimentanalysis.
+EMNLP.
+Witten, I. H. and E. Frank. 2005. Data Mining: Practi-
+calMachineLearningToolsandTechniques,2ndedition.
+MorganKaufmann.
+Yang, Y. and J. Pedersen. 1997. A comparative study on
+featureselectionintextcategorization.ICML.
+
+============================================================
+FILE: Text Classification using Naive Bayes  (3).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Chapter 2Text Classification 
+
+--- SLIDE_2 ---
+What is Text Classification?
+
+Have you performed The Task of Text Classification ?
+
+
+
+--- SLIDE_3 ---
+Some Examples of Text Classification?
+
+--- SLIDE_4 ---
+Is this spam?  How will we decide ?
+
+--- SLIDE_5 ---
+
+What is the subject of this medical article?
+Antogonists and Inhibitors
+Blood Supply
+Chemistry
+Drug Therapy
+Embryology
+Epidemiology
+…
+
+5
+MeSH Subject Category Hierarchy
+?
+MEDLINE Article
+
+
+--- SLIDE_6 ---
+Positive or negative movie review?
+...zany characters and richly applied satire, and some great plot twists
+It was pathetic. The worst part about it was the boxing scenes...
+...awesome caramel sauce and sweet toasty almonds. I love this place! 
+...awful pizza and ridiculously overpriced... 
+
+
+
+
+
+
+6
++
++
+− 
+− 
+
+--- SLIDE_7 ---
+Positive or negative movie review?
+...zany characters and richly applied satire, and some great plot twists
+It was pathetic. The worst part about it was the boxing scenes...
+...awesome caramel sauce and sweet toasty almonds. I love this place! 
+...awful pizza and ridiculously overpriced... 
+
+
+
+
+
+
+7
++
++
+− 
+− 
+
+--- SLIDE_8 ---
+Why sentiment analysis?
+Movie:  is this review positive or negative?
+Products: what do people think about the new iPhone?
+Public sentiment: how is consumer confidence? 
+Politics: what do people think about this candidate or issue?
+Prediction: predict election outcomes or market trends from sentiment
+
+8
+
+--- SLIDE_9 ---
+Scherer Typology of Affective States
+Emotion: brief organically synchronized … evaluation of a major event 
+angry, sad, joyful, fearful, ashamed, proud, elated
+Mood: diffuse non-caused low-intensity long-duration change in subjective feeling
+cheerful, gloomy, irritable, listless, depressed, buoyant
+Interpersonal stances: affective stance toward another person in a specific interaction
+friendly, flirtatious, distant, cold, warm, supportive, contemptuous
+Attitudes: enduring, affectively colored beliefs, dispositions towards objects or persons
+ liking, loving, hating, valuing, desiring
+Personality traits: stable personality dispositions and typical behavior tendencies
+nervous, anxious, reckless, morose, hostile, jealous
+
+--- SLIDE_10 ---
+Basic Sentiment Classification
+Sentiment analysis is the detection of attitudes
+Simple task we focus on in this chapter
+Is the attitude of this text positive or negative?
+We return to affect classification in later chapters
+
+
+
+--- SLIDE_11 ---
+Text Classification
+Sentiment analysis
+Spam detection
+Authorship identification
+Language Identification
+Assigning subject categories, topics, or genres
+…
+
+--- SLIDE_12 ---
+Text Classification: definition
+Input:
+ a document d
+ a fixed set of classes  C = {c1, c2,…, cJ}
+
+Output: a predicted class c  C
+
+--- SLIDE_13 ---
+Classification Methods:  Hand-coded rules
+Rules based on combinations of words or other features
+ spam: black-list-address OR (“dollars” AND “you have been selected”)
+Accuracy can be high
+If rules carefully refined by expert
+But building and maintaining these rules is expensive
+
+--- SLIDE_14 ---
+Classification Methods: Supervised Machine Learning
+Input: 
+a document d
+ a fixed set of classes  C = {c1, c2,…, cJ}
+A training set of m hand-labeled documents (d1,c1),....,(dm,cm)
+Output: 
+a learned classifier γ:d  c
+14
+
+--- SLIDE_15 ---
+Classification Methods:Supervised Machine Learning Types
+Any kind of classifier
+Naïve Bayes
+Logistic regression
+Neural networks
+k-Nearest Neighbors
+SVM…
+
+
+--- SLIDE_16 ---
+How to use naïve bayes classifier for text classification?
+
+--- SLIDE_17 ---
+Generative and Discriminative Classifiers
+Naive Bayes is a generative classifier
+
+by contrast:
+
+Logistic regression/SVM is a discriminative classifier
+
+
+--- SLIDE_18 ---
+
+
+--- SLIDE_19 ---
+Generative and Discriminative Classifiers
+Suppose we're distinguishing cat from dog images
+imagenet
+imagenet
+
+--- SLIDE_20 ---
+Generative Classifier:
+Build a model of what's in a cat image
+Knows about whiskers, ears, eyes
+Assigns a probability to any image: 
+how cat-y is this image?
+Also build a model for dog images
+Now given a new image:
+ Run both models and see which one fits better 
+
+--- SLIDE_21 ---
+Discriminative Classifier
+Just try to distinguish dogs from cats
+Oh look, dogs have collars!
+Let's ignore everything else
+
+
+--- SLIDE_22 ---
+Finding the correct class c from a document d inGenerative vs Discriminative Classifiers
+Naive Bayes
+
+
+
+
+22
+
+--- SLIDE_23 ---
+How SVM Makes Decision
+y^=sign(w⋅x+b)Where:
+w = weight vector
+b = bias
+sign() → decides class (+1 or −1)
+
+
+--- SLIDE_24 ---
+Why is Naïve Bayes generative?
+
+NB assumes that features are conditionally independent given the class.
+
+It first estimates P(X∣Y)(the likelihood of the features given the class) and P(Y) (the prior probability of each class).
+
+
+Then, it uses Bayes' theorem to compute 
+
+
+
+
+Since it explicitly models how the data is generated, it is a generative model.
+
+--- SLIDE_25 ---
+Why is Logistic Regression discriminative?​
+
+It does not model how the data is generated; instead, it directly finds the best decision boundary.​
+
+It learns a function of the form: 
+
+
+
+
+It maximizes the likelihood of the observed data, adjusting weights to separate classes optimally.​
+
+Since it directly maps input X to output Y without modeling P(X) or P(X∣Y), it is a discriminative model.​
+
+--- SLIDE_26 ---
+Naive Bayes Intuition
+Simple ("naive") classification method based on Bayes rule
+Relies on very simple representation of document
+Bag of words
+
+
+--- SLIDE_27 ---
+The Bag of Words Representation
+27
+
+--- SLIDE_28 ---
+The bag of words representation
+
+γ(
+)=c
+
+--- SLIDE_29 ---
+Supervised Learning 
+
+--- SLIDE_30 ---
+Bayes’ Rule Applied to Documents and Classes
+For a document d and a class c
+
+--- SLIDE_31 ---
+Naive Bayes Classifier (I)
+MAP is “maximum a posteriori”  = most likely class
+Bayes Rule
+Dropping the denominator
+
+--- SLIDE_32 ---
+Naive Bayes Classifier (II)
+Document d represented as features x1..xn
+"Likelihood"
+"Prior"
+
+--- SLIDE_33 ---
+Naïve Bayes Classifier (IV)
+How often does this class occur?
+O(|X|n•|C|) parameters
+We can just count the relative frequencies in a corpus
+Could only be estimated if a very, very large number of training examples was available.
+
+--- SLIDE_34 ---
+Multinomial Naive Bayes Independence Assumptions
+Bag of Words assumption: Assume position doesn’t matter
+Conditional Independence: Assume the feature probabilities P(xi|cj) are independent of others, given the class.
+
+
+
+--- SLIDE_35 ---
+Multinomial Naive Bayes Classifier
+
+--- SLIDE_36 ---
+Applying Multinomial Naive Bayes Classifiers to Text Classification
+positions  all word positions in test document      			
+
+--- SLIDE_37 ---
+Problems with multiplying lots of probs
+There's a problem with this:
+
+
+
+Multiplying lots of probabilities can result in floating-point underflow!
+		.0006 * .0007 * .0009 * .01 * .5 * .000008….
+Idea:   Use logs, because  log(ab) = log(a) + log(b)
+		We'll sum logs of probabilities instead of multiplying probabilities!
+
+
+
+
+--- SLIDE_38 ---
+We actually do everything in log space
+Instead of this:
+
+
+This:
+
+Notes:
+1) Taking log doesn't change the ranking of classes!
+	The class with highest probability also has highest log probability!
+2) It's a linear model:
+	Just a max of a sum of weights: a linear function of the inputs
+	So naive bayes is a linear classifier
+
+
+--- SLIDE_39 ---
+Parameter estimation
+Create mega-document for topic j by concatenating all docs in this topic
+Use frequency of w in mega-document
+
+
+fraction of times word wi appears 
+among all words in documents of topic cj
+
+--- SLIDE_40 ---
+Learning the Multinomial Naive Bayes Model
+First attempt: maximum likelihood estimates
+simply use the frequencies in the data
+Sec.13.3
+
+--- SLIDE_41 ---
+Problem with Maximum Likelihood
+What if we have seen no training documents with the word fantastic  and classified in the topic positive (thumbs-up)?
+
+
+
+
+Zero probabilities cannot be conditioned away, no matter the other evidence!
+Sec.13.3
+
+--- SLIDE_42 ---
+Laplace (add-1) smoothing for Naïve Bayes
+
+--- SLIDE_43 ---
+Multinomial Naïve Bayes: Learning
+Calculate P(cj) terms
+For each cj in C do
+ docsj  all docs with  class =cj
+
+Calculate P(wk | cj) terms
+Textj  single doc containing all docsj
+For each word wk in Vocabulary
+    nk  # of occurrences of wk in Textj
+From training corpus, extract Vocabulary
+
+--- SLIDE_44 ---
+Unknown words
+What about unknown words
+that appear in our test data 
+but not in our training data or vocabulary?
+We ignore them
+Remove them from the test document!
+Pretend they weren't there!
+Don't include any probability for them at all!
+Why don't we build an unknown word model?
+It doesn't help: knowing which class has more unknown words is not generally helpful!
+
+
+--- SLIDE_45 ---
+Stop words
+Some systems ignore stop words
+Stop words: very frequent words like the and a.
+Sort the vocabulary by word frequency in training set
+Call the top 10 or 50 words the stopword list.
+Remove all stop words from both training and test sets
+As if they were never there!
+But removing stop words doesn't usually help
+So in practice most NB algorithms use all words and don't use stopword lists
+
+
+--- SLIDE_46 ---
+Text Classification and Naive Bayes
+Sentiment and Binary Naive Bayes
+
+--- SLIDE_47 ---
+Let's do a worked sentiment example!
+
+
+--- SLIDE_48 ---
+Step1:
+1. Prior from training:
+P(-) = 3/5
+P(+) = 2/5
+
+--- SLIDE_49 ---
+Step 2 and 3
+2. Drop "with"
+3. Likelihoods from training:
+
+--- SLIDE_50 ---
+4. Scoring the test set:
+
+--- SLIDE_51 ---
+Solve the following
+
+--- SLIDE_52 ---
+
+Training Data
+
+
+
+--- SLIDE_53 ---
+
+
+--- SLIDE_54 ---
+
+
+--- SLIDE_55 ---
+Step 3: Word Frequency Table
+Spam Class
+D1 + D2 → buy cheap meds cheap meds online
+
+Total words in Spam = 6
+Ham Class
+D3 + D4 → meeting schedule today project meeting today
+
+Total words in Ham = 6
+
+
+--- SLIDE_56 ---
+Optimizing for sentiment analysis
+For tasks like sentiment, word occurrence seems to be more important than word frequency.
+The occurrence of the word fantastic tells us a lot
+The fact that it occurs 5 times may not tell us much more.
+Binary multinominal naive bayes, or binary NB
+Clip our word counts at 1
+
+
+--- SLIDE_57 ---
+Binary Multinomial Naïve Bayes: Learning
+Calculate P(cj) terms
+For each cj in C do
+ docsj  all docs with  class =cj
+
+From training corpus, extract Vocabulary
+Calculate P(wk | cj) terms
+Remove duplicates in each doc:
+For each word type w in docj  
+Retain only a single instance of w
+
+--- SLIDE_58 ---
+Binary Multinomial Naive Bayes on a test document d
+58
+First remove all duplicate words from d
+Then compute NB using the same equation: 
+
+--- SLIDE_59 ---
+Binary multinominal naive Bayes
+
+--- SLIDE_60 ---
+Sentiment Classification: Dealing with Negation
+I really like this movie
+I really don't like this movie
+
+Negation changes the meaning of "like" to negative.
+Negation can also change negative to positive-ish 
+Don't dismiss this film
+Doesn't let us get bored
+
+
+
+--- SLIDE_61 ---
+
+
+--- SLIDE_62 ---
+
+
+--- SLIDE_63 ---
+
+
+
+--- SLIDE_64 ---
+Sentiment Classification: Dealing with Negation
+Simple baseline method:
+Add NOT_ to every word between negation and following punctuation:
+
+didn’t like this movie , but I
+
+didn’t NOT_like NOT_this NOT_movie but I
+
+Das, Sanjiv and Mike Chen. 2001. Yahoo! for Amazon: Extracting market sentiment from stock message boards. In Proceedings of the Asia Pacific Finance Association Annual Conference (APFA).
+Bo Pang, Lillian Lee, and Shivakumar Vaithyanathan.  2002.  Thumbs up? Sentiment Classification using Machine Learning Techniques. EMNLP-2002, 79—86.
+
+--- SLIDE_65 ---
+
+
+
+

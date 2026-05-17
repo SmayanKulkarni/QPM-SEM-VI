@@ -1,0 +1,468 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{float}
+
+\geometry{margin=1in}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={CV Modules 4-6 Study Guide},
+}
+
+% Global spacing for lists
+\setlist[itemize]{itemsep=0.6em, topsep=0.5em, parsep=0.2em}
+\setlist[enumerate]{itemsep=0.6em, topsep=0.5em, parsep=0.2em}
+
+\title{\textbf{Computer Vision (Modules 4-6)\\Complete Study Material}}
+\author{Audit-Ready Study Guide}
+\date{}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Module 4: Generative Adversarial Networks (GANs)}
+
+\subsection{Introduction to GANs}
+\begin{itemize}
+    \item \textbf{Definition}: A Generative Adversarial Network (GAN) is a deep learning architecture consisting of two competing neural networks: a \textbf{Generator} and a \textbf{Discriminator}. 
+    \item \textbf{Inventor}: Ian Goodfellow (2014).
+    \item \textbf{Analogy}: Like a forger (Generator) creating fake currency and a detective (Discriminator) trying to catch the fakes. Through competition, both improve until the fakes are indistinguishable from reality.
+\end{itemize}
+
+\subsection{Core Architecture and Process}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/gan_arch.png}
+    \caption{General GAN Architecture}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Generator (G)}:
+    \begin{itemize}
+        \item \textbf{Input}: Random noise (latent vector).
+        \item \textbf{Output}: Fake data (e.g., generated images).
+        \item \textbf{Goal}: Produce data so realistic that it fools the Discriminator.
+    \end{itemize}
+    \item \textbf{Discriminator (D)}:
+    \begin{itemize}
+        \item \textbf{Input}: Real data (from the training set) and Fake data (from the Generator).
+        \item \textbf{Output}: Probability score (0 = Fake, 1 = Real).
+        \item \textbf{Goal}: Accurately distinguish between real and fake data.
+    \end{itemize}
+\end{itemize}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Training Loop (Min-Max Loss)}]
+\begin{enumerate}
+    \item \textbf{Noise Sampling}: Generator takes a random noise vector.
+    \item \textbf{Data Generation}: Generator creates a fake image.
+    \item \textbf{Discrimination}: Discriminator evaluates the fake image against a real image.
+    \item \textbf{Adversarial Training}: Feedback (loss) is sent via backpropagation. The Generator updates weights to minimize the discriminator's accuracy, while the Discriminator updates weights to maximize its accuracy.
+\end{enumerate}
+\end{tcolorbox}
+
+\subsection{The Role of the Noise Vector}
+Why use random noise as input to the Generator?
+\begin{itemize}
+    \item \textbf{Generate Variety (Diversity)}: Without noise, the generator would produce the exact same output every time. Noise acts as a seed for variation.
+    \item \textbf{Learn Data Distribution}: The noise maps a simple distribution (like Gaussian) into a complex, high-dimensional real-data distribution.
+    \item \textbf{No Bias}: Noise lacks predefined structures, forcing the model to learn pure data patterns.
+\end{itemize}
+
+\subsection{Implicit vs. Explicit Density Estimation}
+\begin{itemize}
+    \item \textbf{Implicit Density (GANs)}: Learns to generate data that \textit{resembles} the real data distribution without ever explicitly calculating the exact probability distribution.
+    \item \textbf{Explicit Density (VAEs - Variational Autoencoders)}: Explicitly learns and computes the probability distribution of data using likelihood (like following an exact recipe).
+\end{itemize}
+
+\subsection{Limitations of Vanilla GANs}
+\begin{enumerate}
+    \item \textbf{Mode Collapse}: The Generator finds a single output (or a small set of outputs) that easily fools the Discriminator and stops producing diverse samples. (e.g., generating the exact same face every time).
+    \item \textbf{Training Instability}: If the Discriminator gets too strong too quickly, the Generator receives weak gradients and stops learning. If the Generator is too strong, the Discriminator fails.
+    \item \textbf{Vanishing Gradients}: Saturation in the Discriminator's sigmoid activation function can halt the Generator's learning. (Solved partially using Leaky ReLU or different loss functions).
+    \item \textbf{Difficult Hyperparameter Tuning}: Highly sensitive to learning rates, batch sizes, and architecture.
+\end{enumerate}
+
+\subsection{Advanced GAN Variants}
+\begin{itemize}
+    \item \textbf{CGAN (Conditional GAN)}: Takes an additional \textit{label} as input. The label dictates the \textit{category} (e.g., ``rose''), while the noise vector dictates the \textit{variation} (shape, color).
+    \item \textbf{DCGAN (Deep Convolutional GAN)}: Replaces fully connected layers with Convolutional Neural Networks (CNNs). Uses Strided Convolutions (instead of pooling), Batch Normalization, and Leaky ReLU.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{images/dcgan_arch.png}
+        \caption{DCGAN Generator Architecture}
+    \end{figure}
+    \item \textbf{WGAN (Wasserstein GAN)}: Replaces standard divergence loss with the Wasserstein distance (Earth Mover's Distance) to measure differences between real/fake, drastically improving training stability.
+    \item \textbf{ProGAN (Progressive GAN)}: Starts generating low-resolution images and progressively adds layers to increase resolution and detail.
+    \item \textbf{StyleGAN}: Allows fine-grained control over the generated image's style (e.g., pose, lighting, texture).
+\end{itemize}
+
+\subsection{Solved Numericals: Module 4}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Numerical 1: Discriminator Loss Calculation}]
+\textbf{Given:}
+\begin{itemize}
+    \item $D(x) = 0.9$ (Discriminator's probability output for a real image)
+    \item $D(G(z)) = 0.3$ (Discriminator's probability output for a fake image)
+\end{itemize}
+
+\textbf{Objective:} Calculate the Discriminator's Loss.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Formula:} The Discriminator Loss (using natural logarithm) is defined as:
+    \[ \text{Loss}_D = - [ \ln(D(x)) + \ln(1 - D(G(z))) ] \]
+    \item \textbf{Substitute values:}
+    \[ \text{Loss}_D = - [ \ln(0.9) + \ln(1 - 0.3) ] \]
+    \[ \text{Loss}_D = - [ \ln(0.9) + \ln(0.7) ] \]
+    \item \textbf{Calculate logarithms:}
+    \[ \ln(0.9) \approx -0.105, \quad \ln(0.7) \approx -0.357 \]
+    \item \textbf{Final calculation:}
+    \[ \text{Loss}_D = - ( -0.105 - 0.357 ) = - ( -0.462 ) = 0.462 \]
+\end{enumerate}
+\textbf{Interpretation:} A lower loss indicates the Discriminator is doing well. 0.462 is relatively low, meaning it correctly identified the real image (0.9 is close to 1) and the fake image (0.3 is close to 0).
+\end{tcolorbox}
+
+\vspace{1em}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Numerical 2: KL and JS Divergence}]
+\textbf{Given:}
+\begin{itemize}
+    \item Real Distribution $P = [0.5, 0.3, 0.2]$
+    \item Predicted Distribution $Q = [0.2, 0.2, 0.6]$
+\end{itemize}
+
+\textbf{Objective:} Compute Kullback-Leibler (KL) Divergence and Jensen-Shannon Divergence (JSD).
+
+\textbf{Part 1: KL Divergence ($D_{KL}(P || M)$ and $D_{KL}(Q || M)$)}
+\begin{enumerate}
+    \item \textbf{Find average distribution $M$:}
+    \[ M = \frac{1}{2}(P + Q) = \left[ \frac{0.5+0.2}{2}, \frac{0.3+0.2}{2}, \frac{0.2+0.6}{2} \right] = [0.35, 0.25, 0.4] \]
+    \item \textbf{Compute $D_{KL}(P || M)$:}
+    \[ D_{KL}(P || M) = \sum P(x) \ln\left(\frac{P(x)}{M(x)}\right) \]
+    \begin{itemize}
+        \item $0.5 \ln(0.5 / 0.35) = 0.5 \ln(1.428) = 0.178$
+        \item $0.3 \ln(0.3 / 0.25) = 0.3 \ln(1.2) = 0.0546$
+        \item $0.2 \ln(0.2 / 0.4) = 0.2 \ln(0.5) = -0.1386$
+    \end{itemize}
+    \[ D_{KL}(P || M) = 0.178 + 0.0546 - 0.1386 = 0.094 \]
+    \item \textbf{Compute $D_{KL}(Q || M)$:}
+    \[ D_{KL}(Q || M) = \sum Q(x) \ln\left(\frac{Q(x)}{M(x)}\right) \]
+    \begin{itemize}
+        \item $0.2 \ln(0.2 / 0.35) = -0.112$
+        \item $0.2 \ln(0.2 / 0.25) = -0.0446$
+        \item $0.6 \ln(0.6 / 0.4) = 0.243$
+    \end{itemize}
+    \[ D_{KL}(Q || M) = -0.112 - 0.0446 + 0.243 = 0.0864 \]
+\end{enumerate}
+
+\textbf{Part 2: Jensen-Shannon Divergence (JSD)}
+\begin{enumerate}
+    \item \textbf{Formula:}
+    \[ \text{JSD}(P || Q) = \frac{1}{2} D_{KL}(P || M) + \frac{1}{2} D_{KL}(Q || M) \]
+    \item \textbf{Calculate:}
+    \[ \text{JSD}(P || Q) = \frac{1}{2} (0.094 + 0.0864) = \frac{0.1804}{2} = 0.0902 \]
+\end{enumerate}
+\textbf{Interpretation:} JSD is symmetric and always finite ($0 \le JSD \le 1$ with base 2). Here, JSD $\approx 0.0902$, indicating a low-to-moderate difference between the distributions.
+\end{tcolorbox}
+
+
+\newpage
+
+\section{Module 5: Object Segmentation}
+
+\subsection{Introduction to Segmentation}
+\begin{itemize}
+    \item \textbf{Definition}: Grouping pixels with similar visual characteristics into meaningful segments.
+    \item \textbf{Resolution \& DPI}: $1024 \times 768$ resolution = 786,432 pixels. DPI (Dots Per Inch) determines physical print size/quality, while PPI (Pixels Per Inch) is for screens.
+\end{itemize}
+
+\subsection{Types of Segmentation}
+\begin{itemize}
+    \item \textbf{Semantic Segmentation}: Classifies every pixel into a category (e.g., all cars get the same ``car'' label). Cannot differentiate between two distinct cars next to each other.
+    \item \textbf{Instance Segmentation}: Detects individual object instances. If there are two cars, they are labeled as ``Car 1'' and ``Car 2''.
+    \item \textbf{Panoptic Segmentation}: Combines both. Uses the concepts of \textbf{Things} (countable objects with boundaries, like cars and people) and \textbf{Stuff} (uncountable regions without strict boundaries, like sky, grass, road).
+\end{itemize}
+
+\subsection{Convolutional Receptive Fields \& Pyramids}
+\begin{itemize}
+    \item \textbf{Receptive Field}: The area of the input image that a neuron ``sees''. Shallow layers see small patches (high resolution, edge details). Deep layers see large regions (low resolution, strong semantic meaning).
+    \item \textbf{Image Pyramid}: Manually resizing the image multiple times to detect objects at different scales (computationally expensive).
+\end{itemize}
+
+\subsection{Key Segmentation Architectures}
+\begin{itemize}
+    \item \textbf{FPN (Feature Pyramid Network)}: Solves multi-scale detection without multiple image passes.
+    \begin{itemize}
+        \item \textbf{Bottom-Up Pathway}: Normal CNN extracting features (spatial resolution drops, semantic meaning increases).
+        \item \textbf{Top-Down Pathway}: Upsamples deep, low-resolution layers.
+        \item \textbf{Lateral Connections}: Combines the upsampled deep layers with corresponding shallow layers using 1x1 convolutions. Merges semantic strength with spatial detail.
+    \end{itemize}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{images/fpn_arch.png}
+        \caption{FPN Architecture}
+    \end{figure}
+    
+    \item \textbf{PSPNet (Pyramid Scene Parsing Network)}:
+    \begin{itemize}
+        \item Uses a \textbf{Pyramid Pooling Module} that divides the feature map into different grid sizes ($1\times1$, $2\times2$, $3\times3$, $6\times6$) to capture local and global contexts simultaneously. These are upsampled and concatenated before final pixel-wise softmax prediction.
+    \end{itemize}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{images/pspnet_arch.png}
+        \caption{PSPNet Architecture}
+    \end{figure}
+    
+    \item \textbf{U-Net} (Widely used in Medical Imaging like Tumor Detection):
+    \begin{itemize}
+        \item \textbf{Contracting Path (Encoder)}: Uses convolutions and pooling to capture context (reduces spatial size).
+        \item \textbf{Expansive Path (Decoder)}: Uses transposed convolutions to upsample and restore spatial resolution.
+        \item \textbf{Skip Connections}: Crucial feature. Bypasses the deeper layers to directly pass high-resolution spatial details (like edges/boundaries) from the encoder to the decoder, preventing the loss of localization accuracy.
+    \end{itemize}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{images/unet_arch.png}
+        \caption{U-Net Architecture}
+    \end{figure}
+\end{itemize}
+
+\subsection{Clustering Methods for Segmentation}
+\begin{itemize}
+    \item \textbf{K-Means}: Groups pixels into $K$ predefined clusters based on similarity (minimizing variance).
+    \item \textbf{Mean Shift}: Does not require predefined $K$. Finds clusters by moving data points towards areas of highest density.
+    \item \textbf{DBSCAN}: Density-based. Groups closely packed pixels and isolates outliers/noise. Good for irregular shapes.
+    \item \textbf{Agglomerative Hierarchical}: Builds a hierarchy by merging smaller clusters into larger ones. Relies on \textbf{Linkage Criteria}: Single (shortest distance), Complete (longest distance), Average, or Centroid.
+\end{itemize}
+
+\subsection{Distance Metrics}
+\begin{itemize}
+    \item \textbf{Euclidean}: Straight-line distance (Pythagorean).
+    \item \textbf{Manhattan}: Grid-like distance (sum of absolute differences).
+    \item \textbf{Cosine Similarity}: Measures the angle between vectors (ignores magnitude).
+    \item \textbf{Minkowski}: Generalized distance formula containing Euclidean and Manhattan.
+    \item \textbf{Jaccard Index / Sorensen-Dice}: Measures overlap/similarity between two sets.
+\end{itemize}
+
+\subsection{Solved Numericals: Module 5}
+
+\begin{tcolorbox}[colback=gray!5!white,colframe=black!75!black,title=\textbf{Numerical 1: Bilinear Interpolation (Upsampling)}]
+\textbf{Given:}
+A low-resolution $2 \times 2$ grid with the following corner pixel values that we wish to upsample into a $4 \times 4$ grid:
+\begin{itemize}
+    \item Top-left: 10 \quad Top-right: 20
+    \item Bottom-left: 30 \quad Bottom-right: 40
+\end{itemize}
+
+\textbf{Objective:} Estimate the inner pixel values using bilinear interpolation.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Horizontal Interpolation (Rows):} We have 3 intervals to span between the edges.
+    \begin{itemize}
+        \item Top Row (10 to 20): Step size = $(20 - 10) / 3 = 3.33$.
+        \item Values: $10 \rightarrow 13.3 \rightarrow 16.7 \rightarrow 20$.
+        \item Bottom Row (30 to 40): Step size = $(40 - 30) / 3 = 3.33$.
+        \item Values: $30 \rightarrow 33.3 \rightarrow 36.7 \rightarrow 40$.
+    \end{itemize}
+    
+    \item \textbf{Vertical Interpolation (Columns):} Now interpolate the middle columns vertically. The step size is $(Bottom - Top) / 3$.
+    \begin{itemize}
+        \item Column 2 (13.3 to 33.3): Step size = $(33.3 - 13.3) / 3 = 6.67$.
+        \item Values: $13.3 \rightarrow 20.0 \rightarrow 26.7 \rightarrow 33.3$.
+        \item Column 3 (16.7 to 36.7): Step size = $(36.7 - 16.7) / 3 = 6.67$.
+        \item Values: $16.7 \rightarrow 23.3 \rightarrow 30.0 \rightarrow 36.7$.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Interpretation:}
+The resulting $4 \times 4$ interpolated image matrix is smoothly transitioned:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+10.0 & 13.3 & 16.7 & 20.0 \\ \hline
+16.7 & 20.0 & 23.3 & 26.7 \\ \hline
+23.3 & 26.7 & 30.0 & 33.3 \\ \hline
+30.0 & 33.3 & 36.7 & 40.0 \\ \hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\vspace{1em}
+
+\begin{tcolorbox}[colback=gray!5!white,colframe=black!75!black,title=\textbf{Numerical 2: IoU and Dice Coefficient}]
+\textbf{Given:}
+In an image segmentation task, we have the Ground Truth mask ($A$) and the Model's Predicted mask ($B$):
+\begin{itemize}
+    \item Ground Truth area ($|A|$) = 50 pixels
+    \item Predicted area ($|B|$) = 60 pixels
+    \item Intersection (correctly predicted pixels, $|A \cap B|$) = 40 pixels
+\end{itemize}
+
+\textbf{Objective:} Calculate the Intersection over Union (IoU) and the Dice Coefficient.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Intersection over Union (IoU):}
+    \[ \text{Union } |A \cup B| = |A| + |B| - |A \cap B| \]
+    \[ |A \cup B| = 50 + 60 - 40 = 70 \text{ pixels} \]
+    \[ \text{IoU} = \frac{|A \cap B|}{|A \cup B|} = \frac{40}{70} \approx 0.571 \text{ (or 57.1\%)} \]
+    
+    \item \textbf{Dice Coefficient (F1 Score):}
+    \[ \text{Dice} = \frac{2 |A \cap B|}{|A| + |B|} \]
+    \[ \text{Dice} = \frac{2 \times 40}{50 + 60} = \frac{80}{110} \approx 0.727 \text{ (or 72.7\%)} \]
+\end{enumerate}
+
+\textbf{Interpretation:} Both metrics evaluate segmentation accuracy. IoU penalizes false positives and false negatives more heavily than Dice, which is why IoU (0.57) is lower than Dice (0.72).
+\end{tcolorbox}
+
+
+\newpage
+
+\section{Module 6: Action Recognition and Object Tracking}
+
+\subsection{Video Understanding Basics}
+\begin{itemize}
+    \item \textbf{Video vs. Image}: An image has only spatial information (width, height). A video adds a \textbf{temporal} dimension ($x, y, t$).
+    \item \textbf{Why Temporal Matters}: A single frame of a person with hands together could be praying, clapping, or resting. A sequence of frames defines the action.
+    \item \textbf{Action Recognition}: ``What is happening?'' (e.g., running, fighting).
+    \item \textbf{Object Tracking}: ``Where is it happening over time?'' (Locating an object continuously across frames).
+\end{itemize}
+
+\subsection{Motion Capture and Modeling}
+\begin{itemize}
+    \item \textbf{Marker-based}: Uses reflective markers on joints and infrared cameras. Highly accurate, used in biomechanics and animation.
+    \item \textbf{Markerless}: Uses AI/Pose-estimation (e.g., OpenPose, MoveNet) to detect joints from standard video. Non-invasive.
+    \item \textbf{Kinematic Models (How things move, ignoring force)}:
+    \begin{enumerate}
+        \item \textbf{Point Mass Model}: Treats object as a single point. Ignores shape, size, and rotation.
+        \item \textbf{Rigid Body Model}: Accounts for shape and rotation, assuming the object doesn't deform.
+        \item \textbf{Articulated Body Model}: Multiple rigid bodies connected by joints (e.g., a human body or robotic arm).
+    \end{enumerate}
+    \item \textbf{Dynamic Models}: Examines \textit{why} things move, analyzing mass, forces, and torques.
+\end{itemize}
+
+\subsection{Optical Flow}
+\begin{itemize}
+    \item \textbf{Definition}: The pattern of apparent motion of image objects between two consecutive frames caused by the movement of object or camera.
+    \item \textbf{Brightness Constancy Assumption}: The intensity (color/brightness) of a pixel representing a moving object remains constant between frames; only its position ($x,y$) changes.
+    \[ I_x u + I_y v + I_t = 0 \]
+    where $I_x, I_y$ are spatial gradients, $I_t$ is temporal gradient, and $(u,v)$ is the optical flow vector.
+    \item \textbf{The Aperture Problem}: Viewing motion through a small region makes it impossible to determine the true direction of motion along an edge. Therefore, a single pixel is not enough to calculate optical flow (we have 1 equation but 2 unknowns: $u$ and $v$).
+    \item \textbf{Solutions}:
+    \begin{itemize}
+        \item \textbf{Lucas-Kanade Method}: Assumes \textit{Local Motion Consistency} (nearby pixels in a small window move in the same way). Produces \textbf{Sparse Optical Flow} (only tracks key feature points/corners).
+        \item \textbf{Horn-Schunck Method}: Assumes \textit{Global Smoothness} (motion changes smoothly across the entire image). Produces \textbf{Dense Optical Flow} (calculates motion vectors for every single pixel).
+    \end{itemize}
+\end{itemize}
+
+\subsection{Tracking Methods \& Case Study}
+\begin{itemize}
+    \item \textbf{Kalman Filter}: A predictive model that estimates an object's future position based on its past trajectory and updates the prediction using new measurements. Fast and efficient for linear motion.
+    \item \textbf{Particle Filter}: Used for complex, non-linear motion tracking.
+\end{itemize}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!50!black,title=\textbf{Case Study: CCTV Surveillance System}]
+\textbf{Scenario}: A camera monitors a shopping mall to ensure safety and security.
+
+\textbf{Q1: How will the system follow a person across frames?}
+\begin{itemize}
+    \item \textbf{Detect}: Identify the person in the initial frame using object detection.
+    \item \textbf{Track}: Estimate the person's position in subsequent frames based on appearance and motion models.
+    \item \textbf{Update}: Continuously update the person's location vector as they move.
+\end{itemize}
+
+\textbf{Q2: How will the system detect suspicious behavior (e.g., fighting)?}
+\begin{itemize}
+    \item \textbf{Analyze}: Monitor the sequence of spatio-temporal movements across consecutive frames.
+    \item \textbf{Identify}: Detect unusual or abnormal motion patterns that deviate from normal walking behavior.
+    \item \textbf{Classify}: Use an action recognition classifier to tag the abnormal movement sequence as ``fighting''.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{3D Vision \& Depth Estimation}
+\begin{itemize}
+    \item \textbf{Stereo Vision}: Uses two cameras (Left and Right) to estimate depth, mimicking human eyes.
+    \item \textbf{Stereo Matching}: Finding the exact same physical point in both the left and right images.
+    \item \textbf{Disparity}: The difference in the pixel coordinates of the same point in the two images.
+    \item \textbf{Depth Calculation}: Depth is \textbf{inversely proportional} to disparity. 
+    \begin{itemize}
+        \item \textit{Large disparity = Object is close.}
+        \item \textit{Small disparity = Object is far away.}
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Solved Numericals: Module 6}
+
+\begin{tcolorbox}[colback=orange!5!white,colframe=orange!75!black,title=\textbf{Numerical 1: Optical Flow (Brightness Constancy)}]
+\textbf{Given:}
+A tracking system observes a pixel moving between two consecutive frames. The image gradients at the pixel are calculated as follows:
+\begin{itemize}
+    \item Spatial gradient in X-direction ($I_x$) = 2
+    \item Spatial gradient in Y-direction ($I_y$) = 3
+    \item Temporal gradient ($I_t$) = -12
+\end{itemize}
+It is known that the object is moving \textbf{purely horizontally} (meaning the vertical velocity component $v = 0$).
+
+\textbf{Objective:} Find the horizontal velocity $u$ of the pixel.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Formula:} State the Brightness Constancy Equation:
+    \[ I_x u + I_y v + I_t = 0 \]
+    \item \textbf{Substitute values:}
+    \[ (2)u + (3)(0) + (-12) = 0 \]
+    \item \textbf{Solve for $u$:}
+    \[ 2u - 12 = 0 \implies 2u = 12 \implies u = 6 \]
+\end{enumerate}
+
+\textbf{Interpretation:} The optical flow vector is $(u,v) = (6, 0)$. This means the pixel moved 6 pixels to the right between the two frames.
+\end{tcolorbox}
+
+\vspace{1em}
+
+\begin{tcolorbox}[colback=orange!5!white,colframe=orange!75!black,title=\textbf{Numerical 2: Depth Estimation using Stereo Vision}]
+\textbf{Given:}
+A stereo vision system has two parallel cameras:
+\begin{itemize}
+    \item Focal length ($f$) = 50 mm
+    \item Baseline distance between cameras ($B$) = 120 mm
+    \item An object is detected at $x_L = 400$ in the left image and $x_R = 390$ in the right image (in pixels).
+    \item Sensor pixel size = $0.01$ mm/pixel
+\end{itemize}
+
+\textbf{Objective:} Calculate the depth ($Z$) of the object from the cameras.
+
+\textbf{Steps:}
+\begin{enumerate}
+    \item \textbf{Calculate Disparity in pixels:}
+    \[ d_{\text{pixels}} = x_L - x_R = 400 - 390 = 10 \text{ pixels} \]
+    \item \textbf{Convert Disparity to Physical Units (mm):}
+    \[ d = d_{\text{pixels}} \times \text{pixel size} = 10 \times 0.01 = 0.1 \text{ mm} \]
+    \item \textbf{Calculate Depth using Triangulation Formula:}
+    \[ Z = \frac{f \cdot B}{d} \]
+    \[ Z = \frac{50 \text{ mm} \times 120 \text{ mm}}{0.1 \text{ mm}} \]
+    \[ Z = \frac{6000}{0.1} = 60,000 \text{ mm} \]
+    \item \textbf{Convert to standard units:}
+    \[ 60,000 \text{ mm} = 60 \text{ meters} \]
+\end{enumerate}
+
+\textbf{Interpretation:} The object is 60 meters away from the stereo camera setup. This demonstrates the inverse relationship: a small disparity ($0.1$ mm) corresponds to a large depth ($60$ m).
+\end{tcolorbox}
+
+\end{document}

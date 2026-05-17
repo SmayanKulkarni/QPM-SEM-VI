@@ -1,0 +1,579 @@
+
+============================================================
+FILE: Module 4 Dynamic Programming.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Table of Content
+Policy evaluation
+policy improvement 
+policy iteration
+value iteration 
+Bootstrap
+Full back up
+
+--- Slide 2 ---
+
+
+--- Slide 3 ---
+
+Dynamic Programming hi
+Dynamic Programming (DP) refers to a collection of algorithms that can be used to compute policies to solve a MDP given a perfect model of the environment.
+Perfect Model means:
+transition probabilities (the likelihood of ending up in a given state when taking an action from another state) 
+reward model (the likelihood of getting a particular reward for being in a particular state) are known for the entire environment.
+
+--- Slide 4 ---
+
+
+--- Slide 5 ---
+
+
+--- Slide 6 ---
+
+Limitations of DP
+Assumption of a perfect model that is often unavailable for most problems
+Computational expense
+
+
+However, useful because they serve as a theoretical foundation on which most advanced RL methods are based.
+
+--- Slide 7 ---
+
+Dynamic Programming
+The key idea behind DP is the use of value functions to organize and structure the search for good policies.
+DP will be used to compute v* and/or q*. Once we have these optimal value functions, deriving an optimal policy is trivial.
+DP algorithms are obtained by turning the previously shown Bellman equations into update rules for improving approximations of the desired functions.
+
+--- Slide 8 ---
+
+Dynamic Programming
+Herein given the complete model and specifications of the environment (MDP), we can successfully find an optimal policy for the agent to follow. 
+It contains two main steps:
+Break the problem into subproblems and solve it
+Solutions to subproblems are cached or stored for reuse to find overall optimal solution to the problem at hand
+
+--- Slide 9 ---
+
+Dynamic Programming
+To solve a given MDP, the solution must have the components to:
+Find out how good an arbitrary policy is
+Find out the optimal policy for the given MDP
+
+--- Slide 10 ---
+
+
+--- Slide 11 ---
+
+Policy Evaluation (Prediction)
+
+--- Slide 12 ---
+
+Policy Evaluation
+
+--- Slide 13 ---
+
+Policy Evaluation Algorithm
+Start with some random state value function v₀.
+Iteratively update the expected value of each of the states in v₀ using the previously shown Bellman equation for state value functions and the policy we are trying to evaluate.
+Every time we update all the state values, we consider that a new version of the value function (v₁, v₂, v₃, etc.).
+As we keep changing the value function it will converge to vπ, or the actual state value function for our policy π.
+Since we are updating our value function “iteratively” until it reaches vπ, this is called iterative policy evaluation (IPE).
+
+--- Slide 14 ---
+
+Policy Evaluation Algorithm
+//To check how much values are changing
+
+--- Slide 15 ---
+
+
+--- Slide 16 ---
+
+Policy Evaluation Example
+Let us understand policy evaluation using the very popular example of Gridworld.
+
+--- Slide 17 ---
+
+Policy Evaluation
+We formulate the problem as an episodic MDP with:
+The set of states 𝓢 = {1, …, 14, 15,16} where 1 and 16 are absorbing states.
+The set of actions 𝓐 = {north, south, west, east}
+The reward function 𝓡 = {0 if s = 1 or s = 16, -1 otherwise}
+The discount factor γ = 1
+
+--- Slide 18 ---
+
+Policy Evaluation
+Consider a random policy for which, at every state, the probability of every action {up, down, left, right} is equal to 0.25. 
+We will start with initialising v0 for the random policy to all 0s
+
+--- Slide 19 ---
+
+Policy Evaluation
+This is definitely not very useful. Let’s calculate v1 for all the states of 6:
+
+--- Slide 20 ---
+
+Policy Evaluation
+Similarly, for all non-terminal states, v1(s) = -1.
+For terminal states p(s’|s,a) = 0 and hence vk(1) = vk(16) = 0 for all k. So v1 for the random policy is given by:
+
+--- Slide 21 ---
+
+Policy Evaluation
+Now, for v2(s) we are assuming γ or the discounting factor to be 1. 
+As you can see, all the states marked in red in the diagram are identical to 6 for the purpose of calculating the value function.
+ Hence, for all these states, v2(s) = -2.
+
+--- Slide 22 ---
+
+Policy Evaluation
+For all the remaining states, i.e., 2, 5, 12 and 15, v2 can be calculated as follows
+
+--- Slide 23 ---
+
+Policy Evaluation
+
+--- Slide 24 ---
+
+
+--- Slide 25 ---
+
+
+--- Slide 26 ---
+
+Policy Improvement
+The reason for computing the value function for a policy is to help find better policies.
+
+Once we know the value function for a policy, how can improve on that policy?
+Policy Evaluation  →  "How good is current π?"
+        ↓
+Policy Improvement →  "Can we make π better?"
+        ↓
+    Repeat until no improvement = Optimal Policy π*
+
+--- Slide 27 ---
+
+Policy Improvement
+Consider the case of an agent being in some state s and having access to some policy π and its state value function vπ. π already tells the agent which action to select but could one of the other actions be better?
+
+One way to verify this is to choose some other action a that is not what π would choose and then continue to follow π afterward.
+If this leads to a greater expected value than the current expected value for the state — vπ(s) — this implies that it’s better to select this action when in s than the action that π currently says to select.
+In other words, changing the policy to select this other action a instead of the action that the policy currently says to select would mark an improvement to the policy.
+
+--- Slide 28 ---
+
+Policy Improvement (Cont..)
+Encapsulate the value of selecting any action a from state s as qπ(s,a) where:
+
+
+
+
+
+By doing a summation of this value for all other possible states we get the value of taking action a from state s or the action value.
+
+--- Slide 29 ---
+
+Policy Improvement (Cont..)
+Extend this to consider changes at all states to all actions and then to select the action at each state that looks bests according to qπ(s,a).
+
+--- Slide 30 ---
+
+Policy Improvement
+If this happens to be greater than the value function vπ(s), it implies that the new policy π’ would be better to take. 
+We do this iteratively for all states to find the best policy. 
+Note that in this case, the agent would be following a greedy policy in the sense that it is looking only one step ahead.
+
+--- Slide 31 ---
+
+Policy Improvement
+As shown for state 2, the optimal action is left which leads to the terminal state having a value . 
+This is the highest among all the next states (0,-18,-20). 
+This is repeated for all states to find the new policy.
+
+--- Slide 32 ---
+
+Policy Improvement
+Overall, after the policy improvement step using vπ, we get the new policy π’
+
+--- Slide 33 ---
+
+
+--- Slide 34 ---
+
+
+--- Slide 35 ---
+
+Policy Iteration
+Once a policy π has been improved using vπ to yield a better π’, we can compute vπ’ using IPE and improve it to yield π’’ and so on.
+
+
+
+	where E denotes a policy evaluation and I denotes a policy improvement.
+
+This method of using policy evaluation and then policy improvement is called policy iteration.
+
+--- Slide 36 ---
+
+Policy Iteration:
+
+--- Slide 37 ---
+
+Policy Iteration
+In this way, the new policy is sure to be an improvement over the previous one and given enough iterations, it will return the optimal policy. 
+This sounds amazing but there is a drawback
+each iteration in policy iteration itself includes another iteration of policy evaluation that may require multiple sweeps through all the states.
+
+--- Slide 38 ---
+
+Policy Iteration:
+
+--- Slide 39 ---
+
+Practice Questions
+Slippery Gridworld Same 4×4 grid, but now the floor is slippery: * With prob 0.7: agent moves in intended direction, with prob 0.3: agent slips and moves perpendicular (0.15 each side) Reward = −1 per step. γ = 0.9. Terminal states: 1 and 16. 
+(a) Write the full Bellman equation for V^π(6) under a policy that always goes Right. 
+(b) How does stochasticity change the policy improvement step compared to the deterministic case? 
+(c) Would policy iteration still converge? Why?
+
+--- Slide 40 ---
+
+
+--- Slide 41 ---
+
+Analyze the below grid and solve the value function using policy evaluation for the state 7 and state 3 using dynamic programming. Consider a random policy for which, at every state, the probability of every action {up, down, left, right} is equal to 0.25 and discounting factor is 1.
+
+--- Slide 42 ---
+
+Value Iteration
+We saw in the gridworld example that at around k = 10, we were already in a position to find the optimal policy. 
+So, instead of waiting for the policy evaluation step to converge exactly to the value function vπ, we could stop earlier.
+One important special case is when policy evaluation is stopped after just one sweep (one update of each state). This algorithm is called value iteration.
+
+--- Slide 43 ---
+
+Value Iteration
+Let’s see how this is done as a simple backup operation:
+
+
+This is identical to the bellman update in policy evaluation, with the difference being that we are taking the maximum over all actions. 
+Once the updates are small enough, we can take the value function obtained as final and estimate the optimal policy corresponding to that.
+
+--- Slide 44 ---
+
+Value Iteration
+
+--- Slide 45 ---
+
+
+--- Slide 46 ---
+
+Some important points related to DP
+DP can only be used if the model of the environment is known.
+Has a very high computational expense, i.e., it does not scale well as the number of states increase to a large number. 
+An alternative called asynchronous dynamic programming helps to resolve this issue to some extent
+
+--- Slide 47 ---
+
+Bootstrap
+When you estimate something based on another estimation, it is called bootstrapping.
+Bootstrapping is used in dynamic programming (DP) in reinforcement learning. 
+
+.
+
+--- Slide 48 ---
+
+Bootstrapping In DP
+In DP methods such as value iteration and policy iteration, bootstrapping is used to update the value function of a state based on the estimated value of the successor states. 
+This allows for the efficient calculation of the optimal value function and policy.
+
+.
+
+============================================================
+FILE: Monte-Carlo Method.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Monte-Carlo Method
+Module-4
+
+--- Slide 2 ---
+
+Model-based Methods:
+Utilize a function that predicts state transitions and rewards, allowing the agent to plan by thinking ahead.
+Planning ahead enables the agent to make informed decisions by considering a range of possible choices.
+Can substantially improve sample efficiency over model-free methods when a ground-truth model is available.
+Challenges include the need to learn the model purely from experience, which can lead to biased models that result in sub-optimal behavior.
+Model-free Methods:
+Do not rely on a learned or ground-truth model of the environment.
+Forego potential gains in sample efficiency that come with planning ahead.
+Tend to be easier to implement and tune compared to model-based methods.
+
+--- Slide 3 ---
+
+While model-based methods can be more sample-efficient and capable of planning, they suffer from model bias and complexity. 
+
+On the other hand, model-free methods are simpler and potentially more robust but require more interactions with the environment to learn effectively.
+
+--- Slide 4 ---
+
+Bootstrapping in reinforcement learning refers to using an estimate of the value of a state or action to update the value of other states or actions
+
+--- Slide 5 ---
+
+What is meant by Monte Carlo?
+Monte Carlo methods require only experience — sample sequences of states, actions, and rewards from actual or simulated interaction with an environment. 
+Monte Carlo methods in general refer to any technique that uses random sampling to estimate something. The name comes from the Monte Carlo casino in Monaco — because randomness and chance are central to the method.
+The core idea: instead of computing something analytically, you let random experiments run and average the results.
+
+--- Slide 6 ---
+
+Two types of Monte Carlo learning
+
+--- Slide 7 ---
+
+Monte Carlo Prediction
+Let us consider the above situation where we have a system of 3 states that are A, B & terminate.
+We are given two example episodes.
+A+3 →A+2 means the transition from state A →A with reward =3 for this transition
+
+--- Slide 8 ---
+
+Monte Carlo Prediction
+Now, we know that averaging rewards can get us value-function for multi-state RL problems as well.
+But things aren’t this easy as we know value-function depends on future rewards as well.
+
+--- Slide 9 ---
+
+Monte Carlo Prediction
+Hence we have got 2 types of Monte Carlo learning on how to average future rewards:
+First Visit Monte Carlo: First visit estimates (Value|State: S1) as the average of the returns following the first visit to the state S1
+Every Visit Monte Carlo: It estimates (Value|State: S1) as the average of returns for every visit to the State S1.
+
+--- Slide 10 ---
+
+First Visit Monte Carlo
+Calculating V(A)
+As we have been given 2 different iterations, we will be summing all the rewards coming after A (including that of A) after the first visit to ‘A’.
+
+--- Slide 11 ---
+
+First Visit Monte Carlo
+Hence,
+For 1st episode=3+2+-4+4+-3=2
+For 2nd episode=3+-3=0
+As we have got two terms, we will be averaging these two value i.e
+V(A)=(2+0)/2=1
+Note: It must be noted that if an episode doesn’t have an occurence of ‘A’, it won’t be considered in the average.
+
+--- Slide 12 ---
+
+First Visit Monte Carlo
+Calculating V(B)
+Drawing reference from the above example:
+1st episode=-4+4–3=-3
+2nd episode=-2+3+-3=-2
+Averaging, V(B)=(-3+-2)/2=-2.5
+
+--- Slide 13 ---
+
+Every Visit MC
+Calculating V(A)
+Here, we would be creating a new summation term adding all rewards coming after every occurrence of ‘A’(including that of A as well).
+From 1st episode=(3+2+-4+4+-3)+(2+-4+4+-3)+(4+-3)=2+-1+1
+From 2nd episode=(3+-3)=0
+As we got 4 summation terms, we will be averaging using N=4 i.e
+V(A)=(2+-1+1+0)/4=0.5
+
+--- Slide 14 ---
+
+Every Visit MC
+Calculating V(B)
+From 1st episode=(-4+4+-3)+(-3)=-3+-3
+From 2nd episode=(-2+3–3)+(-3)=-2+-3
+As we have 4 summation terms, averaging using N=4,
+V(B)=(-3+-3+-2+-3)/4=-2.75
+
+--- Slide 15 ---
+
+
+--- Slide 16 ---
+
+Advantages of Monte Carlo over Dynamic Programing
+Dynamic programming requires a complete knowledge of the environment or all possible transitions, whereas Monte Carlo methods work on a sampled state-action trajectory on one episode.
+DP includes only a one-step transition, whereas MC goes all the way to the end of the episode to the terminal node.
+One important fact about the MC method is that the estimates for each state are independent, which means the estimate for one state does not build upon the estimate of any other state, as in the case of DP.
+
+--- Slide 17 ---
+
+BlackJack Problem
+Blackjack Rules:
+2 Players (Dealer vs. Player)
+Both players receive 2 cards at the beginning of the game
+One of the dealer’s cards is face down at the beginning of the game
+Points: Ace = 1or 11, J, Q, K = 10, All other cards equal their shown value
+The player closest to the goal wins
+If a player exceeds 21, they lose
+If both players exceed 21, it is a draw
+Sampling with replacement
+
+--- Slide 18 ---
+
+BlackJack Problem
+State Representation: Player’s Current Total, Dealers’ showing card
+Action: Hit (Request for the additional card), Stick (End your turn)
+Reward
+Win = 1, Lose = -1, Draw = 0
+All rewards are given at the end of episode
+
+--- Slide 19 ---
+
+BlackJack Problem
+
+--- Slide 20 ---
+
+BlackJack Problem
+
+--- Slide 21 ---
+
+BlackJack Problem
+
+--- Slide 22 ---
+
+BlackJack Problem
+
+--- Slide 23 ---
+
+BlackJack Problem
+
+--- Slide 24 ---
+
+Usable Ace
+In the game of Blackjack, an "ace" card can have a value of 1 or 11, whichever is more advantageous for the player. 
+A "usable ace" is an ace card that can be counted as 11 without causing the hand to bust. 
+This means that the hand can still be played even if the player draws a card that would normally cause the hand to bust. 
+For example, if a player has an ace and a 7 (totaling 18), they have a usable ace. If the player then draws a card with a value of 10 (e.g., a Jack or a Queen), their hand value becomes 28, but the ace can be counted as 1, so the hand value is reduced to 18, and the player can continue to play.
+
+--- Slide 25 ---
+
+Usable Ace
+The term "usable ace" is important because it gives the player more flexibility in their play and can increase their chances of winning the game.
+However, it is important to note that not all aces are usable aces, and the player must use their judgment to decide whether to count an ace as 1 or 11 based on the current state of the game.
+
+--- Slide 26 ---
+
+State value function computation for Blackjack Problem
+Consider the policy that sticks if the player’s sum is 20 or 21, and otherwise hits.
+To find the state-value function for this policy by a Monte Carlo approach, one simulates many blackjack games using the policy and averages the returns following each state.
+Note that in this task the same state never recurs within one episode, so there is no difference between first-visit and every-visit MC methods.
+
+--- Slide 27 ---
+
+Solution of BlackJack Problem
+It is straightforward to apply Monte Carlo to blackjack.
+The episodes are all simulated games, so it is easy to arrange for exploring starts that include all possibilities.
+In this case one simply picks the dealer’s cards, the player’s sum, and whether or not the player has a usable ace, all at random with equal probability.
+As the initial policy we use the policy evaluated in the previous
+blackjack example, that which sticks only on 20 or 21.
+The initial action-value function can be zero for all state–action pairs.
+
+--- Slide 28 ---
+
+
+--- Slide 29 ---
+
+
+--- Slide 30 ---
+
+
+--- Slide 31 ---
+
+MC estimation of Action-Values
+When a model is not available, it's crucial to estimate action values rather than state values.
+Without a model, state values alone are insufficient for determining a policy, so estimating action values becomes necessary.
+The policy evaluation problem for action values is to estimate the expected return when starting in a particular state, taking a specific action, and then following a policy.
+Monte Carlo methods for action values are similar to those for state values, with every-visit and first-visit methods being common.
+The challenge arises when many relevant state-action pairs may never be visited during learning.
+Maintaining exploration is crucial for learning accurate action values, ain to the exploration-exploitation trade-off in the n-armed bandit problem.
+
+--- Slide 32 ---
+
+MC estimation of Action-Values
+One way to ensure exploration is the assumption of exploring starts, where the first step of each episode starts at a state-action pair with non-zero probability.
+However, relying solely on exploring starts is not always practical, especially in real-world environments.
+An alternative approach is to consider stochastic policies with non-zero probabilities of selecting all actions, ensuring exploration.
+The assumption of exploring starts is sometimes useful but cannot be relied upon in general, especially in real-world scenarios.
+
+--- Slide 33 ---
+
+Monte Carlo Control
+These two kinds of changes work against each other to some extent, as each creates a moving target for the other, but together they cause both policy and value function to approach optimality.
+
+--- Slide 34 ---
+
+Monte Carlo Control
+To begin, let us consider a Monte Carlo version of classical policy iteration. 
+In this method, we perform alternating complete steps of policy evaluation and policy improvement, beginning with an arbitrary policy and ending with the optimal policy and optimal action-value function
+
+--- Slide 35 ---
+
+Monte Carlo Control
+Policy evaluation is done exactly as described in the Dynamic Programming. Many episodes are experienced, with the approximate action-value function approaching the true function asymptotically. 
+For the moment, let us assume that we do indeed observe an infinite number of episodes and that, in addition, the episodes are generated with exploring starts.
+
+--- Slide 36 ---
+
+Policy Improvement in Monte Carlo Control
+Policy improvement is done by making the greedy actions with respect to the current value function. 
+In this case we have an action-value function, and therefore no model is needed to construct the greedy policy. 
+For any action-value function        the corresponding greedy policy is the one that, for each          deterministically chooses an action with maximal       -value
+
+--- Slide 37 ---
+
+On-Policy
+On-Policy learning Algorithms are the algorithms that evaluate and improve the same policy which is being used to select actions. 
+That means we will try to evaluate and improve the same policy that the agent is already using for action selection. 
+In short , [Target Policy == Behavior Policy]. Some examples of On-Policy algorithms are Policy Iteration, Value Iteration, Monte Carlo for On-Policy, Sarsa, etc.
+
+--- Slide 38 ---
+
+Off-policy learning
+Target Policy pi(a|s): It is the policy that an agent is trying to learn i.e. agent is learning value function for this policy.
+
+
+Behavior Policy b(a|s): It is the policy that is being used by an agent for action select i.e. agent follows this policy to interact with the environment.
+
+--- Slide 39 ---
+
+
+--- Slide 40 ---
+
+Why use Off-Policy?
+Some benefits of Off-Policy methods are as follows:
+Continuous exploration: As an agent is learning other policy then it can be used for continuing exploration while learning optimal policy. Whereas On-Policy learns suboptimal policy.
+
+Learning from Demonstration: Agent can learn from the demonstration.
+
+Parallel Learning: This speeds up the convergence i.e. learning can be fast.
+
+--- Slide 41 ---
+
+On v/s off policy
+The agent learns the value of the policy it is currently following. 
+On-policy methods: The agent learns the value of the policy it is currently following.
+Off-policy methods: The agent learns the value of a different policy (called the target policy) while following a separate behavior policy for exploration.
+
+--- Slide 42 ---
+
+References
+Chapter 5 from Sutton and Barto
+https://www.youtube.com/watch?v=PljDuynF-j0	(game theory)
+https://www.youtube.com/watch?v=3686U57JnLs (simulation )
+https://www.youtube.com/watch?v=r9l9fsdNYPY&t=223s
+https://medium.com/data-science-in-your-pocket/monte-carlo-for-reinforcement-learning-with-example-1754439dd628
+https://eecs.wsu.edu/~taylorm/2010_cs414/414_19.pdf

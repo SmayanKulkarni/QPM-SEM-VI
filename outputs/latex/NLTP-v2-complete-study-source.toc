@@ -1,0 +1,104 @@
+\contentsline {section}{\numberline {1}Module 1: N-gram Language Models and Edit Distance}{4}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Introduction to Language Models}{4}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}N-gram Language Models}{4}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}Chain Rule of Probability}{5}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}The Markov Assumption}{5}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.3}Maximum Likelihood Estimation (MLE)}{5}{subsubsection.1.2.3}%
+\contentsline {subsubsection}{\numberline {1.2.4}Log Probabilities}{6}{subsubsection.1.2.4}%
+\contentsline {subsection}{\numberline {1.3}Evaluating Language Models}{6}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Training, Test, and Development Sets}{6}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}Extrinsic vs. Intrinsic Evaluation}{7}{subsubsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.3}Perplexity}{7}{subsubsection.1.3.3}%
+\contentsline {subsection}{\numberline {1.4}Smoothing, Interpolation, and Backoff}{8}{subsection.1.4}%
+\contentsline {subsubsection}{\numberline {1.4.1}The Zero-Probability Problem}{8}{subsubsection.1.4.1}%
+\contentsline {subsubsection}{\numberline {1.4.2}Laplace (Add-One) Smoothing}{9}{subsubsection.1.4.2}%
+\contentsline {subsubsection}{\numberline {1.4.3}Add-k Smoothing}{9}{subsubsection.1.4.3}%
+\contentsline {subsubsection}{\numberline {1.4.4}Language Model Interpolation}{9}{subsubsection.1.4.4}%
+\contentsline {subsubsection}{\numberline {1.4.5}Stupid Backoff}{10}{subsubsection.1.4.5}%
+\contentsline {subsection}{\numberline {1.5}Entropy and Cross-Entropy}{10}{subsection.1.5}%
+\contentsline {subsection}{\numberline {1.6}Edit Distance}{11}{subsection.1.6}%
+\contentsline {section}{\numberline {2}Module 2: Word Senses, WordNet, and Vector Semantics}{13}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Word Senses and Polysemy}{13}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Relations Between Senses}{13}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Synonymy}{13}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Antonymy}{14}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Taxonomic Relations: Hyponymy and Hypernymy}{14}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}Meronymy}{14}{subsubsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.3}WordNet}{14}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Sense Relations in WordNet}{15}{subsubsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.4}Word Sense Disambiguation (WSD)}{15}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}WSD Algorithms}{15}{subsubsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.5}Pointwise Mutual Information (PMI)}{16}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Word Sense Induction (WSI)}{17}{subsection.2.6}%
+\contentsline {section}{\numberline {3}Module 3: Naive Bayes and Text Classification}{19}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Introduction to Text Classification}{19}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Naive Bayes Classifiers}{19}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Bayes' Rule and the Classification Decision}{19}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}The Bag of Words Assumption}{20}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}The Naive Bayes Assumption: Conditional Independence}{20}{subsubsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.4}Training the Naive Bayes Classifier}{20}{subsubsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.3}Optimizations for Sentiment Analysis}{22}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Binary Multinomial Naive Bayes}{22}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Negation Handling}{22}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Sentiment Lexicons}{22}{subsubsection.3.3.3}%
+\contentsline {section}{\numberline {4}Module 4: Deep Learning Architectures for Sequence Processing}{24}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Recurrent Neural Networks (RNNs)}{24}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}RNN Architecture}{24}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Training RNNs: Backpropagation Through Time (BPTT)}{24}{subsubsection.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.1.3}RNN as Language Model}{25}{subsubsection.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.1.4}Autoregressive Generation}{25}{subsubsection.4.1.4}%
+\contentsline {subsection}{\numberline {4.2}Sequence Labeling and Sequence Classification}{25}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Vanishing and Exploding Gradients}{26}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Long Short-Term Memory (LSTM)}{26}{subsection.4.4}%
+\contentsline {subsubsection}{\numberline {4.4.1}The Forget Gate}{26}{subsubsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.2}The Input Gate}{27}{subsubsection.4.4.2}%
+\contentsline {subsubsection}{\numberline {4.4.3}The Output Gate}{27}{subsubsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.5}Gated Recurrent Unit (GRU)}{28}{subsection.4.5}%
+\contentsline {subsubsection}{\numberline {4.5.1}The Reset Gate}{28}{subsubsection.4.5.1}%
+\contentsline {subsubsection}{\numberline {4.5.2}The Update Gate}{28}{subsubsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.6}Bidirectional Recurrent Neural Networks (Bi-RNN)}{29}{subsection.4.6}%
+\contentsline {subsubsection}{\numberline {4.6.1}Advantages and Disadvantages of Bi-RNNs}{29}{subsubsection.4.6.1}%
+\contentsline {section}{\numberline {5}Module 5: Morphology and Syntax}{31}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Morphology}{31}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Morphemes}{31}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Types of Morphemes}{31}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Lexical vs. Grammatical Morphemes}{31}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Inflectional vs. Derivational Morphology}{32}{subsubsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.2}Regular Expressions}{33}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Disjunction}{33}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Kleene Operators}{33}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Anchors}{34}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}Capture Groups and Backreferences}{34}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}Errors in Pattern Matching}{34}{subsubsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.3}Finite State Automata}{34}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Deterministic Finite Automata (DFA)}{34}{subsubsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.4}Morphological Parsing}{35}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {5.4.1}Finite State Transducers (FST)}{35}{subsubsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.2}Two-Level Morphology}{35}{subsubsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.5}Stemming and Lemmatization}{35}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}The Porter Stemmer Algorithm}{36}{subsection.5.6}%
+\contentsline {subsubsection}{\numberline {5.6.1}Measure of a Word}{36}{subsubsection.5.6.1}%
+\contentsline {subsubsection}{\numberline {5.6.2}Porter Stemmer Steps}{36}{subsubsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.7}Part-of-Speech (POS) Tagging}{37}{subsection.5.7}%
+\contentsline {subsubsection}{\numberline {5.7.1}POS Tag Sets}{38}{subsubsection.5.7.1}%
+\contentsline {subsubsection}{\numberline {5.7.2}POS Tagging Approaches}{38}{subsubsection.5.7.2}%
+\contentsline {subsection}{\numberline {5.8}Hidden Markov Model (HMM) for POS Tagging}{39}{subsection.5.8}%
+\contentsline {subsubsection}{\numberline {5.8.1}HMM Components}{39}{subsubsection.5.8.1}%
+\contentsline {subsubsection}{\numberline {5.8.2}HMM Decoding}{39}{subsubsection.5.8.2}%
+\contentsline {subsection}{\numberline {5.9}The Viterbi Algorithm}{40}{subsection.5.9}%
+\contentsline {subsection}{\numberline {5.10}Context-Free Grammars (CFG)}{40}{subsection.5.10}%
+\contentsline {subsubsection}{\numberline {5.10.1}Example CFG Rules}{41}{subsubsection.5.10.1}%
+\contentsline {subsubsection}{\numberline {5.10.2}Syntactic Ambiguity}{41}{subsubsection.5.10.2}%
+\contentsline {subsection}{\numberline {5.11}CKY Parsing Algorithm}{42}{subsection.5.11}%
+\contentsline {subsection}{\numberline {5.12}Probabilistic Context-Free Grammar (PCFG)}{42}{subsection.5.12}%
+\contentsline {subsection}{\numberline {5.13}Dependency Parsing}{43}{subsection.5.13}%
+\contentsline {subsubsection}{\numberline {5.13.1}Key Terminology}{43}{subsubsection.5.13.1}%
+\contentsline {subsubsection}{\numberline {5.13.2}Properties of Dependency Trees}{43}{subsubsection.5.13.2}%
+\contentsline {subsubsection}{\numberline {5.13.3}Projectivity}{44}{subsubsection.5.13.3}%
+\contentsline {subsubsection}{\numberline {5.13.4}Shift-Reduce Parsing (Arc Standard)}{44}{subsubsection.5.13.4}%
+\contentsline {section}{\numberline {6}Summary of Key Concepts by Module}{46}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Module 1: N-gram Language Models and Edit Distance}{46}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Module 2: Word Senses, WordNet, and Vector Semantics}{46}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Module 3: Naive Bayes and Text Classification}{46}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Module 4: Deep Learning for Sequences}{46}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Module 5: Morphology and Syntax}{47}{subsection.6.5}%

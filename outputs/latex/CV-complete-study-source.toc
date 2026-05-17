@@ -1,0 +1,94 @@
+\contentsline {section}{\numberline {1}Module 1: Image Processing Fundamentals}{4}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Introduction to Computer Vision and Image Processing}{4}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Digital Images}{4}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}Continuous vs. Digital Image}{5}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Types of Images}{6}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.3}Pixel, Resolution, and Bit Depth}{7}{subsubsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.3}Image Acquisition}{7}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Image Acquisition System Components}{7}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}Three Ways of Image Acquisition}{8}{subsubsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.3}Complete Acquisition Pipeline}{8}{subsubsection.1.3.3}%
+\contentsline {subsection}{\numberline {1.4}Image Preprocessing}{8}{subsection.1.4}%
+\contentsline {subsubsection}{\numberline {1.4.1}Image Segmentation and Representation (Pipeline Overview)}{9}{subsubsection.1.4.1}%
+\contentsline {subsubsection}{\numberline {1.4.2}Image Transforms}{10}{subsubsection.1.4.2}%
+\contentsline {subsection}{\numberline {1.5}Morphological Image Processing}{11}{subsection.1.5}%
+\contentsline {subsubsection}{\numberline {1.5.1}Basic Morphological Operations}{11}{subsubsection.1.5.1}%
+\contentsline {subsubsection}{\numberline {1.5.2}Morphological Algorithms}{12}{subsubsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.6}Preprocessing Challenges and Solutions}{14}{subsection.1.6}%
+\contentsline {section}{\numberline {2}Module 2: Shape Analysis, Edge Detection, and Segmentation}{15}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Introduction to Shape Analysis}{15}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Contour-Based Shape Representation}{17}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Chain Codes (Freeman Chain Codes)}{18}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Fourier Descriptors}{23}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Geometric Border Representation and B-Splines}{24}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}Shape Invariants}{26}{subsubsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.3}Region-Based Shape Representation}{26}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Scalar Region Descriptors}{26}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Moments}{27}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Convex Hull}{27}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.4}Region Skeletons}{28}{subsubsection.2.3.4}%
+\contentsline {subsubsection}{\numberline {2.3.5}Region Decomposition}{29}{subsubsection.2.3.5}%
+\contentsline {subsubsection}{\numberline {2.3.6}Region Neighborhood Graph (RNG)}{29}{subsubsection.2.3.6}%
+\contentsline {subsection}{\numberline {2.4}Thresholding and Segmentation}{29}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Thresholding}{29}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}Global Thresholding (Iterative Method)}{30}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.3}Otsu's Method}{31}{subsubsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.5}Region-Based Segmentation}{31}{subsection.2.5}%
+\contentsline {subsubsection}{\numberline {2.5.1}Region Growing}{31}{subsubsection.2.5.1}%
+\contentsline {subsubsection}{\numberline {2.5.2}Region Splitting and Merging}{32}{subsubsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.6}Pixel Connectivity}{32}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Hough Transform}{33}{subsection.2.7}%
+\contentsline {section}{\numberline {3}Module 3: Object Detection and Convolutional Neural Networks}{35}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Introduction to Object Detection}{35}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Types of Object Detection}{35}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Two-Stage Object Detection (Region Proposal-Based)}{35}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}One-Stage Object Detection (End-to-End, No Proposals)}{36}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Proposal-Free / Transformer-Based Detection}{36}{subsubsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.3}R-CNN Family}{36}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}R-CNN (Region-based CNN)}{36}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Fast R-CNN}{37}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Faster R-CNN}{38}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.4}YOLO (You Only Look Once)}{40}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}YOLO Grid Prediction}{40}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Anchor Boxes}{41}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}YOLO Loss Function}{42}{subsubsection.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.4.4}YOLO Variants}{43}{subsubsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.5}SSD (Single Shot MultiBox Detector)}{43}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Evaluation Metrics}{43}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}IoU (Intersection over Union)}{43}{subsubsection.3.6.1}%
+\contentsline {subsubsection}{\numberline {3.6.2}Precision and Recall}{44}{subsubsection.3.6.2}%
+\contentsline {subsubsection}{\numberline {3.6.3}mAP (Mean Average Precision)}{44}{subsubsection.3.6.3}%
+\contentsline {subsection}{\numberline {3.7}Non-Maximum Suppression (NMS)}{45}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Mask R-CNN}{47}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Semantic vs.~Instance Segmentation}{47}{subsection.3.9}%
+\contentsline {subsection}{\numberline {3.10}Face Recognition: Siamese Networks}{48}{subsection.3.10}%
+\contentsline {subsection}{\numberline {3.11}Zero-Shot, One-Shot, and Few-Shot Learning}{49}{subsection.3.11}%
+\contentsline {subsection}{\numberline {3.12}Loss Functions for Object Detection}{49}{subsection.3.12}%
+\contentsline {subsubsection}{\numberline {3.12.1}Contrastive Loss}{49}{subsubsection.3.12.1}%
+\contentsline {subsubsection}{\numberline {3.12.2}Triplet Loss}{49}{subsubsection.3.12.2}%
+\contentsline {section}{\numberline {4}Module 4: Generative Adversarial Networks (GANs)}{50}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Introduction to GANs}{50}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Core Architecture and Process}{50}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}The Role of the Noise Vector}{51}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Implicit vs. Explicit Density Estimation}{51}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Limitations of Vanilla GANs}{51}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Advanced GAN Variants}{52}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Solved Numericals: Module 4}{54}{subsection.4.7}%
+\contentsline {section}{\numberline {5}Module 5: Object Segmentation}{56}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Introduction to Segmentation}{56}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Types of Segmentation}{56}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Convolutional Receptive Fields and Pyramids}{56}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Key Segmentation Architectures}{56}{subsection.5.4}%
+\contentsline {subsubsection}{\numberline {5.4.1}FPN (Feature Pyramid Network)}{56}{subsubsection.5.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.2}PSPNet (Pyramid Scene Parsing Network)}{58}{subsubsection.5.4.2}%
+\contentsline {subsubsection}{\numberline {5.4.3}U-Net (Widely used in Medical Imaging)}{61}{subsubsection.5.4.3}%
+\contentsline {subsection}{\numberline {5.5}Clustering Methods for Segmentation}{62}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Distance Metrics}{62}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Solved Numericals: Module 5}{63}{subsection.5.7}%
+\contentsline {section}{\numberline {6}Module 6: Action Recognition and Object Tracking}{65}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Video Understanding Basics}{65}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Motion Capture and Modeling}{65}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Optical Flow}{65}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Tracking Methods}{66}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}3D Vision and Depth Estimation}{67}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Solved Numericals: Module 6}{68}{subsection.6.6}%

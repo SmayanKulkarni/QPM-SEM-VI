@@ -1,0 +1,2352 @@
+
+============================================================
+FILE: 1_Morphological analysis (1) (2).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Morphology
+Morphology is the study of words
+
+Study's internal structure of words 
+
+How words change their form to generate new word
+
+Different role they play in sentence ,strictly following linguistic rule.
+
+
+--- SLIDE_2 ---
+Morphemes
+words are built from smaller meaningful grammatical units called morphemes.
+dogs
+2 morphemes, ‘dog’ and ‘s’
+‘s’ is a plural marker on nouns
+
+
+--- SLIDE_3 ---
+Morpheme
+A Smallest unit carries meaning
+While doing analysis of a word, we split the given word into parts. 
+Each part is called a morpheme.
+Eg.: 
+uneducated –> 
+un + educate + d.
+
+it has three morphemes.
+
+
+
+--- SLIDE_4 ---
+Free Morpheme
+Can appear as a word by itself; often can combine with other morphemes too.
+
+house (house-s), walk (walk-ed), of, the, or
+
+Independent/can stand by themselves as single words.
+ 
+When combined with bound morphemes 
+
+free morphemes are called stems/root. 
+
+
+--- SLIDE_5 ---
+ Lexical  Morpheme
+Visualize/Content word
+ Nouns –Glass
+Adjectives -Black,
+ Verbs-Dance,
+Adverb - beautifully.
+ ‘open' class of morphemes because we can add new words to the language easily 
+Eg.(girl, play, google, e-mail, blog).
+
+
+
+--- SLIDE_6 ---
+  Grammatical Morpheme
+Also called as Functional morphemes 
+consist of functional/Grammer words 
+
+Conjunctions- And/Or
+Prepositions-On/Under/At
+Articles-An/The
+Pronouns- She/He.
+
+Limited words 
+This is a ‘closed' class of morphemes
+
+--- SLIDE_7 ---
+  Bound  Morpheme
+Cannot appear as a word by itself.
+-s (dog-s), -ly (quick-ly), -ed (walk-ed)
+cannot stand alone 
+Not complete in themselves
+Depends on free Morpheme
+Affixes are bound morpheme 
+typically attached to free morpheme.
+ They can prefixes, Infix and suffixes (re-, un-, dis-, pre-, -ness, -less, -ly).
+
+--- SLIDE_8 ---
+  Prefix
+Attached before lexical morpheme
+Be-come
+Un-happy
+
+
+
+--- SLIDE_9 ---
+Infix 
+unladylike
+3 morphemes
+un- ‘not’
+lady ‘well-behaved woman’
+-like ‘having the characteristic of’
+
+
+--- SLIDE_10 ---
+  Suffix
+Words attached after root
+Teach-er
+Use-less
+
+--- SLIDE_11 ---
+  Suffix
+8 Suffixes
+Noun
+Plural –   Book->Books
+Possessional- Ram’s
+Adjective
+er –   Tall->Taller
+est-   Tall->Tallest
+Verb
+S=     Play->Plays
+ed=   Play->Played
+Ing=  Play->Playing
+en=   Brake->Broken
+
+
+--- SLIDE_12 ---
+  Derivational  Morpheme
+make new words of a different grammatical category from a stem 
+Class Changing
+Care	         careful
+    (Verb)            (Adjective)
+
+ Care	   	  carelessly
+ (Verb)                 (Adverb)
+
+Class Maintaining
+Child		Childhood
+(Noun)                 (Noun)
+
+
+--- SLIDE_13 ---
+  Inflectional  Morpheme
+Morpheme when attached to root doesn’t change its class
+
+There are eight inflectional morphemes in English. 
+
+
+They are all suffixes. 
+
+--- SLIDE_14 ---
+  Regular Inflectional  Morpheme
+Refers to those inflections which follows a standard pattern
+
+Eg. 
+
+Dance+ed->Danced
+Walk+ed->Walked
+Boy+s->Boys
+
+
+--- SLIDE_15 ---
+  Irregular Inflectional  Morpheme
+Refers to those inflections which does not follow a standard pattern
+Eg. 
+Wife+s - >  Wives
+Child+s  ->  Children
+Mouse+s   ->   Mice
+
+
+--- SLIDE_16 ---
+Completely change the morpheme
+
+
+Occurrence of phonemically unrelated morpheme 
+
+Eg.
+Go+ed->Went
+Good+er->Better
+am+ed->was
+  Suppletion Inflectional  Morpheme
+
+--- SLIDE_17 ---
+Identify Inflectional or Derivational Morphology
+I jumped into the puddle this morning
+This is unbelievable
+I have john’s umbrella
+Emma goes to school
+She is working carelessly
+
+--- SLIDE_18 ---
+Identify Inflectional or Derivational Morphology
+I jumped into the puddle this morning
+This is unbelievable
+I have john’s umbrella
+Emma goes to school
+She is working carelessly
+Inflectional Morphology
+
+Derivational Morphology
+
+Inflectional Morphology
+
+Inflectional Morphology
+
+Derivational Morphology
+
+--- SLIDE_19 ---
+
+
+--- SLIDE_20 ---
+Regular Expressions
+
+--- SLIDE_21 ---
+Some Questions on Regular Expression.....
+
+--- SLIDE_22 ---
+What is Regular Expression?
+
+
+
+
+What does the command ab+c search for?
+ ac,abc,abbc, and so on
+ ab,abc,abcc and so on
+ abc,abbc,abbbc and so on
+ None of the above
+
+
+
+The number of matches does the command a{1,3} give with the string aabbaaaa?
+ 3
+ 2
+ 1
+ 4
+
+
+
+
+--- SLIDE_23 ---
+What is the output of the below code?
+print(re.match(‘On’,”one”))
+
+ 'e'
+ Match Object
+ ‘n’
+ None
+
+
+What does the sequence \D finds the match?
+ Decimal digits
+ Non-decimal digits
+ Division
+ None of the above
+
+
+Which of the following command is used to search a match for 1,2,3,4?
+
+ [1-4]
+ (1-3)
+ [1234]
+ Both a and c
+
+
+--- SLIDE_24 ---
+What is the output of the below code?
+re.sub(‘a’,’u’,’aeiou!’)
+ 'ueiou!'
+ 'eiou!'
+ 'eio!'
+ None of the above
+
+--- SLIDE_25 ---
+ 
+
+
+
+--- SLIDE_26 ---
+ 
+
+
+What is Regular  Expression?
+A  Formal Language for specifying text search strings
+
+
+A regular expression is an algebraic notation for characterizing a set  of strings.
+
+
+Regular expression search function will search through the corpus, returning all texts that match the pattern or the first match.
+
+
+The corpus can be a single document or a collection
+
+--- SLIDE_27 ---
+Regular expressions
+The simplest kind of regular expression is sequence of simple characters 
+
+A formal language for specifying text strings
+
+How can we search for any of these?
+woodchuck
+woodchucks
+Woodchuck
+Woodchucks
+
+[Ww]oodchucks?
+
+Regular expressions are case sensitive 
+
+All the above are different regular expression 
+
+--- SLIDE_28 ---
+Regular Expression 
+
+--- SLIDE_29 ---
+Regular Expressions: Disjunctions
+Letters inside square brackets []
+
+
+
+Ranges [A-Z]
+
+		
+
+
+--- SLIDE_30 ---
+Regular Expressions: Negation in Disjunction
+Negations [^Ss]
+Carat means negation only when first in []
+
+
+--- SLIDE_31 ---
+Regular Expressions: More Disjunction
+Woodchuck is another name for groundhog!
+The pipe | for disjunction
+
+
+--- SLIDE_32 ---
+Regular Expressions: ? *+.
+
+
+Stephen C Kleene
+Kleene *,   Kleene +   
+
+--- SLIDE_33 ---
+Regular Expressions: Anchors  ^   $
+993, 99 
+If your pattern is 99 it will be matched to both above string if you want to match only 99 you can use \b99\b
+
+--- SLIDE_34 ---
+
+
+--- SLIDE_35 ---
+
+
+--- SLIDE_36 ---
+Example
+Find me all instances of the word “the” in a text.
+the
+Misses capitalized examples
+[tT]he
+Incorrectly returns other or theology
+[^a-zA-Z][tT]he[^a-zA-Z]
+                                          
+
+
+--- SLIDE_37 ---
+Errors
+The process we just went through was based on fixing two kinds of errors:
+
+Matching strings that we should not have matched (there, then, other)
+False positives (Type I errors)
+
+Not matching things that we should have matched (The)
+False negatives (Type II errors)
+
+--- SLIDE_38 ---
+Errors cont.
+In NLP we are always dealing with these kinds of errors.
+Reducing the error rate for an application often involves two antagonistic efforts: 
+Increasing accuracy or precision (minimizing false positives)
+Increasing coverage or recall (minimizing false negatives).
+
+--- SLIDE_39 ---
+
+
+--- SLIDE_40 ---
+
+
+--- SLIDE_41 ---
+Summary
+Regular expressions play a surprisingly large role
+Sophisticated sequences of regular expressions are often the first model for any text processing text
+For hard tasks, we use machine learning classifiers
+But regular expressions are still used for pre-processing, or as features in the classifiers
+Can be very useful in capturing generalizations
+
+41
+
+--- SLIDE_42 ---
+More Regular Expressions: 
+Substitutions and ELIZA
+
+--- SLIDE_43 ---
+
+An important use of regular expressions is in substitutions. 
+
+For example, the substitution operator s/regexp1/pattern/ used in Python and in Unix commands like vim or sed allows a string characterized by a regular expression to be replaced by another string:
+
+--- SLIDE_44 ---
+Substitutions
+Substitution in Python and UNIX commands:
+
+s/regexp1/pattern/ 
+e.g.:
+s/colour/color/ 
+
+
+--- SLIDE_45 ---
+Capture Groups
+Say we want to put angles around all numbers:
+           the 35 boxes  the <35> boxes 
+Use parens () to "capture" a pattern into a numbered register (1, 2, 3…)
+Use \1  to refer to the contents of the register
+s/([0-9]+)/<\1>/ 
+
+
+--- SLIDE_46 ---
+Capture groups: multiple registers
+/the (.*)er they (.*), the \1er we \2/ 
+Matches
+     the faster they ran, the faster we ran 
+But not
+     the faster they ran, the faster we ate 
+
+Sham went to Paris with Ram, Ram loves Paris."
+/sham went to (Paris) with (Ram),\1 loves \2
+
+
+--- SLIDE_47 ---
+
+The harder he worked, the harder she worked.
+ the faster they ran, the faster we ran 
+The sooner they arrived, the sooner we arrived.
+
+
+--- SLIDE_48 ---
+But suppose we don't want to capture?
+Parentheses have a double function: grouping terms, and capturing
+Non-capturing groups: add a ?: after paren:
+/(?:some|a few) (people|cats) like some \1/ 
+matches 
+some cats like some cats 
+but not 
+some cats like some some
+
+--- SLIDE_49 ---
+Simple Application: ELIZA
+Early NLP system that imitated a Rogerian psychotherapist 
+Joseph Weizenbaum, 1966. 
+
+Uses pattern matching to match, e.g.,:
+“I need X” 
+and translates them into, e.g.
+“What would it mean to you if you got X? 
+
+--- SLIDE_50 ---
+Simple Application: ELIZA
+Men are all alike.IN WHAT WAY
+They're always bugging us about something or other. CAN YOU THINK OF A SPECIFIC EXAMPLE 
+Well, my boyfriend made me come here.YOUR BOYFRIEND MADE YOU COME HERE 
+He says I'm depressed much of the time.I AM SORRY TO HEAR YOU ARE DEPRESSED 
+
+--- SLIDE_51 ---
+How ELIZA works
+s/.* I’M (depressed|sad) .*/I AM SORRY TO HEAR YOU ARE \1/ 
+s/.* I AM (depressed|sad) .*/WHY DO YOU THINK YOU ARE \1/
+s/.* all .*/IN WHAT WAY?/ 
+s/.* always .*/CAN YOU THINK OF A SPECIFIC EXAMPLE?/ 
+
+
+--- SLIDE_52 ---
+Write the regular expression for the following 
+Write the regular expression that matches a string that has an a followed by zero or more b's
+
+
+Write the regular expression for given language  L = {E, a, aa, b,bb,ab,ba, aba, bab,.....},any combination of a and b.
+
+
+Write the regular expression for the language  L = {a, aba, aab, aba, aaa, abab, .....}
+
+Write the regular expression for the language L = {a, aa,aaa, ....}
+
+Write the regular expression for the language L = {E, 0, 1,00, 11,10,100,.....}
+
+Write the regular expression for the language accepting all the string which are starting with 1 and ending with 0, over ∑ = {0, 1}.
+
+
+
+
+
+
+--- SLIDE_53 ---
+Write the regular expression for the following 
+Write the regular expression that matches a string that has an a followed by zero or more b's R=ab*
+Write the regular expression for given language  L = {E, a, aa, b,bb,ab,ba, aba, bab,.....},any combination of a and b.  Answer:-Solution
+The regular expression will be −(a + b)*
+Write the regular expression for the language  L = {a, aba, aab, aba, aaa, abab, .....} R = {a + ab}*
+Write the regular expression for the language L = {a, aa,aaa, ....} R = a+
+Write the regular expression for the language L = {E, 0, 1,00, 11,10,100,.....}
+R = (1* O*)
+Write the regular expression for the language accepting all the string which are starting with 1 and ending with 0, over ∑ = {0, 1}. R = 1 (0+1)* 0  
+
+
+
+
+
+
+
+
+--- SLIDE_54 ---
+Finite State Automata
+Finite Automata(FA) is the simplest machine to recognize patterns.
+
+ The finite automata or finite state machine is an abstract machine that has five elements or tuples.
+
+ It has a set of states and rules for moving from one state to another, but it depends upon the applied input symbol. 
+
+Basically, it is an abstract model of a digital computer.
+
+Finite automata have two states, Accept state or Reject state. 
+
+When the input string is processed successfully, and the automata reached its final state, then it will accept.
+
+
+--- SLIDE_55 ---
+
+
+The above figure shows the following features of automata:
+
+Input
+Output
+States of automata
+State relation
+Output relation
+
+--- SLIDE_56 ---
+A Finite Automata consists of the following: 
+Q : Finite set of states.
+Σ : set of Input Symbols.
+q : Initial state.
+F : set of Final States.
+δ : Transition Function.
+
+--- SLIDE_57 ---
+Deterministic Finite Automata (DFA):
+
+DFA consists of 5 tuples {Q, Σ, q, F, δ}. 
+Q : set of all states.
+Σ : set of input symbols. ( Symbols which machine takes as input )
+q : Initial state. ( Starting state of a machine )
+F : set of final state.
+δ : Transition Function, defined as δ : Q X Σ --> Q.
+
+In a DFA, for a particular input character, the machine goes to one state only. 
+
+A transition function is defined on every state for every input symbol.
+
+
+ Also in DFA null (or ε) move is not allowed, i.e., DFA cannot change state without any input character. 
+
+
+--- SLIDE_58 ---
+
+
+
+For example, below DFA with Σ = {0, 1} accepts all strings ending with 0. 
+
+
+--- SLIDE_59 ---
+
+
+--- SLIDE_60 ---
+
+
+--- SLIDE_61 ---
+
+
+--- SLIDE_62 ---
+
+
+
+--- SLIDE_63 ---
+
+
+--- SLIDE_64 ---
+
+State Transition Diagram 
+
+--- SLIDE_65 ---
+
+
+--- SLIDE_66 ---
+
+
+--- SLIDE_67 ---
+
+
+--- SLIDE_68 ---
+
+
+--- SLIDE_69 ---
+
+
+--- SLIDE_70 ---
+
+
+--- SLIDE_71 ---
+Draw a deterministic  finite automate which accept 00 and 11 at the end of a string containing 0, 1 in it, e.g., 01010100 but not 000111010.
+
+--- SLIDE_72 ---
+
+
+--- SLIDE_73 ---
+FSA as language Recognizer 
+Recognition is the process of determining if a string should be accepted by a machine •
+
+ Or… it’s the process of determining if a string is in the language, we’re defining with the machine 
+
+ Or… it’s the process of determining if a regular expression matches a string 
+
+• Those all amount the same thing in the end 
+
+--- SLIDE_74 ---
+Recognition
+Simply a process of starting in the start state 
+
+ Examining the current input 
+
+Consulting the table 
+
+ Going to a new state and updating the input pointer. 
+
+Until you run out of input
+
+--- SLIDE_75 ---
+
+
+--- SLIDE_76 ---
+
+
+--- SLIDE_77 ---
+
+
+--- SLIDE_78 ---
+
+
+--- SLIDE_79 ---
+
+
+--- SLIDE_80 ---
+
+
+--- SLIDE_81 ---
+Finite-state can capture the generalization here:
+Eg.
+I eat Sushi
+Ram like Mango
+Noun+ Verb Noun+
+
+--- SLIDE_82 ---
+Language is recursive
+§ the ball
+§ the ball in the garden
+§ the ball in the garden behind the house
+§ the ball in the garden behind the house     next to school
+§ the ball
+§ the big ball
+§ the big, red ball
+§ the big, red, heavy ball
+
+--- SLIDE_83 ---
+
+
+--- SLIDE_84 ---
+Morphological parsing 
+Morphological parsing is to find the lexical form of a word from its surface form. 
+
+Given the input, for example, cats, we would like to produce cat +N +PL. 
+
+Stem-----Prefix+Stem+Suffix 
+
+
+
+--- SLIDE_85 ---
+Morphological parsing 
+Two-level morphology, 
+– Representing a word as a correspondence between 
+a lexical level 
+  • Representing a simple concatenation of morphemes making up a word, and 
+
+– The surface level
+ • Representing the actual spelling of the final word. 
+
+• Morphological parsing is implemented by building mapping rules that maps letter sequences like cats on the surface level  into morpheme and features sequence like cat +N +PL on the lexical level
+
+--- SLIDE_86 ---
+Morphological Parsing 
+
+
+          –cats ------------	cat +N +PLU
+	–cat -------------	cat +N +SG
+	–goose ------------goose +N +SG
+	–geese ------------goose +N +PLU
+	–catch ------------catch +V
+	–caught -----------catch +V +PAST
+
+
+Surface Form
+Lexical Form
+
+--- SLIDE_87 ---
+Parts of A Morphological Processor 
+
+•Lexicon: The list of stems
+with basic information about 
+categories (noun, verb, adjective, …) 
+sub-categories (regular noun, irregular noun, …)
+
+•Morphotactics: Explains ordering -which classes of morphemes can follow other classes of morphemes inside a word. 
+
+•Orthographic Rules (Spelling Rules): These spelling rules are used to model changes that occur in a word (normally when two morphemes combine).
+
+--- SLIDE_88 ---
+Lexicon 
+
+•A lexicon is a repository for words (stems).
+
+•They are grouped according to their main categories.
+–noun, verb, adjective, adverb, …
+
+•They may be also divided into sub-categories.
+–regular-nouns, irregular-singular nouns, irregular-plural nouns
+
+•The simplest way to create a morphological parser, put all possible words (together with its inflections) into a lexicon. 
+
+--- SLIDE_89 ---
+Morphotactic 
+In a natural language, a word may have many morphemes attached to it as affixes (prefix, suffix, infix).
+
+ Morphotactic is about placing morphemes with stem to form a meaningful word. 
+
+It gives the details about which classes of morpheme can follow which other classes of morpheme. 
+
+For example, in English language the plural morpheme (s or es) follows the stem.
+
+
+--- SLIDE_90 ---
+Morphotactics 
+
+--- SLIDE_91 ---
+Orthographic Rules 
+It refers to the spelling rules used in a particular language to model the spelling changes that occur in a word. 
+
+For example, when a stem ‘cook’ is attached with the morpheme ‘ing’, it becomes a new valid word with the spelling ‘cooking’.
+
+ What happened here was the concatenation of two strings. 
+
+This is not true for all words. If we attach the morpheme ‘ing’ with the word ‘care’, the spelling changes to ‘caring’ rather than ‘careing’. 
+
+In this case, it was not just concatenation, but it also involved removal of the letter ‘e’.
+
+
+--- SLIDE_92 ---
+
+
+--- SLIDE_93 ---
+
+
+--- SLIDE_94 ---
+Finite state transducers
+A finite state transducer essentially is a finite state automaton that works on two (or more) tapes. The most common way to think about transducers is as a kind of ``translating machine''. 
+
+They read from one of the tapes and write onto the other. This, for instance, is a transducer that translates as into bs:
+
+--- SLIDE_95 ---
+Finite state transducers
+A finite state transducer (FST) is a finite state machine where transitions are conditioned on a pair of symbols
+The machine moves between the states based on input symbol, while it outputs the corresponding output symbol 
+An FST encodes a relation, a mapping from a set to another . The relation defined by an FST is called a regular (or rational) relation
+
+
+--- SLIDE_96 ---
+
+
+--- SLIDE_97 ---
+
+
+--- SLIDE_98 ---
+
+
+--- SLIDE_99 ---
+Two-Level Morphology 
+
+Two-level morphology represents the correspondence between lexical and surface levels.
+•We use a finite-state transducer to find mapping between these two levels.
+•A FST is a two-tape automaton: 
+–Reads from one tape and writes to other one.
+•For morphological processing, one tape holds lexical representation, the second one holds the surface form of a word. 
+
+--- SLIDE_100 ---
+Morphological segmentation (or Stemming)
+Taking a surface input and breaking it down into its morphemes
+cat- 		cat+N+SL
+cats- 		cat+N+PL
+Plays- 	Play+V+Singular
+Played- 	Play+V+ PastParticipat
+foxes – 	fox+N+PL
+
+--- SLIDE_101 ---
+
+
+--- SLIDE_102 ---
+
+
+#
+
++Sg
+
+
+--- SLIDE_103 ---
+
+
+#
+
+
++Sg
+
+--- SLIDE_104 ---
+
+For each spelling rule we will have a FST, and these FSTs run parallel.
+
+
+--- SLIDE_105 ---
+Orthographic Rules 
+
+•For each spelling rule we will have a FST, and these FSTs run parallel.
+•We represent these rules using two-level morphology rules:
+
+
+a => b / c __ d	
+
+
+
+rewrite a as b when it occurs between c and d.
+
+English Spelling Rules:
+––E insertion --e added after s, z, x, ch, sh  before s --watch/watches
+
+
+
+--- SLIDE_106 ---
+ Stemming
+
+Stemming is suffix stripping operation
+Process of reducing word into its base form (Root form/stem form)
+This is achieved by cutting of begging or end of the word
+
+Eg:
+Playing-    Play
+Boys-         Boy
+
+Popular Algorithm is Porter Stemmer
+
+
+--- SLIDE_107 ---
+Porter Stemmer
+– Five sets of rules, applied in order
+
+– Within each set, if more than one of the rules can apply, only the one with the longest matching suffix (S1) is followed
+
+Advantage:  easy to see understand, easy to implement. 
+
+
+
+--- SLIDE_108 ---
+Convention
+Consonant( C ): other than A, E, I, O or U, and other than    Y preceded by a consonant.
+
+So in TOY the consonants are T and Y
+
+Vowel(V) : Any other letter. 
+
+
+--- SLIDE_109 ---
+Any word in English has this forms:
+[C](VCm)[V]
+[]denotes arbitrary presence of content
+C-Consonant
+V-Vowel
+m will be called the measure of any word or word part
+m=0 TR, EE, TREE, Y, BY.
+m=1 TROUBLE, OATS, TREES, IVY.
+m=2 TROUBLES, PRIVATE, OATEN, ORRERY.
+
+--- SLIDE_110 ---
+RULES
+The rules for removing a suffix will be given in the form		(condition) S1 -> S2if a word ends with the suffix S1 will be replaced by S2, if it satisfies the given condition.
+ e.g.   (m > 1) EMENT -> ЄHere S1 is 'EMENT' and S2 is null. 
+REPLACEMENT to REPLAC, 
+since REPLAC is a word part for which m = 2.
+
+--- SLIDE_111 ---
+E.g. (m>1 or *S)
+
+--- SLIDE_112 ---
+Step 1a :
+sses -> ss (Example : caresses -> caress)
+ies -> i (Example : ponies -> poni ; ties -> ti)
+ss -> ss (Example : caress -> caress)
+s ->Є (Example : cats -> cat)
+PORTER STEMMER
+
+--- SLIDE_113 ---
+Step 1b :
+(m>0) eed -> ee (Example : agreed -> agree; feed -> feed )
+(*v*) ed -> є (Example : plastered -> plaster ; bled -> bled)
+(*v*) ing -> є (Example : motoring -> motor ; sing -> sing)
+s -> є (Example : cats -> cat)
+
+--- SLIDE_114 ---
+If the second or third of the rules in Step 1b is successful, the following is done: Cleaning Step
+at -> ate (Example : conflat(ed) -> conflate)
+bl -> ble (Example : troubl(ed) -> trouble)
+iz -> ize (Example : siz(ed) -> size)
+s -> є (Example : cats -> cat)
+(*d &! (*l or *s or *z)) -> single letter 
+(Example : hopp(ing) -> hop ; tann(ed) -> tan ; fall(ing) -> fall ; hiss(ing) -> hiss ; fizz(ed) -> fizz)
+(m=1 and *o) -> e 
+(Example : fil(ing) -> file); fail(ing) -> fail 
+
+--- SLIDE_115 ---
+Step 1c : Y Elimination
+( \*v\*) y -> i (Example : happy -> happi ; sky -> sky)
+Step 1 deals with plurals and past participles. The subsequent steps are much more straightforward.
+
+
+Step 2 :Derivational Morphology -1
+(m>0) ational -> ate (Example : relational -> relate
+(m>0) ization -> ize (generalization -> generalize)
+(m>0) biliti -> ble (sensibiliti -> sensible)
+
+--- SLIDE_116 ---
+Step 3 :
+
+(m>0) icate -> ic (Example : triplicate -> triplic)
+(m>0) ful -> є (Example : hopeful -> hope)
+(m>0) ness -> є (Example : goodness -> good)
+
+--- SLIDE_117 ---
+Step 4 :Derivational Morphology-II
+
+( (m>1) ance -> є (Example : allowance -> allow)
+(m>1) ment -> є(Example : adjustment -> adjust)
+(m>1) ent -> є (Example : dependent -> depend)
+(m>1) ive -> є (Example : effective -> effect)
+
+--- SLIDE_118 ---
+The suffixes are now removed. All that remains is a little tidying up.
+
+Step 5a :
+(m>1) e -> є (Example : probate -> probat ; rate -> rate)
+(m=1 and not *o) ness -> є (Example : goodness -> good)
+Step 5b
+(m > 1 and *d &*l) -> single letter
+(Example : controll -> control ; roll -> roll)
+
+--- SLIDE_119 ---
+Disadvantage
+This indiscriminate cutting will be successful at some occasion and fail in some
+
+Eg.
+Studies- 	 Studi
+Giving-   	 Giv
+Intelligence-Intelligen
+Produced immediate representation of the word  may not have any meaning
+
+--- SLIDE_120 ---
+Stemming					Lemmatization
+Cutting of Suffixes to extract stem  
+
+Eg.
+Studies- 	 Studi
+Giving-   	 Giv
+Caring-         Car
+Produced immediate representation of the word  may not have any meaning
+Cutting of Suffixes to extract Lemma
+
+Eg.
+Studies- 	 Study
+Giving-   	 Give
+Caring-         Care
+Produced immediate representation of the word  having meaning
+
+--- SLIDE_121 ---
+Lemmatization
+Same as Stemming but immediate representation have some meaning
+Stemming and lemmatization both of these concepts are used to normalized the given word by removing affixes
+
+--- SLIDE_122 ---
+N-Gram Language Model
+Predicting Nth    word from  N-1 words
+Predicting 3rd word from previous 2 words – Model is called Trigram
+ Predicting 2nd word from previous 1 words – Model is called Bigram
+ 
+He is going to _____      Predicting 5th word from last four words is 5 gram Language Model
+going to _____     Predicting 3rd  word from last two words is trigram
+
+
+--- SLIDE_123 ---
+Application of N-Gram
+Optical Character Recognition
+Image   Text
+If words are missing or not clear can be predicted
+Grammar correction
+Spelling is not correct then based on context can be suggested 
+If spelling is right
+E.g. Deer sir instead of Dear sir can be correctly as, Sir is normally followed by Dear not Deer 
+Speech to Text
+Words with different pronunciation. e.g. Eye am Fine & I am Fine
+Translation
+Multiple Synonym of words
+E.g., He is biggest minister of Pakistan  Prime
+Suggestion while typing in mobile text prediction mode.
+
+--- SLIDE_124 ---
+He is going to school Meaningful
+
+He school is to going Doesn’t Make sense
+    For N-gram models
+
+P(w1,w2, ...,wn)
+
+By the Chain Rule we can decompose a joint probability, as follows:
+
+P(w1,w2, ...,wn) = P(w1) P(w2|w1) P(w3|w1w2 ) P(wn|w1..., Wn-2 wn-1)
+
+Join Probability of sentence
+P(He is going to school)= P(He)P(is|He)P(going|He is)P(to|He is going)P(school|He is going to)
+
+Looking back so much
+
+============================================================
+FILE: 2_Porter Stemmer Algorithm (3).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Porter Stemmer Algorithm 
+
+
+--- SLIDE_2 ---
+ Stemming
+
+Stemming is suffix stripping operation
+Process of reducing word into its base form (Root form/stem form)
+This is achieved by cutting of begging or end of the word
+
+Eg:
+Playing-    Play
+Boys-         Boy
+
+Popular Algorithm is Porter Stemmer
+
+
+--- SLIDE_3 ---
+Porter Stemmer
+– Five sets of rules, applied in order
+
+– Within each set, if more than one of the rules can apply, only the one with the longest matching suffix (S1) is followed
+
+Advantage:  easy to see understand, easy to implement. 
+
+
+
+--- SLIDE_4 ---
+Algorithm
+
+Few definitions.
+
+Consonant-
+it  is a letter other than A, E, I, O or U, and other than Y preceded by a consonant.
+
+
+ So, in TOY the consonants are T and Y, and in SYZYGY they are S, Z and G.
+
+ If a letter is not a consonant it is a vowel.
+
+
+--- SLIDE_5 ---
+Algorithm
+A consonant will be denoted by c, a vowel by v. 
+
+A list ccc... of length greater than 0 will be denoted by C, 
+
+and a list vvv... of length greater than 0 will be denoted by V. 
+
+Any word, or part of a word, therefore, has one of the four forms:
+
+CVCV ... C
+CVCV ... V
+VCVC ... C
+VCVC ... V
+
+
+--- SLIDE_6 ---
+Algorithm
+
+These may all be represented by the single form[C]VCVC ... [V]where the square brackets denote arbitrary presence of their contents.
+
+ Using ($VC^m$) to denote VC repeated m times, this may again be written as[C]($ VC^m $)[V] m will be called the measure of any word or word part when represented in this form.
+
+ The case m = 0 covers the null word. Here are some examples:(m is no of VC pairs)
+m=0 TR, EE, TREE, Y, BY.
+m=1 TROUBLE, OATS, TREES, IVY.
+m=2 TROUBLES, PRIVATE, OATEN, ORRERY.
+
+
+--- SLIDE_7 ---
+
+
+
+--- SLIDE_8 ---
+The rules for removing a suffix will be given in the form(condition) S1 -> S2This means that if a word ends with the suffix S1, and the stem before S1 satisfies the given condition, S1 is replaced by S2. The condition is usually given in terms of m, 
+e.g.(m > 1) EMENT ->Here S1 is 'EMENT' and S2 is null. 
+
+This would map REPLACEMENT to REPLAC, since REPLAC is a word part for which m = 2.
+
+--- SLIDE_9 ---
+The 'condition' part may also contain the following:
+*S - the stem ends with S (and similarly for the other letters).
+
+*v* - the stem contains a vowel.
+
+m=2 TROUBLES, PRIVATE, OATEN, ORRERY.
+
+*d - the stem ends with a double consonant (e.g. -TT, -SS).
+
+*o - the stem ends cvc, where the second c is not W, X or Y (e.g. -WIL, -HOP).
+
+
+--- SLIDE_10 ---
+And the condition part may also contain expressions with and, or and not, so that:
+
+(m>1 and (*S or *T)) : tests for a stem with m>1 ending in S or T, while
+
+(*d and not (*L or *S or *Z)) : tests for a stem ending with a double consonant other than L, S or Z. 
+
+Elaborate conditions like this are required only rarely.
+
+
+--- SLIDE_11 ---
+In a set of rules written beneath each other, only one is obeyed, and this will be the one with the longest matching S1 for the given word.
+ For example, with
+SSES -> SS
+IES -> I
+SS -> SS
+S ->
+
+(here the conditions are all null) CARESSES maps to CARESS since SSES is the longest match for S1. Equally CARESS maps to CARESS (S1=SS) and CARES to CARE (S1=S).
+
+In the rules below, examples of their application, successful or otherwise, are given on the right in lower case. The algorithm now follows:
+
+
+--- SLIDE_12 ---
+Step 1a :
+SSES -> SS (Example : caresses -> caress)
+IES -> I (Example : ponies -> poni ; ties -> ti)
+SS -> SS (Example : caress -> caress)
+S -> (Example : cats -> cat)
+
+
+--- SLIDE_13 ---
+Step 1b :
+(m>0) EED -> EE (Example : feed -> feed ; agreed -> agree)
+(v) ED -> (Example : plastered -> plaster ; bled -> bled)
+(v) ING -> (Example : motoring -> motor ; sing -> sing)
+S -> (Example : cats -> cat)
+
+
+--- SLIDE_14 ---
+If the second or third of the rules in Step 1b is successful, the following is done:
+AT -> ATE (Example : conflat(ed) -> conflate)
+
+BL -> BLE (Example : troubl(ed) -> trouble)
+
+IZ -> IZE (Example : siz(ed) -> size)
+
+S -> (Example : cats -> cat)
+
+(*d and not (*L a q a or *S or *Z)) -> single letter 
+
+(Example : hopp(ing) -> hop ; tann(ed) -> tan ; fall(ing) -> fall ; hiss(ing) -> hiss ; fizz(ed) -> fizz)
+
+(m=1 and *o) -> E (Example : fail(ing) -> fail ; fil(ing) -> file)
+
+
+--- SLIDE_15 ---
+The rule to map to a single letter causes the removal of one of the double letter pair. 
+
+The -E is put back on -AT, -BL and -IZ, so that the suffixes -ATE, -BLE and -IZE can be recognized later.
+
+ This E may be removed in step 4.
+
+
+
+--- SLIDE_16 ---
+Step 1c :
+
+(\*v\*) Y -> I (Example : happy -> happi ; sky -> sky)
+
+
+Step 1 deals with plurals and past participles. The subsequent steps are much more straightforward.
+
+
+--- SLIDE_17 ---
+Step 2 :
+(m>0) ATIONAL -> ATE (Example : relational -> relate
+(m>0) TIONAL -> TION (Example : conditional -> condition ; rational -> rational)
+(m>0) ENCI -> ENCE (Example : valenci -> valence)
+(m>0) ANCI -> ANCE (Example : hesitanci -> hesitance)
+(m>0) IZER -> IZE (Example : digitizer -> digitize)
+(m>0) ABLI -> ABLE (Example : conformabli -> conformable)
+(m>0) ALLI -> AL (Example : radicalli -> radical)
+(m>0) ENTLI -> ENT (differentli -> different)
+(m>0) ELI -> E (vileli -> vile)
+(m>0) OUSLI -> OUS (analogousli -> analogous)
+(m>0) IZATION -> IZE (vietnamization -> vietnamize)
+
+
+
+--- SLIDE_18 ---
+Step 2:Continue 
+(m>0) ATION -> ATE (predication -> predicate)
+(m>0) ATOR -> ATE (operator -> operate)
+(m>0) ALISM -> AL (feudalism -> feudal)
+(m>0) IVENESS -> IVE (decisiveness -> decisive)
+(m>0) FULNESS -> FUL (hopefulness -> hopeful)
+(m>0) OUSNESS -> OUS (callousness -> callous)
+(m>0) ALITI -> AL (formaliti -> formal)
+(m>0) IVITI -> IVE (sensitiviti -> sensitive)
+(m>0) BILITI -> BLE (sensibiliti -> sensible)
+
+
+--- SLIDE_19 ---
+Step 2:Continue 
+The test for the string S1 can be made fast by doing a program switch on the penultimate letter of the word being tested. This gives a fairly even breakdown of the possible values of the string S1. It will be seen in fact that the S1-strings in step 2 are presented here in the alphabetical order of their penultimate letter. Similar techniques may be applied in the other steps.
+
+--- SLIDE_20 ---
+Step 3 :
+
+(m>0) ICATE -> IC (Example : triplicate -> triplic)
+(m>0) ATIVE -> (Example : formative -> form)
+(m>0) ALIZE -> AL (Example : formalize -> formal)
+(m>0) ICITI -> IC (Example : electriciti -> electric))
+(m>0) ICAL -> IC (Example : electrical -> electric)
+(m>0) FUL -> (Example : hopeful -> hope)
+(m>0) NESS -> (Example : goodness -> good)
+
+
+--- SLIDE_21 ---
+Step 4 :
+
+(m>1) AL -> (Example : revival -> reviv)
+(m>1) ANCE -> (Example : allowance -> allow)
+(m>1) ENCE -> (Example : inference -> infer)
+(m>1) ER -> (Example : airliner -> airlin)
+(m>1) IC -> (Example : gyroscopic -> gyroscop)
+(m>1) ABLE -> (Example : adjustable -> adjust)
+(m>1) IBLE -> (Example : defensible -> defens)
+(m>1) ANT -> (Example : irritant -> irrit)
+(m>1) EMENT -> (Example : replacement -> replac)
+(m>1) MENT -> (Example : adjustment -> adjust)
+(m>1) ENT -> (Example : dependent -> depend)
+
+
+--- SLIDE_22 ---
+Step 4 :Continued
+(m>1 and (*S or *T)) ION -> (Example : adoption -> adopt)​
+(m>1) OU -> (Example : homologou -> homolog)​
+(m>1) ISM -> (Example : communism -> commun)​
+(m>1) ATE -> (Example : activate -> activ)​
+(m>1) ITI -> (Example : angulariti -> angular)​
+(m>1) OUS -> (Example : homologous -> homolog)​
+(m>1) IVE -> (Example : effective -> effect)​
+(m>1) IZE -> (Example : bowdlerize -> bowdler)​
+The suffixes are now removed. All that remains is a little tidying up.​​
+
+
+--- SLIDE_23 ---
+Step 5a :
+
+(m>1) E -> (Example : probate -> probat ; rate -> rate)
+(m=1 and not *o) E -> (Example : cease -> ceas)
+
+
+--- SLIDE_24 ---
+Step 5b
+
+(m > 1 and *d and *L) -> single letter
+(Example : controll -> control ; roll -> roll)
+
+
+============================================================
+FILE: 3_Syntax Analysis_2023 (2).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Syntax Analysis
+
+
+--- SLIDE_2 ---
+Steps in NLP
+
+John Ate the Apple
+
+
+
+
+Ate  the Apple John
+
+
+--- SLIDE_3 ---
+Tagging 
+Tagging is a kind of classification that may be defined as the automatic assignment of description to the tokens.
+
+ Here the descriptor is called tag, which may represent one of the part-of-speech, semantic information and so on.
+
+parts of speech are defined instead based on their grammatical relationship with neighboring words or the morphological properties about their affixes
+
+--- SLIDE_4 ---
+ Part-of-Speech (PoS) tagging
+the process of assigning one of the parts of speech to the given word
+
+POS tagging is a task of labelling each word in a sentence with its appropriate part of speech
+
+Examples of Parts Of Speech – nouns, verb, adverbs, adjectives, pronouns, conjunction and their sub-categories
+
+--- SLIDE_5 ---
+POS Tagging Example 
+Annotate each word in a sentence with a part-of-speech.
+
+A POS tagger considers surrounding words while assigning a tag.
+
+ [(“I”, “Pronoun”), (“like”, “Verb”), (“to”, “To”), (“read”, “Verb”), (“books”, “Noun”)]
+
+--- SLIDE_6 ---
+Categories of Parts of Speech 
+Closed class 
+ Open class
+
+--- SLIDE_7 ---
+Open Class (Mostly Content word)
+Called open class because we will keep on adding new words in the language example google,skype,photoshop
+
+Noun,verbs,adjective,adverbs
+
+Mostly content bearing –they refer to objects,actions,and features in the world 
+
+
+
+--- SLIDE_8 ---
+Close class (function words)
+Pronoun, determiner, prepositions, connectives
+
+Limited in number 
+
+Used to tie the concepts of the sentences together we user these closed words 
+
+--- SLIDE_9 ---
+POS tags: level of Details 
+How much detail we want to specify the particular category
+
+Level of details of POS Tag
+
+                          Coarse grained                          Fine grained 
+
+Decision in dependent on the application  
+
+--- SLIDE_10 ---
+Coarse Grained(Small Tag Set) 
+Here we do not provide the pos tag in much details(Grammatical Details)
+
+For example –we can identify a word as NOUN but we can not tell whether it Singular Noun or Plural Noun
+
+
+
+--- SLIDE_11 ---
+Fines grained (Large Tag set)
+In fine grained level we provide grammatical details of a word 
+
+For example if Verb then is it past tense ,future or present  tense 
+
+
+NOTE :May Leads to confusion due to too many POS tags 
+
+--- SLIDE_12 ---
+POS TAG / Word Classes
+9  traditional word classes of parts of speech
+Noun, verb, adjective, preposition, adverb, article, pronoun, conjunction, interjection
+N		noun		chair, bandwidth, pacing
+V		verb		study, debate, munch
+ADJ		adjective	purple, tall, ridiculous
+ADV	adverb		unfortunately, slowly
+P		preposition	of, by, to
+PRO		pronoun		I, me, mine
+DET		determiner	the, a, that, those
+
+
+12
+
+--- SLIDE_13 ---
+Part-of-speech tagging
+process of assigning a part-of-speech to each word in part-of-speech tagging a text. 
+
+input sequence x1, x2,..., xn of (tokenized) words and a tagset, 
+
+Output  is a sequence y1, y2,..., yn of tags, 
+
+each output yi corresponding exactly to one input xi as shown   below 
+
+--- SLIDE_14 ---
+POS Tagging is disambiguation task
+Words are ambiguous(more than one possible part-of-speech)
+
+the goal is to find the correct tag for the situation
+
+For example, 
+book can be a verb (book that flight) 
+Or
+ a noun (hand me that book)
+
+The goal of POS-tagging is to resolve these ambiguity resolution ambiguities, choosing the proper tag for the context
+
+--- SLIDE_15 ---
+Part-of-Speech Tag sets 
+There are various tag sets to choose.
+•The choice of the tag set depends on the nature of the application.
+–We may use small tag set (more general tags) or 
+–large tag set (finer tags).
+•Some of widely used part-of-speech tag sets:
+–Penn Treebank has 45 tags
+–Brown Corpus has 87 tags
+–C7 tag set has 146 tags
+•In a tagged corpus, each word is associated with a tag from the used tag set.
+
+
+--- SLIDE_16 ---
+Penn Treebank Tagset
+16
+
+--- SLIDE_17 ---
+POS Tagging Approaches
+Rule-based tagging
+E.g. EnCG ENGTWOL tagger
+Stochastic, or, Probabilistic tagging
+HMM (Hidden Markov Model) tagging
+Transformation-based tagging
+Learned rules (statistic and linguistic)
+E.g., Brill tagger
+17
+
+--- SLIDE_18 ---
+POS Tagging Approaches
+
+--- SLIDE_19 ---
+Rule Based POS Tagging Approaches
+Input:- Sentence
+Tag dictionary /Lexicon-Using Tag dictionary POS tags will be assigned to the words in the given sentence 
+For Example :- 
+I play cricket everyday (Play is Verb)
+I want to perform a play  (Play is Noun )
+(Here play has two tags Noun and Verb Ambiguous POS )
+Handwritten rules-  
+For example an Ambiguous word is noun if it follows  a determiner
+
+
+
+--- SLIDE_20 ---
+Rule-Based Tagging
+The rule-based approach uses handcrafted sets of rules to tag input sentence.
+Stage 1:
+Typically…start with a dictionary of words and possible tags
+Assign all possible tags to words using the dictionary
+Stage 2:
+Write rules by hand to selectively remove tags
+Stop when each word has exactly one (correct) tag
+20
+
+--- SLIDE_21 ---
+Rules based on context
+Please book that flight
+I bought a Book.
+Book
+Wn-1
+Wn
+Wn+1
+Book
+Tn-1
+ Tn
+ Tn+1
+•Rule-2: if (the previous tag is an article)
+then eliminate all verb tags
+
+Rule-1: if (the previous word is “to”)
+then eliminate all Noun tags 
+
+--- SLIDE_22 ---
+Apply Rules Eliminating Some POS
+E.g., Eliminate VBN if VBD is an option when VBN|VBD follows “<start> PRP”
+					NN
+					RB		
+		 			JJ			VB
+PRP	VBD		TO	VB		DT	NN
+She	promised	to	back 		the	bill
+22
+
+--- SLIDE_23 ---
+Rule-Based Part-of-Speech Tagging: Example 
+Pronoun
+Verb
+Article
+Verb     Noun
+Pronoun
+Verb
+Article
+Verb     Noun
+
+--- SLIDE_24 ---
+Rule Base Tagger 
+It is oldest approach and uses hand written rules for tagging 
+
+Depends on dictionary or lexicon to get possible tags for each word to tagged 
+
+Language experts will sit together to find out what are the symbol patterns.
+
+Hand written rules are used to identify the correct tag when the word has more than one possible tag.
+
+Disambiguation is done by analysing the linguistic features of the word, its preceding word following word and other aspects .
+
+--- SLIDE_25 ---
+Rule Base Tagger 
+For example, if the preceding word is article,  then the word must be a noun. ​
+
+ ​We can also understand Rule-based POS tagging by its two-stage architecture −
+
+The first stage − In the first stage, create a dictionary to assign each word a list of potential parts-of-speech.
+The second stage − In the second stage, create a large list of hand-written disambiguation rules to sort down the list to a single part-of-speech for each word as per requirements.
+
+TAGGIT the first large rule-based tagger used context pattern rules.​
+​
+TAGGIT used the set of 71 tags and 3300 disambiguation rules.​
+
+These rules disambiguated 77% of words in the million –word brown.​
+
+--- SLIDE_26 ---
+Example 
+University Corpus
+I want to read a book.
+Book-Noun or Verb
+Rule :-Before book ,determiner (a) is there ,therefore it is a noun.
+
+--- SLIDE_27 ---
+Limitation of Rule based Approach 
+Hard coded rules are required
+
+Rules has to be updated based on language change 
+
+It needs to check lexicon every time which is not efficient approach
+
+Strong language expert team is required.
+
+--- SLIDE_28 ---
+Hidden Markov Model 
+An HMM is a probabilistic sequence model:
+
+ given a sequence of units (words, letters, morphemes, sentences, whatever), it computes a probability distribution over possible sequences of labels and chooses the best label sequence.
+
+--- SLIDE_29 ---
+Markav Chain
+Markov chains, named after Andrey Markov, a stochastic model that depicts a sequence of possible events 
+
+where predictions or probabilities for the next state are based solely on its previous event state, not the states before. 
+
+In simple words, the probability that n+1th steps will be x depends only on the nth steps not the complete sequence of steps that came before n.
+
+ This property is known as Markov Property or Memorylessness. 
+
+Let us explore our Markov chain with the help of a diagram,
+
+--- SLIDE_30 ---
+A diagram representing a two-state(here, E and A) Markov process.
+
+ 
+
+Here the arrows originated from the current state and point to the future state and the number associated with the arrows indicates the probability of the Markov process changing from one state to another state.
+
+
+
+
+
+ For instance, if the Markov process is in state E, then the probability it changes to state A is 0.7, while the probability it remains in the same state is 0.3. Similarly, for any process in state A, the probability to change to E state is 0.4 and the probability to remain in the same state is 0.6.
+
+--- SLIDE_31 ---
+Markov Chain 
+tells us something about the probabilities of sequences of random variables, states, each of which can take on values from some set
+
+These sets can be words or tags or symbol representing anything for example weather
+ 
+Markov Assumption 
+if we want to predict the future in the sequence, all that matters is the current state. 
+
+All the states before the current state have no impact on the future except via the current state.
+
+--- SLIDE_32 ---
+
+
+--- SLIDE_33 ---
+Markov chain is specified by the following components:
+
+--- SLIDE_34 ---
+The Hidden Markov Model
+A Markov chain is useful when we need to compute a probability for a sequence of observable events
+
+In many cases, however, the events we are interested in are hidden : we don’t observe them directly
+
+For example we don’t normally observe part-of-speech tags in a text. Rather, we see words, and must infer the tags from the word sequence. We call the tags hidden because they are not observed
+
+--- SLIDE_35 ---
+A hidden Markov model
+A hidden Markov model (HMM) allows us to talk about both
+
+observed events (like words that we see in the input) and 
+
+hidden events (like part-of-speech tags) that we think of as causal factors in our probabilistic model.
+
+
+--- SLIDE_36 ---
+ HMM is specified by the following components
+
+--- SLIDE_37 ---
+A first-order hidden Markov model instantiates two simplifying assumptions.
+
+ First, as with a first-order Markov chain, the probability of a particular state depends only on the previous state:
+
+
+
+Second, the probability of an output observation oi depends only on the state that produced the observation qi and not on any other states or any other observations: 
+
+
+--- SLIDE_38 ---
+
+
+--- SLIDE_39 ---
+
+
+--- SLIDE_40 ---
+
+
+--- SLIDE_41 ---
+
+
+--- SLIDE_42 ---
+
+
+--- SLIDE_43 ---
+Transition probability
+The transition probability is the likelihood of a particular sequence for example, how likely is that a noun is followed by a model and a model by a verb and a verb by a noun. 
+
+This probability is known as Transition probability. It should be high for a particular sequence to be correct.
+
+
+Emission probability :
+These sets of probabilities are Emission probabilities and should be high for our tagging to be likely.
+Now, what is the probability that the word Ted is a noun, will is a model, spot is a verb and Will is a noun.
+
+--- SLIDE_44 ---
+
+
+--- SLIDE_45 ---
+
+
+--- SLIDE_46 ---
+
+
+--- SLIDE_47 ---
+
+
+--- SLIDE_48 ---
+
+
+--- SLIDE_49 ---
+
+
+--- SLIDE_50 ---
+The components of an HMM tagger
+ An HMM has two components, the A and B probabilities
+The A matrix contains the tag transition probabilities P(ti |ti−1) which represent the probability of a tag occurring given the previous tag.
+
+
+ For example, modal verbs like will are very likely to be followed by a verb in the base form, a VB, like race, so we expect this probability to be high.
+We compute the maximum likelihood estimate of this transition probability by counting, out of the times we see the first tag in a labeled corpus, how often the first tag is followed by the second: 
+
+--- SLIDE_51 ---
+The B emission probabilities, P(wi |ti), represent the probability, given a tag (say MD), that it will be associated with a given word (say will). 
+
+
+The MLE of the emission probability is
+
+--- SLIDE_52 ---
+ HMM tagging as decoding
+ HMM contains hidden variables, the task of determining the hidden variables sequence corresponding to the sequence of observations decoding is called decoding. 
+
+
+--- SLIDE_53 ---
+For part-of-speech tagging, the goal of HMM decoding is to choose the tag sequence t1 ...tn that is most probable given the observation sequence of n words w1 ...wn:
+The way we’ll do this in the HMM is to use Bayes’ rule to instead compute:
+Furthermore, we simplify Eq. Above  by dropping the denominator P(w n 1 ): 
+
+--- SLIDE_54 ---
+HMM taggers make two further simplifying assumptions. 
+
+
+The first is that the probability of a word appearing depends only on its own tag and is independent of neighboring words and tags:
+The second assumption, the bigram assumption, is that the probability of a tag is dependent only on the previous tag, rather than the entire tag sequence; 
+
+--- SLIDE_55 ---
+Plugging the simplifying assumptions from Eq. X  and Eq. Y  into Eq. Z results in the following equation for the most probable tag sequence from a bigram tagger: 
+
+--- SLIDE_56 ---
+Find the probability of the following sentence :Jane will spot Will
+
+--- SLIDE_57 ---
+
+
+--- SLIDE_58 ---
+
+
+--- SLIDE_59 ---
+In general, we  from all the possible combination of parts of speech tags we will pick the one that generates the above sentence Jane will spot Will with the highest probability 
+How  to find the correct path ?
+
+--- SLIDE_60 ---
+
+
+--- SLIDE_61 ---
+
+
+--- SLIDE_62 ---
+
+
+Which one of this generates the sentence with highest probability ?
+
+--- SLIDE_63 ---
+
+
+
+--- SLIDE_64 ---
+
+
+--- SLIDE_65 ---
+
+
+
+--- SLIDE_66 ---
+
+
+
+
+--- SLIDE_67 ---
+
+
+
+
+--- SLIDE_68 ---
+For every possible state we require the highest probability path that ends in that state .
+
+This is known as Viterbi HMM Algorithm 
+
+--- SLIDE_69 ---
+
+
+--- SLIDE_70 ---
+Emission Probability Matrix 
+Transition  Probability Matrix 
+
+--- SLIDE_71 ---
+
+
+
+--- SLIDE_72 ---
+
+
+
+--- SLIDE_73 ---
+
+
+
+--- SLIDE_74 ---
+
+
+
+--- SLIDE_75 ---
+
+
+
+--- SLIDE_76 ---
+
+
+
+--- SLIDE_77 ---
+
+
+
+--- SLIDE_78 ---
+
+
+
+--- SLIDE_79 ---
+
+
+
+--- SLIDE_80 ---
+
+
+
+--- SLIDE_81 ---
+We keep the edge which gives us a high value and remembering the edge which gives us a highest value .
+
+
+
+ We have all the probabilities and edges which gives those probabilities.
+
+
+
+To get the optimal path, we start from end and trace backwards 
+
+
+
+
+Each state has only one incoming edge ,this will give us optimal path with highest probabilities .
+
+--- SLIDE_82 ---
+
+
+--- SLIDE_83 ---
+Consider the following data set 
+Apply HMM to find Tag Sequence for Will can spot Mary 
+
+--- SLIDE_84 ---
+Transition Probability 
+
+--- SLIDE_85 ---
+
+
+
+
+
+
+
+Emission  Probability
+
+============================================================
+FILE: 4_Constituency Grammars(1) (2).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Constituency Grammars
+
+
+--- SLIDE_2 ---
+Context-free grammars
+CFGS the backbone of many formal models of the syntax of natural language (and, for that matter, of computer languages).
+
+they play a role in many computational applications, including grammar checking, semantic interpretation, dialogue understanding, and machine translation.
+
+express sophisticated relations among the words in a sentence, yet computationally tractable enough that efficient algorithms exist for parsing sentences with them
+
+
+
+--- SLIDE_3 ---
+ Constituency
+Syntactic constituency is the idea that groups of words can behave as single units, or constituents.
+
+
+For example, group of words come together to form a Noun Phrase.
+
+
+Part of developing a grammar involves building an inventory of the constituents in the language.
+
+--- SLIDE_4 ---
+How do words group together in English?
+Consider noun phrase the noun phrase, a sequence of words surrounding at least one noun. 
+
+Here are some examples of noun phrases
+
+
+--- SLIDE_5 ---
+How do words group together in English?
+How these words for constituents or they group together ?
+
+One evidence is that they can all appear in similar syntactic environments, for example, before a verb.
+
+--- SLIDE_6 ---
+But while the whole noun phrase can occur before a verb, this is not true for each of the individual words that make up a noun phrase. 
+
+
+The following are not grammatical sentences of English (we use an asterisk (*) to mark fragments that are not grammatical English sentences):
+
+--- SLIDE_7 ---
+Pre-posed or post-posed constructions
+For example, the prepositional phrase on September seventeenth can be placed in a number of different locations in the following examples, including at the beginning (preposed) or at the end (postposed): 
+
+
+
+
+But again, while the entire phrase can be placed differently, the individual words making up the phrase cannot be
+
+--- SLIDE_8 ---
+Verb Phase 
+
+--- SLIDE_9 ---
+Adjective Phrase 
+
+--- SLIDE_10 ---
+Context-Free Grammars
+formal system for modeling constituent structure in English and other natural languages is the Context-Free Grammar, or CFG.
+
+It is also called Phrase-Structure Grammars
+
+--- SLIDE_11 ---
+Context-Free Grammars
+A context-free grammar consists of a set of rules or productions
+
+Which expresses the ways that symbols of the language can be grouped and ordered together, and a lexicon of words and symbols
+
+Following is the Example of production rules of - CFG
+
+
+
+--- SLIDE_12 ---
+Context-free Grammars
+Context-free rules can be hierarchically embedded, so we can combine the previous rules with others, like the following, that express facts about the lexicon: 
+
+--- SLIDE_13 ---
+Symbols in CFG
+symbols that are used in a CFG are divided into two classes
+                   Terminal                                    non-terminal
+
+
+The symbols
+terminal that correspond to words in the language (“the”, “nightclub”)
+symbols that express abstractions over these terminals are called non-terminals.
+the item to the right of the arrow (→) is an ordered list of one or more terminals and non-terminals;
+ 
+to the left of the arrow is a single non-terminal symbol expressing some cluster or generalization.
+
+--- SLIDE_14 ---
+Two ways of CFG 
+a device for generating sentences and 
+
+a device for assigning a structure to a given sentence.
+
+--- SLIDE_15 ---
+CFG as a generator
+we can read the → arrow as “rewrite the symbol on the left with the string of symbols on the right”. 
+a flight can be derived from the non-terminal NP
+
+--- SLIDE_16 ---
+CFG as a generator
+Thus, a CFG can be used to generate a set of strings. ]
+
+This sequence of rule expansions is called a derivation of the string of words.
+
+It is common to represent a derivation by a parse tree (commonly shown inverted with the root at the top).
+
+Figure above “A parse tree for “a flight”” shows the tree representation of this derivation
+
+--- SLIDE_17 ---
+Start Symbol 
+The formal language defined by a CFG is the set of strings that are derivable start symbol from the designated start symbol.
+
+ Each grammar must have one designated start symbol, which is often called S. 
+
+Since context-free grammars are often used to define sentences, S is usually interpreted as the “sentence” node, and the set of strings that are derivable from S is the set of sentences in some simplified version of English. 
+
+--- SLIDE_18 ---
+Few additional rules
+The following rule expresses the fact that a sentence can consist of a noun phrase followed by a verb phrase:verb phrase
+S → NP VP        I prefer a morning flight
+
+A verb phrase in English consists of a verb followed by assorted other things;for example, one kind of verb phrase consists of a verb followed by a noun phrase:
+
+VP → Verb NP prefer a morning flight
+
+--- SLIDE_19 ---
+Few additional rules
+the verb may be followed by a noun phrase and a prepositional phrase:
+VP → Verb NP PP     leave Boston in the morning
+ 
+ the verb phrase may have a verb followed by a prepositional phrase alone:
+VP → Verb PP          leaving on Thursday
+
+A prepositional phrase generally has a preposition followed by a noun phrase.
+For example, a common type of prepositional phrase in the ATIS corpus is used to indicate location or direction:
+PP → Preposition NP     from Los Angeles
+
+
+--- SLIDE_20 ---
+Example of lexicons
+
+--- SLIDE_21 ---
+The grammar for L0, with example phrases for each rule
+
+--- SLIDE_22 ---
+The parse tree for “I prefer a morning flight” according to grammar L0
+
+--- SLIDE_23 ---
+Formal Definition of Context-Free Grammar
+A context-free grammar G is defined by four parameters: N, Σ, R, S (technically this is a “4-tuple”).
+The problem of mapping from a string of words to its parse tree is called syntactic parsing; 
+
+--- SLIDE_24 ---
+Constituency Parsing
+Syntactic parsing is the task of assigning a syntactic structure to a sentence
+
+
+Parse trees can be used in applications such as grammar checking sentence that cannot be parsed may have grammatical errors (or at least be hard to read). 
+
+Parse trees can be an intermediate stage of representation for semantic analysis 
+
+--- SLIDE_25 ---
+Ambiguity
+
+--- SLIDE_26 ---
+
+
+--- SLIDE_27 ---
+
+
+--- SLIDE_28 ---
+Explanantion 
+Two parse trees for an ambiguous sentence. 
+
+The parse on the left corresponds to the humorous reading in which the elephant is in the pajamas, 
+
+the parse on the right corresponds to the reading in which Captain Spaulding did the shooting in his pajamas
+
+--- SLIDE_29 ---
+Types of ambiguity 
+Two common  kinds of ambiguity are attachment ambiguity and coordination ambiguity. 
+
+
+A  sentence has an attachment ambiguity if a particular constituent can be attached to the parse tree at more than one place. 
+The Groucho Marx sentence is an example of PP-attachment ambiguity. Various kinds of adverbial phrases are also subject to this kind of ambiguity. 
+For instance, in the following example the gerundive-VP flying to Paris can be part of a gerundive sentence whose subject is the Eiffel Tower or it can be an adjunct modifying the VP headed by saw:
+We saw the Eiffel Tower flying to Paris.
+attachment ambiguity
+In coordination ambiguity phrases can be conjoined by a conjunction like and coordination ambiguity
+For example, the phrase old men and women can be bracketed as [old [men and women]], referring to old men and old women, or as [old men] and [women], in which case it is only the men who are old. 
+coordination ambiguity
+
+--- SLIDE_30 ---
+CKY Parsing: A Dynamic Programming Approach
+
+--- SLIDE_31 ---
+
+How to Convert CFG to CNF 
+
+
+--- SLIDE_32 ---
+
+
+--- SLIDE_33 ---
+
+
+--- SLIDE_34 ---
+
+CKYAlgorithm
+
+--- SLIDE_35 ---
+CKYAlgorithm
+
+--- SLIDE_36 ---
+
+
+--- SLIDE_37 ---
+Cocke-Younger-Kasami Algorithm 
+It is used to solves the membership problem using a dynamic programming approach. 
+
+The algorithm is based on the principle that the solution to problem [i, j] can constructed from solution to subproblem [i, k] and solution to sub problem [k, j]. 
+
+The algorithm requires the Grammar G to be in Chomsky Normal Form (CNF). Note that any Context-Free Grammar can be systematically converted to CNF. 
+
+This restriction is employed so that each problem can only be divided into two subproblems and not more – to bound the time complexity. 
+
+--- SLIDE_38 ---
+How does the CYK Algorithm work?
+For a string of length N, construct a table T of size N x N. Each cell in the table T[i, j] is the set of all constituents that can produce the substring spanning from position i to j. 
+
+The process involves filling the table with the solutions to the subproblems encountered in the bottom-up parsing process. 
+
+Therefore, cells will be filled from left to right and bottom to top.
+
+--- SLIDE_39 ---
+In T[i, j], the row number i denotes the start index, and the column number j denotes the end index.
+
+
+
+--- SLIDE_40 ---
+The algorithm considers every possible subsequence of letters and adds K to T[i, j] if the sequence of letters starting from i to j can be generated from the non-terminal K.  
+
+For subsequences of length 2 and greater, it considers every possible partition of the subsequence into two parts, and checks if there is a rule of the form A -> BC in the grammar where B and C can generate the two parts respectively, based on already existing entries in T. 
+
+The sentence can be produced by the grammar only if the entire string is matched by the start symbol, i.e, if S is a member of T[1, n].
+
+--- SLIDE_41 ---
+
+
+--- SLIDE_42 ---
+
+
+--- SLIDE_43 ---
+
+
+--- SLIDE_44 ---
+
+
+--- SLIDE_45 ---
+
+CYK Algorithm 
+
+============================================================
+FILE: 5_Probablilstic Context Free Grammar.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Probablilstic Context Free Grammar 
+
+
+--- SLIDE_2 ---
+USE OF PCFG
+
+--- SLIDE_3 ---
+Probabilistic CFG
+
+--- SLIDE_4 ---
+
+
+--- SLIDE_5 ---
+
+
+
+--- SLIDE_6 ---
+Parse Tree
+
+
+--- SLIDE_7 ---
+Probabilities of The above Tree 
+
+--- SLIDE_8 ---
+
+
+============================================================
+FILE: 6_Dependency Parsing (2).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Dependency Parsing
+
+
+--- SLIDE_2 ---
+Introduction 
+In some languages, the same statement can be written in such a way that on translating in English (word to word translation), it might yield ‘He is standing wall behind’ i.e the word order is free. 
+
+It isn’t necessary the adjective has to appear just before the noun it like ‘Handsome boy’. 
+
+It can be ‘Boy handsome’. 
+
+Hence, using rules for parsing such languages is problematic!!
+
+And that is why dependency parsing is required. 
+
+--- SLIDE_3 ---
+Dependency Parsing 
+ Dependency parsing helps us build a parsing tree with the tags used determining the relationship between words 
+
+in the sentence rather than using any Grammar rule as used for syntactic parsing which gives a lot of flexibility even when the order of words (like ‘boy handsome’ or ‘handsome boy’) get changed. 
+
+A sample dependency tree can be observed below:
+
+--- SLIDE_4 ---
+
+Below is an example of Dependency parsing for:
+‘I prefer the morning flight through Denver’
+
+--- SLIDE_5 ---
+ terminologies as well used for Dependency parsing
+Head-Dependent: 
+In the arrows representing relationship, the origin word is the Head & the destination word is Dependent.
+For example: (I, ‘nsubj’, prefer), ‘prefer’ is Head & ‘I’ is Dependent.
+
+Root: Word which is the root of our parse tree. It is ‘prefer’ in the above example.
+
+
+--- SLIDE_6 ---
+ terminologies as well used for Dependency parsing
+Grammar Functions and Arcs: Tags between each Head-Dependent pair is a grammar function determining the relation between the Head & Dependent. 
+
+
+The arrowhead carrying the tag is called an Arc. Below is the table that interprets the meaning of some common grammar functions:
+
+
+--- SLIDE_7 ---
+Some examples for Grammar Functions are given below:
+
+--- SLIDE_8 ---
+Some examples for Grammar Functions are given below:
+
+--- SLIDE_9 ---
+Understanding the Dependency parse tree
+
+we represent dependencies as a directed graph G= (V, A) 
+
+where V(set of vertices) represents words (and punctuation marks as well) in the sentence & 
+
+A( set of arcs) represent the grammar relationship between elements of V.
+
+--- SLIDE_10 ---
+Understanding the Dependency parse tree
+
+A dependency parse tree is the directed graph mentioned above which has the below features:
+
+Root has no Incoming arcs (can only be Head in Head-Dependent pair)
+
+Vertices(except Root) should have only one incoming arc (Only one Parent/Head)
+
+A Unique path should exist between Root & each vertex in the tree.
+
+--- SLIDE_11 ---
+
+Projectivity
+
+Projective arc: An arc/arrows_with_tag are projective when ‘Head’ associated with the arc has a path to reach each word that lies between ‘Head’ & ‘Dependent’.
+
+
+
+
+--- SLIDE_12 ---
+Explanation
+Here, the arc between ‘the’ & ‘flights’ is projective as the ‘Head’ i.e ‘flights’ has a path to ‘morning’ as well which lies between ‘the’ & ‘flights. Similarly, arc between ‘canceled’ & ‘flights’ is also projective as ‘canceled’ has a path to ‘the’(canceled →flights →the) & ‘morning’ (canceled →flights →morning) which lies between Head ‘canceled’ & Dependent ‘flights’
+
+--- SLIDE_13 ---
+Projective and Non-Projective Parse Tress
+Projective parse tree: A parse tree with all its arcs projective. The above tree is projective.
+Non-projective parse tree: A tree with at least one of the arcs as non-projective. Have a look at the below example
+
+
+--- SLIDE_14 ---
+Non-Projective Parse Tree Example 
+Here, the arc between ‘flight’ & ‘was’ is non-projective as there exists no path between ‘flight’ & ‘morning’
+
+--- SLIDE_15 ---
+how to create a dependency parse tree-Shift Reduce Parsing (Arc standard):
+
+
+We need some setup for this algorithm:
+A Stack
+Buffer of input words
+Oracle function/parser & set of dependency relations (like obj, iobj, etc tags that are used to represent arcs).
+
+
+--- SLIDE_16 ---
+
+
+
+
+
+
+
+
+--- SLIDE_17 ---
+Initially, the Stack has [Root], a dummy variable. 
+
+All the words of the sentence to be parsed are in the buffer.
+
+
+A word is popped from buffer & pushed in Stack.
+
+As a word is pushed in Stack, the Oracle/parser takes the top two elements of the stack & outputs/predict any of the below 3 transition with relationship type:
+LEFTARC_FUNCTION:
+RIGHTARC_FUNCTION
+SHIFT: 
+
+--- SLIDE_18 ---
+Hence, the actual prediction has two parts:
+
+Determining Head & Dependent using LEFTARC/RIGHTARC
+
+Determining their relation type i.e functions like conj, iobj, etc.
+
+
+Hence the actual predictions done by Oracle are something like this LEFTARC_IOBJ, RIGHTARC_CONJ, etc.
+For simplicity purposes, I will be using just LEFTARC & RIGHTARC notations in the below example.
+
+
+We will stop as & when the buffer is empty & stack has only [Root] left.
+
+--- SLIDE_19 ---
+Some restrictions are also considered:
+
+No LEFTARC, if we have [Root] as 2nd element of the stack & buffer, is non-empty
+
+
+At least 2 elements should be Stack for LEFTARC/RIGHTARC transition.
+
+
+[Root] can never be a dependent (as it is a dummy variable)
+
+--- SLIDE_20 ---
+A Dependency Treebank is a text corpus in which each sentence has a corresponding dependency tree which is usually either extracted using Syntactic Treebanks(like PennTreebank) or manually marked by humans.
+
+--- SLIDE_21 ---
+Examples
+
+ consider the statement: ‘book me the morning flight’. We will be creating a dependency parse tree for this sentence
+
+--- SLIDE_22 ---
+Step-0: As Stack has only one element [root], SHIFT is predicted(exception cases mentioned above) & ‘book’ is pushed.
+
+
+Step-1:[root, book] are popped out from Stack, Oracle predicts SHIFT hence they are put back, and ‘me’ is pushed in Stack.
+
+
+
+Step-2:[book, me](top 2 elements of the Stack currently) are popped, Oracle predicts RIGTHARC, hence declaring ‘book’ as Head & ‘me’ as dependent & removing ‘me’ from Stack; pushing back ‘book’ & adding relation:(Book→me)
+
+At last, we can pop ‘root’ & ‘book’ as the buffer is empty(which we avoided in Step-0 due to the exception mentioned). RIGTHARC is the relation detected & with this the parse tree is obtained. Using the relations found, a directed graph can be easily established with ‘book’ as the root node.

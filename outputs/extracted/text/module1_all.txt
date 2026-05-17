@@ -1,0 +1,3604 @@
+
+============================================================
+FILE: Chapter 1 Ngram.pdf
+============================================================
+
+
+--- PAGE_1 ---
+Speech and Language Processing. Daniel Jurafsky & James H. Martin. Copyright © 2026. All
+rights reserved. Draft of January 6, 2026.
+CHAPTER
+3 N-gram Language Models
+“Youareuniformlycharming!”criedhe,withasmileofassociatingandnow
+andthenIbowedandtheyperceivedachaiseandfourtowishfor.
+RandomsentencegeneratedfromaJaneAustentrigrammodel
+Predicting is difficult—especially about the future, as the old quip goes. But how
+aboutpredictingsomethingthatseemsmucheasier, likethenextwordsomeoneis
+goingtosay? Whatword,forexample,islikelytofollow
+The water of Walden Pond is so beautifully ...
+You might conclude that a likely word is blue, or green, or clear, but probably
+not refrigerator nor this. In this chapter we formalize this intuition by intro-
+languagemodel ducingn-gramlanguagemodelsorLMs. Alanguagemodelisamachinelearning
+LM model that predicts upcoming words. More formally, a language model assigns a
+probabilitytoeachpossiblenextword,orequivalentlygivesaprobabilitydistribu-
+tionoverpossiblenextwords. Languagemodelscanalsoassignaprobabilitytoan
+entiresentence. ThusanLMcouldtellusthatthefollowingsequencehasamuch
+higherprobabilityofappearinginatext:
+all of a sudden I notice three guys standing on the sidewalk
+thandoesthissamesetofwordsinadifferentorder:
+on guys all I of notice sidewalk three a sudden standing the
+Why would we want to predict upcoming words? The main reason is that large
+language models are built just by training them to predict words!! As we’ll see
+in chapters 5-9, large language models learn an enormous amount about language
+solelyfrombeingtrainedtopredictupcomingwordsfromneighboringwords.
+This probabilistic knowledge can be very practical. Consider correcting gram-
+marorspellingerrorslikeTheir are two midterms,inwhichTherewasmistyped
+as Their, or Everything has improve, in which improve should have been
+improved. The phrase There are is more probable than Their are, and has
+improvedthanhas improve,soalanguagemodelcanhelpusersselectthemore
+grammaticalvariant.
+OrforaspeechsystemtorecognizethatyousaidI will be back soonish
+andnotI will be bassoon dish,ithelpstoknowthatback soonishisamore
+probablesequence. Languagemodelscanalsohelpinaugmentativeandalterna-
+AAC tive communication (Trnka et al. 2007, Kane et al. 2017). People can use AAC
+systemsiftheyarephysicallyunabletospeakorsignbutcaninsteaduseeyegaze
+or other movements to select words from a menu. Word prediction can be used to
+suggestlikelywordsforthemenu.
+n-gram In this chapter we introduce the simplest kind of language model: the n-gram
+
+--- PAGE_2 ---
+2 CHAPTER3 • N-GRAMLANGUAGEMODELS
+language model. An n-gram is a sequence of n words: a 2-gram (which we’ll call
+bigram)isatwo-wordsequenceofwordslikeThe water,orwater of,anda3-
+gram(atrigram)isathree-wordsequenceofwordslikeThe water of,orwater
+of Walden. But we also (in a bit of terminological ambiguity) use the word ‘n-
+gram’tomeanaprobabilisticmodelthatcanestimatetheprobabilityofawordgiven
+then-1previouswords,andtherebyalsotoassignprobabilitiestoentiresequences.
+In later chapters we will introduce the much more powerful neural large lan-
+guage models, based on the transformer architecture of Chapter 8. But because
+n-grams have a remarkably simple and clear formalization, we use them to intro-
+ducesomemajorconceptsoflargelanguagemodeling,includingtrainingandtest
+sets,perplexity,sampling,andinterpolation.
+3.1 N-Grams
+Let’s begin with the task of computing P(w|h), the probability of a word w given
+some history h. Suppose the history h is “The water of Walden Pond is so
+beautifully ”andwewanttoknowtheprobabilitythatthenextwordisblue:
+P(blue|The water of Walden Pond is so beautifully) (3.1)
+Onewaytoestimatethisprobabilityisdirectlyfromrelativefrequencycounts:takea
+verylargecorpus,countthenumberoftimesweseeThe water of Walden Pond
+is so beautifully,andcountthenumberoftimesthisisfollowedbyblue.This
+wouldbeansweringthequestion“Outofthetimeswesawthehistoryh,howmany
+timeswasitfollowedbythewordw”,asfollows:
+P(blue|The water of Walden Pond is so beautifully)=
+C(The water of Walden Pond is so beautifully blue)
+(3.2)
+C(The water of Walden Pond is so beautifully)
+Ifwehadalargeenoughcorpus, wecouldcomputethesetwocountsandestimate
+the probability from Eq. 3.2. But even the entire web isn’t big enough to give us
+goodestimatesforcountsofentiresentences. Thisisbecauselanguageiscreative;
+newsentencesareinventedallthetime,andwecan’texpecttogetaccuratecounts
+for such large objects as entire sentences. For this reason, we’ll need more clever
+waystoestimatetheprobabilityofawordwgivenahistoryh,ortheprobabilityof
+anentirewordsequenceW.
+Let’s start with some notation. First, throughout this chapter we’ll continue to
+refertowords, althoughinpracticeweusuallycomputelanguagemodelsoverto-
+kens like the BPE tokens of page ??. To represent the probability of a particular
+random variable X taking on the value “the”, or P(X =“the”), we will use the
+i i
+simplification P(the). We’ll represent a sequence of n words either as w ...w or
+1 n
+w . Thus the expression w means the string w ,w ,...,w , but we’ll also
+1:n 1:n−1 1 2 n−1
+be using the equivalent notation w , which can be read as “all the elements of w
+<n
+fromw uptoandincludingw ”. Forthejointprobabilityofeachwordinase-
+1 n−1
+quence having a particular value P(X =w ,X =w ,X =w ,...,X =w ) we’ll
+1 1 2 2 3 3 n n
+useP(w ,w ,...,w ).
+1 2 n
+Now,howcanwecomputeprobabilitiesofentiresequenceslikeP(w ,w ,...,w )?
+1 2 n
+Onethingwecandoisdecomposethisprobabilityusingthechainruleofproba-
+
+--- PAGE_3 ---
+3.1 • N-GRAMS 3
+bility:
+P(X ...X ) = P(X )P(X |X )P(X |X )...P(X |X )
+1 n 1 2 1 3 1:2 n 1:n−1
+n
+(cid:89)
+= P(X k |X 1:k−1 ) (3.3)
+k=1
+Applyingthechainruletowords,weget
+P(w ) = P(w )P(w |w )P(w |w )...P(w |w )
+1:n 1 2 1 3 1:2 n 1:n−1
+n
+(cid:89)
+= P(w k |w 1:k−1 ) (3.4)
+k=1
+Thechainruleshowsthelinkbetweencomputingthejointprobabilityofasequence
+and computing the conditional probability of a word given previous words. Equa-
+tion3.4suggeststhatwecouldestimatethejointprobabilityofanentiresequenceof
+wordsbymultiplyingtogetheranumberofconditionalprobabilities. Butusingthe
+chainruledoesn’treallyseemtohelpus! Wedon’tknowanywaytocomputethe
+exactprobabilityofawordgivenalongsequenceofprecedingwords,P(w |w ).
+n 1:n−1
+Aswesaidabove,wecan’tjustestimatebycountingthenumberoftimeseveryword
+occursfollowingeverylongstringinsomecorpus,becauselanguageiscreativeand
+anyparticularcontextmighthaveneveroccurredbefore!
+3.1.1 TheMarkovassumption
+Theintuitionofthen-grammodelisthatinsteadofcomputingtheprobabilityofa
+word given its entire history, we can approximate the history by just the last few
+words.
+bigram Thebigrammodel,forexample,approximatestheprobabilityofawordgiven
+allthepreviouswordsP(w |w )byusingonlytheconditionalprobabilitygiven
+n 1:n−1
+theprecedingwordP(w |w ). Inotherwords,insteadofcomputingtheprobabil-
+n n−1
+ity
+P(blue|The water of Walden Pond is so beautifully) (3.5)
+weapproximateitwiththeprobability
+P(blue|beautifully) (3.6)
+Whenweuseabigrammodeltopredicttheconditionalprobabilityofthenextword,
+wearethusmakingthefollowingapproximation:
+P(w |w )≈P(w |w ) (3.7)
+n 1:n−1 n n−1
+Theassumptionthattheprobabilityofaworddependsonlyonthepreviouswordis
+Markov calledaMarkovassumption. Markovmodelsaretheclassofprobabilisticmodels
+thatassumewecanpredicttheprobabilityofsomefutureunitwithoutlookingtoo
+farintothepast. Wecangeneralizethebigram(whichlooksonewordintothepast)
+n-gram tothetrigram(whichlookstwowordsintothepast)andthustothen-gram(which
+looksn−1wordsintothepast).
+Let’s see a general equation for this n-gram approximation to the conditional
+probability of the next word in a sequence. We’ll use N here to mean the n-gram
+
+--- PAGE_4 ---
+4 CHAPTER3 • N-GRAMLANGUAGEMODELS
+size,soN=2meansbigramsandN=3meanstrigrams. Thenweapproximatethe
+probabilityofawordgivenitsentirecontextasfollows:
+P(w n |w 1:n−1 )≈P(w n |w n−N+1:n−1 ) (3.8)
+Giventhebigramassumptionfortheprobabilityofanindividualword,wecancom-
+putetheprobabilityofacompletewordsequencebysubstitutingEq.3.7intoEq.3.4:
+n
+(cid:89)
+P(w )≈ P(w |w ) (3.9)
+1:n k k−1
+k=1
+3.1.2 Howtoestimateprobabilities
+How do we estimate these bigram or n-gram probabilities? An intuitive way to
+maximum
+likelihood estimate probabilities is called maximum likelihood estimation or MLE. We get
+estimation
+the MLE estimate for the parameters of an n-gram model by getting counts from
+normalize acorpus,andnormalizingthecountssothattheyliebetween0and1. Forproba-
+bilisticmodels,normalizingmeansdividingbysometotalcountsothattheresulting
+probabilitiesfallbetween0and1andsumto1.
+For example, to compute a particular bigram probability of a word w given a
+n
+previouswordw ,we’llcomputethecountofthebigramC(w w )andnormal-
+n−1 n−1 n
+izebythesumofallthebigramsthatsharethesamefirstwordw :
+n−1
+C(w w )
+P(w |w )=
+n−1 n
+(3.10)
+n n−1 (cid:80)
+C(w w)
+w n−1
+Wecansimplifythisequation,sincethesumofallbigramcountsthatstartwith
+agivenwordw mustbeequaltotheunigramcountforthatwordw (thereader
+n−1 n−1
+shouldtakeamomenttobeconvincedofthis):
+C(w w )
+P(w |w )=
+n−1 n
+(3.11)
+n n−1
+C(w )
+n−1
+Let’s work through an example using a mini-corpus of three sentences. We’ll
+first need to augment each sentence with a special symbol <s> at the beginning
+of the sentence, to give us the bigram context of the first word. We’ll also need a
+specialend-symbol</s>.1
+<s> I am Sam </s>
+<s> Sam I am </s>
+<s> I do not like green eggs and ham </s>
+Herearethecalculationsforsomeofthebigramprobabilitiesfromthiscorpus
+P(I|<s>)= 2 =0.67 P(Sam|<s>)= 1 =0.33 P(am|I)= 2 =0.67
+3 3 3
+P(</s>|Sam)= 1 =0.5 P(Sam|am)= 1 =0.5 P(do|I)= 1 =0.33
+2 2 3
+ForthegeneralcaseofMLEn-gramparameterestimation:
+C(w w )
+P(w |w )=
+n−N+1:n−1 n
+(3.12)
+n n−N+1:n−1
+C(w )
+n−N+1:n−1
+1 Weneedtheend-symboltomakethebigramgrammaratrueprobabilitydistribution.Withoutanend-
+symbol,insteadofthesentenceprobabilitiesofallsentencessummingtoone,thesentenceprobabilities
+forallsentencesofagivenlengthwouldsumtoone.Thismodelwoulddefineaninfinitesetofprobability
+distributions,withonedistributionpersentencelength.SeeExercise3.5.
+
+--- PAGE_5 ---
+3.1 • N-GRAMS 5
+Equation 3.12 (like Eq. 3.11) estimates the n-gram probability by dividing the
+observedfrequencyofaparticularsequencebytheobservedfrequencyofaprefix.
+relative This ratio is called a relative frequency. We said above that this use of relative
+frequency
+frequenciesasawaytoestimateprobabilitiesisanexampleofmaximumlikelihood
+estimationorMLE.InMLE,theresultingparametersetmaximizesthelikelihoodof
+thetrainingsetT giventhemodelM(i.e.,P(T|M)). Forexample,supposetheword
+Chinese occurs 400 times in a corpus of a million words. What is the probability
+thatarandomwordselectedfromsomeothertextof,say,amillionwordswillbethe
+wordChinese? TheMLEofitsprobabilityis 400 or0.0004. Now0.0004isnot
+1000000
+thebestpossibleestimateoftheprobabilityofChineseoccurringinallsituations;it
+mightturnoutthatinsomeothercorpusorcontextChineseisaveryunlikelyword.
+ButitistheprobabilitythatmakesitmostlikelythatChinesewilloccur400times
+inamillion-wordcorpus. WepresentwaystomodifytheMLEestimatesslightlyto
+getbetterprobabilityestimatesinSection3.6.
+Let’s move on to some examples from a real but tiny corpus, drawn from the
+now-defunct Berkeley Restaurant Project, a dialogue system from the last century
+thatansweredquestionsaboutadatabaseofrestaurantsinBerkeley,California(Ju-
+rafskyetal.,1994). Herearesomesampleuserqueries(text-normalized,bylower
+casingandwithpunctuationstriped)(asampleof9332sentencesisonthewebsite):
+canyoutellmeaboutanygoodcantoneserestaurantscloseby
+tellmeaboutchezpanisse
+i’mlookingforagoodplacetoeatbreakfast
+wheniscaffeveneziaopenduringtheday
+Figure 3.1 shows the bigram counts from part of a bigram grammar from text-
+normalized Berkeley Restaurant Project sentences. Note that the majority of the
+valuesarezero. Infact,wehavechosenthesamplewordstocoherewitheachother;
+amatrixselectedfromarandomsetofeightwordswouldbeevenmoresparse.
+i want to eat chinese food lunch spend
+i 5 827 0 9 0 0 0 2
+want 2 0 608 1 6 6 5 1
+to 2 0 4 686 2 0 6 211
+eat 0 0 2 0 16 2 42 0
+chinese 1 0 0 0 0 82 1 0
+food 15 0 15 0 1 4 0 0
+lunch 2 0 0 0 0 1 0 0
+spend 1 0 1 0 0 0 0 0
+Figure3.1 Bigramcountsforeightofthewords(outofV=1446)intheBerkeleyRestau-
+rant Projectcorpusof9332sentences.Zerocountsareingray.Eachcellshowsthecountof
+thecolumnlabelwordfollowingtherowlabelword.Thusthecellinrowiandcolumnwant
+meansthatwantfollowedi827timesinthecorpus.
+Figure3.2showsthebigramprobabilitiesafternormalization(dividingeachcell
+in Fig. 3.1 by the appropriate unigram for its row, taken from the following set of
+unigramcounts):
+i want to eat chinese food lunch spend
+2533 927 2417 746 158 1093 341 278
+[TABLES]
+[['i want to eat chinese food lunch spend'], ['i 5 827 0 9 0 0 0 2\nwant 2 0 608 1 6 6 5 1\nto 2 0 4 686 2 0 6 211\neat 0 0 2 0 16 2 42 0\nchinese 1 0 0 0 0 82 1 0\nfood 15 0 15 0 1 4 0 0\nlunch 2 0 0 0 0 1 0 0\nspend 1 0 1 0 0 0 0 0'], ['Figure3.1']]
+[['i', 'want', 'to', 'eat', 'chinese', 'food', 'lunch', 'spend'], ['2533', '927', '2417', '746', '158', '1093', '341', '278']]
+
+--- PAGE_6 ---
+6 CHAPTER3 • N-GRAMLANGUAGEMODELS
+i want to eat chinese food lunch spend
+i 0.002 0.33 0 0.0036 0 0 0 0.00079
+want 0.0022 0 0.66 0.0011 0.0065 0.0065 0.0054 0.0011
+to 0.00083 0 0.0017 0.28 0.00083 0 0.0025 0.087
+eat 0 0 0.0027 0 0.021 0.0027 0.056 0
+chinese 0.0063 0 0 0 0 0.52 0.0063 0
+food 0.014 0 0.014 0 0.00092 0.0037 0 0
+lunch 0.0059 0 0 0 0 0.0029 0 0
+spend 0.0036 0 0.0036 0 0 0 0 0
+Figure3.2 BigramprobabilitiesforeightwordsintheBerkeleyRestaurant Projectcorpus
+of9332sentences.Zeroprobabilitiesareingray.
+Hereareafewotherusefulprobabilities:
+P(i|<s>)=0.25 P(english|want)=0.0011
+P(food|english)=0.5 P(</s>|food)=0.68
+Now we can compute the probability of sentences like I want English food or
+IwantChinesefoodbysimplymultiplyingtheappropriatebigramprobabilitiesto-
+gether,asfollows:
+P(<s> i want english food </s>)
+= P(i|<s>)P(want|i)P(english|want)
+P(food|english)P(</s>|food)
+= 0.25×0.33×0.0011×0.5×0.68
+= 0.000031
+WeleaveitasExercise3.2tocomputetheprobabilityofiwantchinesefood.
+What kinds of linguistic phenomena are captured in these bigram statistics?
+Someofthebigramprobabilitiesaboveencodesomefactsthatwethinkofasstrictly
+syntactic in nature, like the fact that what comes after eat is usually a noun or an
+adjective,orthatwhatcomesaftertoisusuallyaverb. Othersmightbeafactabout
+the personal assistant task, like the high probability of sentences beginning with
+thewordsI.Andsomemightevenbeculturalratherthanlinguistic,likethehigher
+probabilitythatpeoplearelookingforChineseversusEnglishfood.
+3.1.3 Dealingwithscaleinlargen-grammodels
+Inpractice,languagemodelscanbeverylarge,leadingtopracticalissues.
+Logprobabilities Languagemodelprobabilitiesarealwaysstoredandcomputed
+log in logspace as log probabilities. Thisis because probabilities are(by definition)
+probabilities
+less than or equal to 1, and so the more probabilities we multiply together, the
+smaller the product becomes. Multiplying enough n-grams together would result
+in numerical underflow. Adding in log space is equivalent to multiplying in linear
+space,sowecombinelogprobabilitiesbyaddingthem. Byaddinglogprobabilities
+insteadofmultiplyingprobabilities, wegetresultsthatarenotassmall. Wedoall
+computationandstorageinlogspace,andjustconvertbackintoprobabilitiesifwe
+needtoreportprobabilitiesattheendbytakingtheexpofthelogprob:
+p 1 ×p 2 ×p 3 ×p 4 =exp(logp 1 +logp 2 +logp 3 +logp 4 ) (3.13)
+In practice throughout this book, we’ll use log to mean natural log (ln) when the
+baseisnotspecified.
+[TABLES]
+[['i want to eat chinese food lunch spend'], ['i 0.002 0.33 0 0.0036 0 0 0 0.00079\nwant 0.0022 0 0.66 0.0011 0.0065 0.0065 0.0054 0.0011\nto 0.00083 0 0.0017 0.28 0.00083 0 0.0025 0.087\neat 0 0 0.0027 0 0.021 0.0027 0.056 0\nchinese 0.0063 0 0 0 0 0.52 0.0063 0\nfood 0.014 0 0.014 0 0.00092 0.0037 0 0\nlunch 0.0059 0 0 0 0 0.0029 0 0\nspend 0.0036 0 0.0036 0 0 0 0 0'], ['Figure3.2']]
+
+--- PAGE_7 ---
+3.2 • EVALUATINGLANGUAGEMODELS: TRAININGANDTESTSETS 7
+Longer context Although for pedagogical purposes we have only described bi-
+trigram grammodels,whenthereissufficienttrainingdataweusetrigrammodels,which
+4-gram conditionontheprevioustwowords,or4-gramor5-grammodels. Fortheselarger
+5-gram n-grams,we’llneedtoassumeextracontextstotheleftandrightofthesentenceend.
+Forexample,tocomputetrigramprobabilitiesattheverybeginningofthesentence,
+weusetwopseudo-wordsforthefirsttrigram(i.e.,P(I|<s><s>).
+Some large n-gram datasets have been created, like the million most frequent
+n-grams drawn from the Corpus of Contemporary American English (COCA), a
+curated 1 billion word corpus of American English (Davies, 2020), Google’s Web
+5-gramcorpusfrom1trillionwordsofEnglishwebtext(FranzandBrants,2006),
+or the Google Books Ngrams corpora (800 billion tokens from Chinese, English,
+French,German,Hebrew,Italian,Russian,andSpanish)(Linetal.,2012)).
+It’sevenpossibletouseextremelylong-rangen-gramcontext. Theinfini-gram
+(∞-gram) project (Liu et al., 2024) allows n-grams of any length. Their idea is to
+avoid the expensive (in space and time) pre-computation of huge n-gram count ta-
+bles.Instead,n-gramprobabilitieswitharbitrarynarecomputedquicklyatinference
+timebyusinganefficientrepresentationcalledsuffixarrays. Thisallowscomputing
+ofn-gramsofeverylengthforenormouscorporaof5trilliontokens.
+Efficiency considerations are important when building large n-gram language
+models. It is standard to quantize the probabilities using only 4-8 bits (instead of
+8-bytefloats),storethewordstringsondiskandrepresenttheminmemoryonlyas
+a 64-bit hash, and represent n-grams in special data structures like ‘reverse tries’.
+Itisalsocommontoprunen-gramlanguagemodels, forexamplebyonlykeeping
+n-grams with counts greater than some threshold or using entropy to prune less-
+important n-grams (Stolcke, 1998). Efficient language model toolkits like KenLM
+(Heafield 2011, Heafield et al. 2013) use sorted arrays and use merge sorts to effi-
+ciently build the probability tables in a minimal number of passes through a large
+corpus.
+3.2 Evaluating Language Models: Training and Test Sets
+The best way to evaluate the performance of a language model is to embed it in
+an application and measure how much the application improves. Such end-to-end
+extrinsic evaluation is called extrinsic evaluation. Extrinsic evaluation is the only way to
+evaluation
+knowifaparticularimprovementinthelanguagemodel(oranycomponent)isreally
+goingtohelpthetaskathand. Thusforevaluatingn-gramlanguagemodelsthatare
+a component of some task like speech recognition or machine translation, we can
+comparetheperformanceoftwocandidatelanguagemodelsbyrunningthespeech
+recognizerormachinetranslatortwice,oncewitheachlanguagemodel,andseeing
+whichgivesthemoreaccuratetranscription.
+Unfortunately,runningbigNLPsystemsend-to-endisoftenveryexpensive. In-
+stead, it’s helpful to have a metric that can be used to quickly evaluate potential
+intrinsic improvementsinalanguagemodel. Anintrinsicevaluationmetricisonethatmea-
+evaluation
+suresthequalityofamodelindependentofanyapplication.Inthenextsectionwe’ll
+introduceperplexity,whichisthestandardintrinsicmetricformeasuringlanguage
+modelperformance, bothforsimplen-gramlanguagemodelsandforthemoreso-
+phisticatedneurallargelanguagemodelsofChapter8.
+Inordertoevaluateanymachinelearningmodel,weneedtohaveatleastthree
+trainingset distinctdatasets: thetrainingset,thedevelopmentset,andthetestset.
+development
+set
+testset
+
+--- PAGE_8 ---
+8 CHAPTER3 • N-GRAMLANGUAGEMODELS
+The training set is the data we use to learn the parameters of our model; for
+simple n-gram language models it’s the corpus from which we get the counts that
+wenormalizeintotheprobabilitiesofthen-gramlanguagemodel.
+Thetestsetisadifferent,held-outsetofdata,notoverlappingwiththetraining
+set, that we use to evaluate the model. We need a separate test set to give us an
+unbiasedestimateofhowwellthemodelwetrainedcangeneralizewhenweapply
+ittosomenewunknowndataset. Amachinelearningmodelthatperfectlycaptured
+the training data, but performed terribly on any other data, wouldn’t be much use
+when it comes time to apply it to any new data or problem! We thus measure the
+qualityofann-grammodelbyitsperformanceonthisunseentestsetortestcorpus.
+How should we choose a training and test set? The test set should reflect the
+language we want to use the model for. If we’re going to use our language model
+forspeechrecognitionofchemistrylectures,thetestsetshouldbetextofchemistry
+lectures. Ifwe’regoingtouseitaspartofasystemfortranslatinghotelbookingre-
+questsfromChinesetoEnglish,thetestsetshouldbetextofhotelbookingrequests.
+If we want our language model to be general purpose, then the test set should be
+drawn from a wide variety of texts. In such cases we might collect a lot of texts
+from different sources, and then divide it up into a training set and a test set. It’s
+important to do the dividing carefully; if we’re building a general purpose model,
+wedon’twantthetestsettoconsistofonlytextfromonedocument,oroneauthor,
+sincethatwouldn’tbeagoodmeasureofgeneralperformance.
+Thus if we are given a corpus of text and want to compare the performance of
+twodifferentn-grammodels,wedividethedataintotrainingandtestsets,andtrain
+theparametersofbothmodelsonthetrainingset. Wecanthencomparehowwell
+thetwotrainedmodelsfitthetestset.
+But what does it mean to “fit the test set”? The standard answer is simple:
+whichever language model assigns a higher probability to the test set—which
+meansitmoreaccuratelypredictsthetestset—isabettermodel. Giventwoproba-
+bilisticmodels,thebettermodelistheonethatbetterpredictsthedetailsofthetest
+data,andhencewillassignahigherprobabilitytothetestdata.
+Since our evaluation metric is based on test set probability, it’s important not
+to let the test sentences into the training set. Suppose we are trying to compute
+the probability of a particular “test” sentence. If our test sentence is part of the
+training corpus, we will mistakenly assign it an artificially high probability when
+itoccursinthetestset. Wecallthissituationtrainingonthetestsetoralsodata
+data contamination.Trainingonthetestsetintroducesabiasthatmakestheprobabilities
+contamination
+alllooktoohigh,andcauseshugeinaccuraciesinperplexity,theprobability-based
+metricweintroducebelow.
+Even if we don’t train on the test set, if we test our language model on the
+test set many times after making different changes, we might implicitly tune to its
+characteristics,bynoticingwhichchangesseemtomakethemodelbetter. Forthis
+reason,weonlywanttorunourmodelonthetestsetonce,oraveryfewnumberof
+times,oncewearesureourmodelisready.
+development For this reason we normally instead have a third dataset called a development
+test
+testsetor,devset. Wedoallourtestingonthisdatasetuntiltheveryend,andthen
+wetestonthetestsetoncetoseehowgoodourmodelis.
+Howdowedivideourdataintotraining, development, andtestsets? Wewant
+ourtestsettobeaslargeaspossible,sinceasmalltestsetmaybeaccidentallyun-
+representative,butwealsowantasmuchtrainingdataaspossible. Attheminimum,
+we would want to pick the smallest test set that gives us enough statistical power
+
+--- PAGE_9 ---
+3.3 • EVALUATINGLANGUAGEMODELS: PERPLEXITY 9
+to measure a statistically significant difference between two potential models. It’s
+importantthatthedevsetbedrawnfromthesamekindoftextasthetestset, since
+itsgoalistomeasurehowwewoulddoonthetestset.
+3.3 Evaluating Language Models: Perplexity
+We said above that we evaluate language models based on which one assigns a
+higher probability to the test set. A better model is better at predicting upcoming
+words, andso itwill be lesssurprised by(i.e., assign ahigher probabilityto) each
+wordwhenitoccursinthetestset.Indeed,aperfectlanguagemodelwouldcorrectly
+guess each next word in a corpus, assigning it a probability of 1, and all the other
+words a probability of zero. So given a test corpus, a better language model will
+assignahigherprobabilitytoitthanaworselanguagemodel.
+But in fact, we often do not use raw probability as our metric for evaluating
+languagemodels. Thereasonisthattheprobabilityofatestset(oranysequence)
+depends on the number of words or tokens in it; the probability of a test set gets
+smallerthelongerthetext. It’susefultohaveametricthatisper-word,normalized
+bylength,sowecouldcompareacrosstextsofdifferentlengths. Thereisasucha
+metric! It’safunctionofprobabilitycalledperplexity,anditisusedforevaluating
+largelanguagemodelsaswellasn-grammodels.
+perplexity Theperplexity(sometimesabbreviatedasPPorPPL)ofalanguagemodelona
+testsetistheinverseprobabilityofthetestset(oneovertheprobabilityofthetest
+set),normalizedbythenumberofwords(ortokens). Forthisreasonit’ssometimes
+calledtheper-wordorper-tokenperplexity. Wenormalizebythenumberofwords
+N bytakingtheNthroot. ForatestsetW =w w ...w ,:
+1 2 N
+perplexity(W) = P(w 1 w 2 ...w N )− N 1 (3.14)
+(cid:115)
+1
+= N
+P(w w ...w )
+1 2 N
+OrwecanusethechainruletoexpandtheprobabilityofW:
+(cid:118)
+(cid:117) N
+(cid:117)(cid:89) 1
+perplexity(W) = (cid:116)N (3.15)
+P(w|w ...w )
+i 1 i−1
+i=1
+NotethatbecauseoftheinverseinEq.3.15,thehighertheprobabilityoftheword
+sequence,thelowertheperplexity.Thusthethelowertheperplexityofamodelon
+thedata,thebetterthemodel. Minimizingperplexityisequivalenttomaximizing
+the test set probability according to the language model. Why does perplexity use
+the inverse probability? It turns out the inverse arises from the original definition
+ofperplexityfromcross-entropyrateininformationtheory;forthoseinterested,the
+explanation is in the advanced Section 3.7. Meanwhile, we just have to remember
+thatperplexityhasaninverserelationshipwithprobability.
+The details of computing the perplexity of a test setW depends on which lan-
+guage model we use. Here’s the perplexity ofW with a unigram language model
+(justthegeometricmeanoftheinverseoftheunigramprobabilities):
+(cid:118)
+(cid:117) N
+(cid:117)(cid:89) 1
+perplexity(W) = (cid:116)N (3.16)
+P(w)
+i
+i=1
+
+--- PAGE_10 ---
+10 CHAPTER3 • N-GRAMLANGUAGEMODELS
+The perplexity ofW computed with a bigram language model is still a geometric
+mean,butnowoftheinverseofthebigramprobabilities:
+(cid:118)
+(cid:117) N
+(cid:117)(cid:89) 1
+perplexity(W) = (cid:116)N (3.17)
+P(w|w )
+i i−1
+i=1
+What we generally use for word sequence in Eq. 3.15 or Eq. 3.17 is the entire
+sequence of words in some test set. Since this sequence will cross many sentence
+boundaries,ifourvocabularyincludesabetween-sentencetoken<EOS>orseparate
+begin- and end-sentence markers <s> and </s> then we can include them in the
+probability computation. If we do, then we also include one token per sentence in
+thetotalcountofwordtokensN.2
+We mentioned above that perplexity is a function of both the text and the lan-
+guagemodel: givenatextW,differentlanguagemodelswillhavedifferentperplex-
+ities. Becauseofthis,perplexitycanbeusedtocomparedifferentlanguagemodels.
+For example, here we trained unigram, bigram, and trigram models on 38 million
+wordsfromtheWallStreetJournalnewspaper. Wethencomputedtheperplexityof
+each of these models on a WSJ test set using Eq. 3.16 for unigrams, Eq. 3.17 for
+bigrams, and the corresponding equation for trigrams. The table below shows the
+perplexityofthe1.5millionwordtestsetaccordingtoeachofthelanguagemodels.
+Unigram Bigram Trigram
+Perplexity 962 170 109
+As we see above, the more information the n-gram gives us about the word
+sequence,thehighertheprobabilitythen-gramwillassigntothestring. Atrigram
+model is less surprised than a unigram model because it has a better idea of what
+wordsmightcomenext,andsoitassignsthemahigherprobability. Andthehigher
+the probability, the lower the perplexity (since as Eq. 3.15 showed, perplexity is
+relatedinverselytotheprobabilityofthetestsequenceaccordingtothemodel). So
+alowerperplexitytellsusthatalanguagemodelisabetterpredictorofthetestset.
+Note that in computing perplexities, the language model must be constructed
+withoutanyknowledgeofthetestset,orelsetheperplexitywillbeartificiallylow.
+Andtheperplexityoftwolanguagemodelsisonlycomparableiftheyuseidentical
+vocabularies.
+An (intrinsic) improvement in perplexity does not guarantee an (extrinsic) im-
+provementintheperformanceofalanguageprocessingtasklikespeechrecognition
+ormachinetranslation. Nonetheless,becauseperplexityusuallycorrelateswithtask
+improvements, it is commonly used as a convenient evaluation metric. Still, when
+possibleamodel’simprovementinperplexityshouldbeconfirmedbyanend-to-end
+evaluationonarealtask.
+3.3.1 PerplexityasWeightedAverageBranchingFactor
+Itturnsoutthatperplexitycanalsobethoughtofastheweightedaveragebranch-
+ing factor of a language. The branching factor of a language is the number of
+possiblenextwordsthatcanfollowanyword. Forexampleconsideraminiartificial
+2 Forexampleifweusebothbeginandendtokens,wewouldincludetheend-of-sentencemarker</s>
+butnotthebeginning-of-sentencemarker<s>inourcountofN;Thisisbecausetheend-sentencetokenis
+followeddirectlybythebegin-sentencetokenwithprobabilityalmost1,sowedon’twanttheprobability
+ofthatfaketransitiontoinfluenceourperplexity.
+[TABLES]
+[['', 'Unigram', 'Bigram', 'Trigram'], ['Perplexity', '962', '170', '109']]
+
+--- PAGE_11 ---
+3.4 • SAMPLINGSENTENCESFROMALANGUAGEMODEL 11
+languagethatisdeterministic(noprobabilities),anywordcanfollowanyword,and
+whosevocabularyconsistsofonlythreecolors:
+L={red,blue,green} (3.18)
+Thebranchingfactorofthislanguageis3.
+Nowlet’smakeaprobabilisticversionofthesameLM,let’scallitA,whereeach
+wordfollowseachotherwithequalprobability 1 (itwastrainedonatrainingsetwith
+3
+equalcountsforthe3colors),andatestsetT =“red red red red blue”.
+Let’sfirstconvinceourselvesthatifwecomputetheperplexityofthisartificial
+colorlanguageonthistestset(oranysuchtestset)weindeedget3. ByEq.3.15,
+theperplexityofAonT is:
+perplexity A (T) = P A (red red red red
+blue)−1
+5
+(cid:32)(cid:18) 1 (cid:19)5 (cid:33)− 5 1
+=
+3
+(cid:18)
+1
+(cid:19)−1
+= =3 (3.19)
+3
+ButnowsupposeredwasverylikelyinthetrainingsetofadifferentLMB,andso
+Bhasthefollowingprobabilities:
+P(red)=0.8 P(green)=0.1 P(blue)=0.1 (3.20)
+We shouldexpect theperplexity ofthe sametest set red red red red blue for
+languagemodelBtobelowersincemostofthetimethenextcolorwillbered,which
+isverypredictable,i.e. hasahighprobability. Sotheprobabilityofthetestsetwill
+behigher,andsinceperplexityisinverselyrelatedtoprobability,theperplexitywill
+be lower. Thus, although the branching factor is still 3, the perplexity or weighted
+branchingfactorissmaller:
+perplexity (T) = P (red red red red blue)−1/5
+B B
+=
+0.04096−1
+5
+= 0.527−1=1.89 (3.21)
+3.4 Sampling sentences from a language model
+Oneimportantwaytovisualizewhatkindofknowledgealanguagemodelembodies
+sampling istosamplefromit. Samplingfromadistributionmeanstochooserandompoints
+according to their likelihood. Thus sampling from a language model—which rep-
+resentsadistributionoversentences—meanstogeneratesomesentences,choosing
+eachsentenceaccordingtoitslikelihoodasdefinedbythemodel. Thuswearemore
+likely to generate sentences that the model thinks have a high probability and less
+likelytogeneratesentencesthatthemodelthinkshavealowprobability.
+Thistechniqueofvisualizingalanguagemodelbysamplingwasfirstsuggested
+very early on by Shannon (1948) and Miller and Selfridge (1950). It’s simplest to
+visualizehowthisworksfortheunigramcase. ImagineallthewordsoftheEnglish
+languagecoveringthenumberlinebetween0and1,eachwordcoveringaninterval
+
+--- PAGE_12 ---
+12 CHAPTER3 • N-GRAMLANGUAGEMODELS
+polyphonic
+however p=0.0000018
+the of a to in …(p=0.0003)
+0.06 0.03 0.02 0.020.02
+… …
+.06 .09.11.13.15 .66 .99
+0 1
+Figure3.3 Avisualizationofthesamplingdistributionforsamplingsentencesbyrepeat-
+edlysamplingunigrams. Thebluebarrepresentstherelativefrequencyofeachword(we’ve
+orderedthemfrommostfrequenttoleastfrequent,butthechoiceoforderisarbitrary). The
+numberlineshowsthecumulativeprobabilities. Ifwechoosearandomnumberbetween0
+and1,itwillfallinanintervalcorrespondingtosomeword. Theexpectationfortherandom
+numbertofallinthelargerintervalsofoneofthefrequentwords(the,of,a)ismuchhigher
+thaninthesmallerintervalofoneoftherarewords(polyphonic).
+proportional to its frequency. Fig. 3.3 shows a visualization, using a unigram LM
+computedfromthetextofthisbook. Wechoosearandomvaluebetween0and1,
+findthatpointontheprobabilityline,andprintthewordwhoseintervalincludesthis
+chosen value. We continue choosing random numbers and generating words until
+werandomlygeneratethesentence-finaltoken</s>.
+We can use the same technique to generate bigrams by first generating a ran-
+dombigramthatstartswith<s>(accordingtoitsbigramprobability). Let’ssaythe
+secondwordofthatbigramisw. Wenextchoosearandombigramstartingwithw
+(again,drawnaccordingtoitsbigramprobability),andsoon.
+3.5 Generalizing vs. overfitting the training set
+Then-grammodel,likemanystatisticalmodels,isdependentonthetrainingcorpus.
+One implication of this is that the probabilities often encode specific facts about a
+giventrainingcorpus. Anotherimplicationisthatn-gramsdoabetterandbetterjob
+ofmodelingthetrainingcorpusasweincreasethevalueofn.
+We can use the sampling method from the prior section to visualize both of
+these facts! To give an intuition for the increasing power of higher-order n-grams,
+Fig.3.4showsrandomsentencesgeneratedfromunigram, bigram, trigram, and4-
+grammodelstrainedonShakespeare’sworks.
+The longer the context, the more coherent the sentences. The unigram sen-
+tences show no coherent relation between words nor any sentence-final punctua-
+tion. The bigram sentences have some local word-to-word coherence (especially
+considering punctuation as words). The trigram sentences are beginning to look a
+lotlikeShakespeare.Indeed,the4-gramsentenceslookalittletoomuchlikeShake-
+speare. ThewordsItcannotbebutsoaredirectlyfromKingJohn. Thisisbecause,
+not to put the knock on Shakespeare, his oeuvre is not very large as corpora go
+(N =884,647,V =29,066), and our n-gram probability matrices are ridiculously
+sparse. There are V2 =844,000,000 possible bigrams alone, and the number of
+possible 4-grams isV4 =7×1017. Thus, once the generator has chosen the first
+3-gram(Itcannotbe),thereareonlysevenpossiblenextwordsforthe4thelement
+(but,I,that,thus,this,andtheperiod).
+Togetanideaofthedependenceonthetrainingset,let’slookatLMstrainedona
+completelydifferentcorpus:theWallStreetJournal(WSJ)newspaper. Shakespeare
+[TABLES]
+[['polyphonic\nhowever p=0.0000018\nthe of a to in …(p=0.0003)\n0.06 0.03 0.02 0.020.02\n… …\n.06 .09.11.13.15 .66 .99\n0 1'], ['Figure3.3']]
+[['0.06', '0.03', '0.02', '0.02', '0.02', '']]
+
+--- PAGE_13 ---
+3.5 • GENERALIZINGVS. OVERFITTINGTHETRAININGSET 13
+–To him swallowed confess hear both. Which. Of save on trail for are ay device and
+1
+rotelifehave
+gram –Hillhelatespeaks;or! amoretoleglessfirstyouenter
+–Whydoststandforththycanopy,forsooth;heisthispalpablehittheKingHenry. Live
+2
+king. Follow.
+gram –Whatmeans,sir. Iconfessshe? thenallsorts,heistrim,captain.
+–Fly,andwillridmethesenewsofprice. Thereforethesadnessofparting,astheysay,
+3
+’tisdone.
+gram –Thisshallforbiditshouldbebranded,ifrenownmadeitempty.
+–KingHenry. What! IwillgoseekthetraitorGloucester. Exeuntsomeofthewatch. A
+4
+greatbanquetserv’din;
+gram –Itcannotbebutso.
+Figure3.4 Eight sentences randomly generated from four n-gram models computed from Shakespeare’s
+works. All characters were mapped to lower-case and punctuation marks were treated as words. Output is
+hand-correctedforcapitalizationtoimprovereadability.
+andtheWSJarebothEnglish,sowemighthaveexpectedsomeoverlapbetweenour
+n-gramsforthetwogenres.Fig.3.5showssentencesgeneratedbyunigram,bigram,
+andtrigrammodelstrainedon40millionwordsfromWSJ.
+1 Months the my and issue of year foreign new exchange’s september
+wererecessionexchangenewendorsedaacquiretosixexecutives
+gram
+LastDecemberthroughthewaytopreservetheHudsoncorporationN.
+2
+B.E.C.Taylorwouldseemtocompletethemajorcentralplannersone
+gram pointfivepercentofU.S.E.hasalreadyoldM.X.corporationofliving
+oninformationsuchasmorefrequentlyfishingtokeepher
+Theyalsopointtoninetyninepointsixbilliondollarsfromtwohundred
+3
+fourohsixthreepercentoftheratesofintereststoresasMexicoand
+gram Brazilonmarketconditions
+Figure3.5 Threesentencesrandomlygeneratedfromthreen-grammodelscomputedfrom
+40millionwordsoftheWallStreetJournal,lower-casingallcharactersandtreatingpunctua-
+tionaswords.Outputwasthenhand-correctedforcapitalizationtoimprovereadability.
+Comparetheseexamplestothepseudo-ShakespeareinFig.3.4.Whiletheyboth
+model“English-likesentences”,thereisnooverlapinthegeneratedsentences,and
+littleoverlapeveninsmallphrases.Statisticalmodelsareprettyuselessaspredictors
+ifthetrainingsetsandthetestsetsareasdifferentasShakespeareandtheWSJ.
+Howshouldwedealwiththisproblemwhenwebuildn-grammodels? Onestep
+istobesuretouseatrainingcorpusthathasasimilargenretowhatevertaskweare
+trying to accomplish. To build a language model for translating legal documents,
+we need a training corpus of legal documents. To build a language model for a
+question-answeringsystem,weneedatrainingcorpusofquestions.
+Itisequallyimportanttogettrainingdataintheappropriatedialectorvariety,
+especially when processing social media posts or spoken transcripts. For exam-
+plesometweetswillusefeaturesofAfricanAmericanEnglish(AAE)—thename
+forthemanyvariationsoflanguageusedinAfricanAmericancommunities(King,
+2020). Such features can include words like finna—an auxiliary verb that marks
+immediatefuturetense—thatdon’toccurinothervarieties,orspellingslikedenfor
+then,intweetslikethisone(BlodgettandO’Connor,2017):
+[TABLES]
+[['–To him swallowed confess hear both. Which. Of save on trail for are ay device and\n1\nrotelifehave\ngram –Hillhelatespeaks;or! amoretoleglessfirstyouenter\n–Whydoststandforththycanopy,forsooth;heisthispalpablehittheKingHenry. Live\n2\nking. Follow.\ngram –Whatmeans,sir. Iconfessshe? thenallsorts,heistrim,captain.\n–Fly,andwillridmethesenewsofprice. Thereforethesadnessofparting,astheysay,\n3\n’tisdone.\ngram –Thisshallforbiditshouldbebranded,ifrenownmadeitempty.\n–KingHenry. What! IwillgoseekthetraitorGloucester. Exeuntsomeofthewatch. A\n4\ngreatbanquetserv’din;\ngram –Itcannotbebutso.'], ['Figure3.4']]
+[['1 Months the my and issue of year foreign new exchange’s september\nwererecessionexchangenewendorsedaacquiretosixexecutives\ngram\nLastDecemberthroughthewaytopreservetheHudsoncorporationN.\n2\nB.E.C.Taylorwouldseemtocompletethemajorcentralplannersone\ngram pointfivepercentofU.S.E.hasalreadyoldM.X.corporationofliving\noninformationsuchasmorefrequentlyfishingtokeepher\nTheyalsopointtoninetyninepointsixbilliondollarsfromtwohundred\n3\nfourohsixthreepercentoftheratesofintereststoresasMexicoand\ngram Brazilonmarketconditions'], ['Figure3.5']]
+
+--- PAGE_14 ---
+14 CHAPTER3 • N-GRAMLANGUAGEMODELS
+(3.22) Boredafdenmyphonefinnadie!!!
+whiletweetsfromEnglish-basedlanguageslikeNigerianPidginhavemarkedlydif-
+ferentvocabularyandn-grampatternsfromAmericanEnglish(Jurgensetal.,2017):
+(3.23) @usernameRuawizardorwatgansef: indmornin-utweet,afternoon-u
+tweet,nytganudeytweet. betageturITplacementwivtwitter
+Isitpossibleforthetestsetnonethelesstohaveawordwehaveneverseenbe-
+fore?WhathappensifthewordJurafskyneveroccursinourtrainingset,butpopsup
+inthetestset? Theansweristhatalthoughwordsmightbeunseen,wenormallyrun
+ourNLPalgorithmsnotonwordsbutonsubwordtokens. Withsubwordtokeniza-
+tion(liketheBPEalgorithmofChapter2)anywordcanbemodeledasasequence
+ofknownsmallersubwords,ifnecessarybyasequenceoftokenscorrespondingto
+individual letters. So although for convenience we’ve been referring to words in
+thischapter,thelanguagemodelvocabularyisnormallythesetoftokensratherthan
+words,andinthiswaythetestsetcannevercontainunseentokens.
+3.6 Smoothing, Interpolation, and Backoff
+Thereisaproblemwithusingmaximumlikelihoodestimatesforprobabilities: any
+finite training corpus will be missing some perfectly acceptable English word se-
+quences. Thatis,caseswhereaparticularn-gramneveroccursinthetrainingdata
+but appears in the test set. Perhaps our training corpus has the words ruby and
+slippersinitbutjusthappensnottohavethephraseruby slippers.
+zeros Theseunseensequencesorzeros—sequencesthatdon’toccurinthetrainingset
+but do occur in the test set—are a problem for two reasons. First, their presence
+meansweareunderestimatingtheprobabilityofwordsequencesthatmightoccur,
+whichhurtstheperformanceofanyapplicationwewanttorunonthisdata. Second,
+if the probability of any word in the test set is 0, the probability of the whole test
+setis0. Perplexityisdefinedbasedontheinverseprobabilityofthetestset. Thus
+ifsomewordsincontexthavezeroprobability, wecan’tcomputeperplexityatall,
+sincewecan’tdividebyzero!
+Thestandardwaytodealwithputative“zeroprobabilityn-grams”thatshouldre-
+smoothing allyhavesomenon-zeroprobabilityiscalledsmoothingordiscounting.Smoothing
+discounting algorithmsshaveoffabitofprobabilitymassfromsomemorefrequenteventsand
+give it to unseen events. Here we’ll introduce some simple smoothing algorithms:
+Laplace(add-one)smoothing,stupidbackoff,andn-graminterpolation.
+3.6.1 LaplaceSmoothing
+The simplest way to do smoothing is to add one to all the n-gram counts, before
+wenormalizethemintoprobabilities. Allthecountsthatusedtobezerowillnow
+have a count of 1, the counts of 1 will be 2, and so on. This algorithm is called
+Laplace Laplacesmoothing. Laplacesmoothingdoesnotperformwellenoughtobeused
+smoothing
+in modern n-grammodels, but it usefullyintroduces many of the conceptsthat we
+see in other smoothing algorithms, gives a useful baseline, and is also a practical
+smoothingalgorithmforothertasksliketextclassification(AppendixK).
+Let’s start with the application of Laplace smoothing to unigram probabilities.
+Recallthattheunsmoothedmaximumlikelihoodestimateoftheunigramprobability
+
+--- PAGE_15 ---
+3.6 • SMOOTHING,INTERPOLATION,ANDBACKOFF 15
+ofthewordw isitscountc normalizedbythetotalnumberofwordtokensN:
+i i
+c
+i
+P(w)=
+i
+N
+Laplace smoothing merely adds one to each count (hence its alternate name add-
+add-one one smoothing). Since there areV words in the vocabulary and each one was in-
+cremented,wealsoneedtoadjustthedenominatortotakeintoaccounttheextraV
+observations. (WhathappenstoourPvaluesifwedon’tincreasethedenominator?)
+c +1
+i
+P Laplace (w i )= (3.24)
+N+V
+Nowthatwehavetheintuitionfortheunigramcase,let’ssmoothourBerkeley
+RestaurantProjectbigrams. Figure3.6showstheadd-onesmoothedcountsforthe
+bigramsinFig.3.1.
+i want to eat chinese food lunch spend
+i 6 828 1 10 1 1 1 3
+want 3 1 609 2 7 7 6 2
+to 3 1 5 687 3 1 7 212
+eat 1 1 3 1 17 3 43 1
+chinese 2 1 1 1 1 83 2 1
+food 16 1 16 1 2 5 1 1
+lunch 3 1 1 1 1 2 1 1
+spend 2 1 2 1 1 1 1 1
+Figure3.6 Add-onesmoothedbigramcountsforeightofthewords(outofV =1446)in
+theBerkeleyRestaurantProjectcorpusof9332sentences.Previously-zerocountsareingray.
+Figure3.7showstheadd-onesmoothedprobabilitiesforthebigramsinFig.3.2,
+computedbyEq.3.26below. Recallthatnormalbigramprobabilitiesarecomputed
+bynormalizingeachrowofcountsbytheunigramcount:
+C(w w )
+P MLE (w n |w n−1 )=
+n−1 n
+(3.25)
+C(w )
+n−1
+Foradd-onesmoothedbigramcounts,weneedtoaugmenttheunigramcountinthe
+denominator by the number of total word types in the vocabularyV. We can see
+whythisisinthefollowingequation,whichmakesitexplicitthattheunigramcount
+inthedenominatorisreallythesumoverallthebigramsthatstartwithw . Since
+n−1
+we add one to each of these, and there areV of them, we add a total ofV to the
+denominator:
+C(w w )+1 C(w w )+1
+P Laplace (w n |w n−1 )= (cid:80)
+n−1 n
+=
+n−1 n
+(3.26)
+(C(w w)+1) C(w )+V
+w n−1 n−1
+Thus,eachoftheunigramcountsgivenonpage5willneedtobeaugmentedbyV =
+1446. Theresult,usingEq.3.26,isthesmoothedbigramprobabilitiesinFig.3.7.
+One useful visualization technique is to reconstruct an adjusted count matrix
+so we can see how much a smoothing algorithm has changed the original counts.
+This adjusted count C∗ is the count that, if divided by C(w ), would result in
+n−1
+the smoothed probability. This adjusted count is easier to compare directly with
+the MLE counts. That is, the Laplace probability can equally be expressed as the
+adjustedcountdividedbythe(non-smoothed)denominatorfromEq.3.25:
+C(w w )+1 C∗(w w )
+P (w |w )=
+n−1 n
+=
+n−1 n
+Laplace n n−1
+C(w )+V C(w )
+n−1 n−1
+[TABLES]
+[['i want to eat chinese food lunch spend'], ['i 6 828 1 10 1 1 1 3\nwant 3 1 609 2 7 7 6 2\nto 3 1 5 687 3 1 7 212\neat 1 1 3 1 17 3 43 1\nchinese 2 1 1 1 1 83 2 1\nfood 16 1 16 1 2 5 1 1\nlunch 3 1 1 1 1 2 1 1\nspend 2 1 2 1 1 1 1 1'], ['Figure3.6']]
+
+--- PAGE_16 ---
+16 CHAPTER3 • N-GRAMLANGUAGEMODELS
+i want to eat chinese food lunch spend
+i 0.0015 0.21 0.00025 0.0025 0.00025 0.00025 0.00025 0.00075
+want 0.0013 0.00042 0.26 0.00084 0.0029 0.0029 0.0025 0.00084
+to 0.00078 0.00026 0.0013 0.18 0.00078 0.00026 0.0018 0.055
+eat 0.00046 0.00046 0.0014 0.00046 0.0078 0.0014 0.02 0.00046
+chinese 0.0012 0.00062 0.00062 0.00062 0.00062 0.052 0.0012 0.00062
+food 0.0063 0.00039 0.0063 0.00039 0.00079 0.002 0.00039 0.00039
+lunch 0.0017 0.00056 0.00056 0.00056 0.00056 0.0011 0.00056 0.00056
+spend 0.0012 0.00058 0.0012 0.00058 0.00058 0.00058 0.00058 0.00058
+Figure3.7 Add-one smoothed bigram probabilities for eight of the words (out ofV =1446) in the BeRP
+corpusof9332sentencescomputedbyEq.3.26.Previously-zeroprobabilitiesareingray.
+Rearrangingterms,wecansolveforC∗(w w ):
+n−1 n
+[C(w w )+1]×C(w )
+C∗(w n−1 w n )= n−1 n n−1 (3.27)
+C(w )+V
+n−1
+Figure3.8showsthereconstructedcounts,computedbyEq.3.27.
+i want to eat chinese food lunch spend
+i 3.8 527 0.64 6.4 0.64 0.64 0.64 1.9
+want 1.2 0.39 238 0.78 2.7 2.7 2.3 0.78
+to 1.9 0.63 3.1 430 1.9 0.63 4.4 133
+eat 0.34 0.34 1 0.34 5.8 1 15 0.34
+chinese 0.2 0.098 0.098 0.098 0.098 8.2 0.2 0.098
+food 6.9 0.43 6.9 0.43 0.86 2.2 0.43 0.43
+lunch 0.57 0.19 0.19 0.19 0.19 0.38 0.19 0.19
+spend 0.32 0.16 0.32 0.16 0.16 0.16 0.16 0.16
+Figure3.8 Add-onereconstitutedcountsforeightwords(ofV=1446)intheBeRPcorpus
+of9332sentences,computedbyEq.3.27.Previously-zerocountsareingray.
+Note thatadd-one smoothinghas madea verybig changeto thecounts. Com-
+paringFig.3.8totheoriginalcountsinFig.3.1,wecanseethatC(wantto)changed
+from608to238. Wecanseethisinprobabilityspaceaswell: P(to|want)decreases
+from0.66intheunsmoothedcaseto0.26inthesmoothedcase. Lookingatthedis-
+countd,definedastheratiobetweennewandoldcounts,showsushowstrikingly
+thecountsforeachprefixwordhavebeenreduced;thediscountforthebigramwant
+to is 0.39, while the discount for Chinese food is 0.10, a factor of 10. The sharp
+changeoccursbecausetoomuchprobabilitymassismovedtoallthezeros.
+3.6.2 Add-ksmoothing
+One alternative to add-one smoothing is to move a bit less of the probability mass
+from the seen to the unseen events. Instead of adding 1 to each count, we add a
+add-k fractionalcountk(0.5?0.01?).Thisalgorithmisthereforecalledadd-ksmoothing.
+C(w w )+k
+P A ∗ dd-k (w n |w n−1 )= C(w n−1 ) n +kV (3.28)
+n−1
+Add-k smoothing requires that we have a method for choosing k; this can be
+done, for example, by optimizing on a devset. Although add-k is useful for some
+tasks (including text classification), it turns out that it still doesn’t work well for
+[TABLES]
+[['i want to eat chinese food lunch spend'], ['i 0.0015 0.21 0.00025 0.0025 0.00025 0.00025 0.00025 0.00075\nwant 0.0013 0.00042 0.26 0.00084 0.0029 0.0029 0.0025 0.00084\nto 0.00078 0.00026 0.0013 0.18 0.00078 0.00026 0.0018 0.055\neat 0.00046 0.00046 0.0014 0.00046 0.0078 0.0014 0.02 0.00046\nchinese 0.0012 0.00062 0.00062 0.00062 0.00062 0.052 0.0012 0.00062\nfood 0.0063 0.00039 0.0063 0.00039 0.00079 0.002 0.00039 0.00039\nlunch 0.0017 0.00056 0.00056 0.00056 0.00056 0.0011 0.00056 0.00056\nspend 0.0012 0.00058 0.0012 0.00058 0.00058 0.00058 0.00058 0.00058'], ['Figure3.7']]
+[['i want to eat chinese food lunch spend'], ['i 3.8 527 0.64 6.4 0.64 0.64 0.64 1.9\nwant 1.2 0.39 238 0.78 2.7 2.7 2.3 0.78\nto 1.9 0.63 3.1 430 1.9 0.63 4.4 133\neat 0.34 0.34 1 0.34 5.8 1 15 0.34\nchinese 0.2 0.098 0.098 0.098 0.098 8.2 0.2 0.098\nfood 6.9 0.43 6.9 0.43 0.86 2.2 0.43 0.43\nlunch 0.57 0.19 0.19 0.19 0.19 0.38 0.19 0.19\nspend 0.32 0.16 0.32 0.16 0.16 0.16 0.16 0.16'], ['Figure3.8']]
+
+--- PAGE_17 ---
+3.6 • SMOOTHING,INTERPOLATION,ANDBACKOFF 17
+language modeling, generating counts with poor variances and often inappropriate
+discounts(GaleandChurch,1994).
+3.6.3 LanguageModelInterpolation
+There is an alternative source of knowledge we can draw on to solve the problem
+of zero frequency n-grams. If we are trying to compute P(w |w w ) but we
+n n−2 n−1
+have no examples of a particular trigram w w w , we can instead estimate its
+n−2 n−1 n
+probabilitybyusingthebigramprobabilityP(w |w ). Similarly,ifwedon’thave
+n n−1
+countstocomputeP(w |w ),wecanlooktotheunigramP(w ). Inotherwords,
+n n−1 n
+sometimesusinglesscontextcanhelpusgeneralizemoreforcontextsthatthemodel
+hasn’tlearnedmuchabout.
+interpolation The most common way to use this n-gram hierarchy is called interpolation:
+computing a new probability by interpolating (weighting and combining) the tri-
+gram, bigram, and unigram probabilities. In simple linear interpolation, we com-
+bine different order n-grams by linearly interpolating them. Thus, we estimate the
+trigram probability P(w |w w ) by mixing together the unigram, bigram, and
+n n−2 n−1
+trigramprobabilities,eachweightedbyaλ:
+Pˆ(w |w w ) = λ P(w )
+n n−2 n−1 1 n
++λ P(w |w )
+2 n n−1
++λ 3 P(w n |w n−2 w n−1 ) (3.29)
+The λs must sum to 1, making Eq. 3.29 equivalent to a weighted average. In a
+slightly more sophisticated version of linear interpolation, each λ weight is com-
+puted by conditioning on the context. This way, if we have particularly accurate
+countsforaparticularbigram, weassumethatthecountsofthetrigramsbasedon
+this bigram will be more trustworthy, so we can make the λs for those trigrams
+higher and thus give that trigram more weight in the interpolation. Equation 3.30
+showstheequationforinterpolationwithcontext-conditionedweights,whereeach
+lambdatakesanargumentthatisthetwopriorwordcontext:
+Pˆ(w |w w ) = λ (w )P(w )
+n n−2 n−1 1 n−2:n−1 n
++λ (w )P(w |w )
+2 n−2:n−1 n n−1
++λ 3 (w n−2:n−1 )P(w n |w n−2 w n−1 ) (3.30)
+Howaretheseλ valuesset? Boththesimpleinterpolationandconditionalinterpo-
+held-out lation λs are learned from a held-out corpus. A held-out corpus is an additional
+trainingcorpus,so-calledbecauseweholditoutfromthetrainingdata,thatweuse
+tosettheseλ values.3 Wedosobychoosingtheλ valuesthatmaximizethelikeli-
+hoodoftheheld-outcorpus. Thatis,wefixthen-gramprobabilitiesandthensearch
+fortheλ valuesthat—whenpluggedintoEq.3.29—giveusthehighestprobability
+oftheheld-outset. Therearevariouswaystofindthisoptimalsetofλs. Oneway
+istousetheEMalgorithm,aniterativelearningalgorithmthatconvergesonlocally
+optimalλs(JelinekandMercer,1980).
+3.6.4 StupidBackoff
+backoff Analternativetointerpolationisbackoff.Inabackoffmodel,ifthen-gramweneed
+3 Held-outcorporaaregenerallyusedtosethyperparameters,whicharespecialparameters,unlike
+regularcountsthatarelearnedfromthetrainingdata;we’lldiscusshyperparametersinChapter6.
+
+--- PAGE_18 ---
+18 CHAPTER3 • N-GRAMLANGUAGEMODELS
+haszero counts, weapproximate itbybacking offtothe (n-1)-gram. Wecontinue
+backing off until we reach a history that has some counts. For a backoff model to
+discount giveacorrectprobabilitydistribution,wehavetodiscountthehigher-ordern-grams
+to save some probability mass for the lower order n-grams. In practice, instead of
+discounting, it’scommontouseamuchsimplernon-discountedbackoffalgorithm
+stupidbackoff calledstupidbackoff(Brantsetal.,2007).
+Stupid backoff gives up the idea of trying to make the language model a true
+probabilitydistribution. Thereisnodiscountingofthehigher-orderprobabilities. If
+ahigher-ordern-gramhasazerocount,wesimplybackofftoalowerordern-gram,
+weighedbyafixed(context-independent)weight. Thisalgorithmdoesnotproduce
+aprobabilitydistribution,sowe’llfollowBrantsetal.(2007)inreferringtoitasS:
+
+count(w )
+ i−N+1:i ifcount(w )>0
+S(w i |w i−N+1:i−1 )= count(w i−N+1:i−1 ) i−N+1:i (3.31)
+λS(w|w ) otherwise
+i i−N+2:i−1
+Thebackoffterminatesintheunigram,whichhasscoreS(w)= count(w) .Brantsetal.
+N
+(2007)findthatavalueof0.4workedwellforλ.
+3.7 Advanced: Perplexity’s Relation to Entropy
+We introduced perplexity in Section 3.3 as a way to evaluate n-gram models on
+a test set. A better n-gram model is one that assigns a higher probability to the
+test data, and perplexity is a normalized version of the probability of the test set.
+The perplexity measure actually arises from the information-theoretic concept of
+cross-entropy, which explains otherwise mysterious properties of perplexity (why
+Entropy theinverseprobability,forexample?) anditsrelationshiptoentropy. Entropyisa
+measureofinformation. GivenarandomvariableX rangingoverwhateverweare
+predicting(words,letters,partsofspeech),thesetofwhichwe’llcallχ,andwitha
+particularprobabilityfunction,callit p(x),theentropyoftherandomvariableX is:
+(cid:88)
+H(X)=− p(x)log p(x) (3.32)
+2
+x∈χ
+The log can, in principle, be computed in any base. If we use log base 2, the
+resultingvalueofentropywillbemeasuredinbits.
+Oneintuitivewaytothinkaboutentropyisasalowerboundonthenumberof
+bitsitwouldtaketoencodeacertaindecisionorpieceofinformationintheoptimal
+codingscheme.Consideranexamplefromthestandardinformationtheorytextbook
+CoverandThomas(1991). Imaginethatwewanttoplaceabetonahorseracebut
+it is too far to go all the way to Yonkers Racetrack, so we’d like to send a short
+message to the bookie to tell him which of the eight horses to bet on. One way to
+encode this message is just to use the binary representation of the horse’s number
+asthecode;thus,horse1wouldbe001,horse2010,horse3011,andsoon,with
+horse 8 coded as 000. If we spend the whole day betting and each horse is coded
+with3bits,onaveragewewouldbesending3bitsperrace.
+Canwedobetter? Supposethatthespreadistheactualdistributionofthebets
+placedandthatwerepresentitasthepriorprobabilityofeachhorseasfollows:
+
+--- PAGE_19 ---
+3.7 • ADVANCED: PERPLEXITY’SRELATIONTOENTROPY 19
+Horse1 1 Horse5 1
+2 64
+Horse2 1 Horse6 1
+4 64
+Horse3 1 Horse7 1
+8 64
+Horse4 1 Horse8 1
+16 64
+The entropy of the random variable X that ranges over horses gives us a lower
+boundonthenumberofbitsandis
+i=8
+(cid:88)
+H(X) = − p(i)log p(i)
+2
+i=1
+= −1
+2
+log22 1−1
+4
+log2 1
+4
+−1
+8
+log2 1
+8
+−
+1
+1
+6
+log21 1
+6
+−4(
+6
+1
+4
+log26 1
+4
+)
+= 2bits (3.33)
+A code that averages 2 bits per race can be built with short encodings for more
+probable horses, and longer encodings for less probable horses. For example, we
+couldencodethemostlikelyhorsewiththecode0,andtheremaininghorsesas10,
+then110,1110,111100,111101,111110,and111111.
+What if the horses are equally likely? We saw above that if we used an equal-
+length binary code for the horse numbers, each horse took 3 bits to code, so the
+average was 3. Is the entropy the same? In this case each horse would have a
+probabilityof 1. Theentropyofthechoiceofhorsesisthen
+8
+i=8
+(cid:88)1 1 1
+H(X)=− log =−log =3bits (3.34)
+8 28 28
+i=1
+Until now we have been computing the entropy of a single variable. But most of
+whatwewilluseentropyforinvolvessequences. Foragrammar, forexample, we
+will be computing the entropy of some sequence of wordsW ={w ,w ,...,w }.
+1 2 n
+One way to do this is to have a variable that ranges over sequences of words. For
+example we can compute the entropy of a random variable that ranges over all se-
+quencesofwordsoflengthninsomelanguageLasfollows:
+(cid:88)
+H(w ,w ,...,w )=− p(w )logp(w ) (3.35)
+1 2 n 1:n 1:n
+w1:n∈L
+entropyrate We could define the entropy rate (we could also think of this as the per-word
+entropy)astheentropyofthissequencedividedbythenumberofwords:
+1 1 (cid:88)
+H(w )=− p(w )logp(w ) (3.36)
+1:n 1:n 1:n
+n n
+w1:n∈L
+But to measure the true entropy of a language, we need to consider sequences of
+infinite length. If we think of a language as a stochastic process L that produces a
+sequenceofwords,andallowW torepresentthesequenceofwordsw ,...,w ,then
+1 n
+L’sentropyrateH(L)isdefinedas
+1
+H(L) = lim H(w )
+1:n
+n→∞n
+1(cid:88)
+= −lim p(w 1:n )logp(w 1:n ) (3.37)
+n→∞n
+W∈L
+[TABLES]
+[['Horse1', '1\n2', 'Horse5', '1\n64'], ['Horse2', '1\n4', 'Horse6', '1\n64'], ['Horse3', '1\n8', 'Horse7', '1\n64'], ['Horse4', '1\n16', 'Horse8', '1\n64']]
+
+--- PAGE_20 ---
+20 CHAPTER3 • N-GRAMLANGUAGEMODELS
+TheShannon-McMillan-Breimantheorem(AlgoetandCover1988,CoverandThomas
+1991)statesthatifthelanguageisregularincertainways(tobeexact,ifitisboth
+stationaryandergodic),
+1
+H(L)= lim− logp(w 1:n ) (3.38)
+n→∞ n
+Thatis,wecantakeasinglesequencethatislongenoughinsteadofsummingover
+all possible sequences. The intuition of the Shannon-McMillan-Breiman theorem
+is that a long-enough sequence of words will contain in it many other shorter se-
+quencesandthateachoftheseshortersequenceswillreoccurinthelongersequence
+accordingtotheirprobabilities.
+Stationary A stochastic process is said to be stationary if the probabilities it assigns to a
+sequence are invariant with respect to shifts in the time index. In other words, the
+probabilitydistributionforwordsattimet isthesameastheprobabilitydistribution
+at timet+1. Markov models, and hence n-grams, are stationary. For example, in
+a bigram, P is dependent only on P . So if we shift our time index by x, P is
+i i−1 i+x
+stilldependentonP . Butnaturallanguageisnotstationary,sinceasweshow
+i+x−1
+inAppendixD,theprobabilityofupcomingwordscanbedependentoneventsthat
+were arbitrarily distant and time dependent. Thus, our statistical models only give
+anapproximationtothecorrectdistributionsandentropiesofnaturallanguage.
+To summarize, by making some incorrect but convenient simplifying assump-
+tions,wecancomputetheentropyofsomestochasticprocessbytakingaverylong
+sampleoftheoutputandcomputingitsaveragelogprobability.
+cross-entropy Nowwearereadytointroducecross-entropy.Thecross-entropyisusefulwhen
+we don’t know the actual probability distribution p that generated some data. It
+allowsustousesomem, whichisamodelof p(i.e., anapproximationto p). The
+cross-entropyofmon pisdefinedby
+1(cid:88)
+H(p,m)= lim− p(w 1 ,...,w n )logm(w 1 ,...,w n ) (3.39)
+n→∞ n
+W∈L
+Thatis,wedrawsequencesaccordingtotheprobabilitydistribution p,butsumthe
+logoftheirprobabilitiesaccordingtom.
+Again, followingtheShannon-McMillan-Breimantheorem, forastationaryer-
+godicprocess:
+1
+H(p,m)= lim− logm(w 1 w 2 ...w n ) (3.40)
+n→∞ n
+This means that, as for entropy, we can estimate the cross-entropy of a model m
+on some distribution p by taking a single sequence that is long enough instead of
+summingoverallpossiblesequences.
+Whatmakesthecross-entropyusefulisthatthecross-entropyH(p,m)isanup-
+perboundontheentropyH(p). Foranymodelm:
+H(p)≤H(p,m) (3.41)
+Thismeansthatwecanusesomesimplifiedmodelmtohelpestimatethetrueen-
+tropyofasequenceofsymbolsdrawnaccordingtoprobabilityp.Themoreaccurate
+m is, the closer the cross-entropy H(p,m) will be to the true entropy H(p). Thus,
+thedifferencebetweenH(p,m)andH(p)isameasureofhowaccurateamodelis.
+Betweentwomodelsm andm ,themoreaccuratemodelwillbetheonewiththe
+1 2
+
+--- PAGE_21 ---
+3.8 • SUMMARY 21
+lowercross-entropy. (Thecross-entropycanneverbelowerthanthetrueentropy,so
+amodelcannoterrbyunderestimatingthetrueentropy.)
+We are finally ready to see the relation between perplexity and cross-entropy
+as we saw it in Eq. 3.40. Cross-entropy is defined in the limit as the length of the
+observed word sequence goes to infinity. We approximate this cross-entropy by
+relyingona(sufficientlylong)sequenceoffixedlength. Thisapproximationtothe
+cross-entropyofamodelM=P(w|w )onasequenceofwordsW is
+i i−N+1:i−1
+1
+H(W)=− logP(w 1 w 2 ...w N ) (3.42)
+N
+perplexity TheperplexityofamodelPonasequenceofwordsW isnowformallydefinedas
+2raisedtothepowerofthiscross-entropy:
+Perplexity(W) = 2H(W)
+= P(w 1 w 2 ...w N )− N 1
+(cid:115)
+1
+= N
+P(w w ...w )
+1 2 N
+3.8 Summary
+This chapter introduced language modeling via the n-gram model, a classic model
+thatallowsustointroducemanyofthebasicconceptsinlanguagemodeling.
+• Language models offer a way to assign a probability to a sentence or other
+sequenceofwordsortokens, andtopredictawordortokenfrompreceding
+wordsortokens.
+• N-gramsareperhapsthesimplestkindoflanguagemodel. TheyareMarkov
+modelsthatestimatewordsfromafixedwindowofpreviouswords. N-gram
+modelscanbetrainedbycountinginatrainingcorpusandnormalizingthe
+counts(themaximumlikelihoodestimate).
+• N-gramlanguagemodelscanbeevaluatedonatestsetusingperplexity.
+• The perplexity of a test set according to a language model is a function of
+theprobabilityofthetestset: theinversetestsetprobabilityaccordingtothe
+model,normalizedbythelength.
+• Samplingfromalanguagemodelmeanstogeneratesomesentences,choos-
+ingeachsentenceaccordingtoitslikelihoodasdefinedbythemodel.
+• Smoothingalgorithmsprovideawaytoestimateprobabilitiesforeventsthat
+wereunseenintraining. Commonlyusedsmoothingalgorithmsforn-grams
+includeadd-1smoothing,orrelyonlower-ordern-gramcountsthroughinter-
+polation.
+Historical Notes
+The underlying mathematics of the n-gram was first proposed by Markov (1913),
+who used what are now called Markov chains (bigrams and trigrams) to predict
+whetheranupcomingletterinPushkin’sEugeneOneginwouldbeavoweloracon-
+sonant. Markov classified 20,000 letters as V or C and computed the bigram and
+
+--- PAGE_22 ---
+22 CHAPTER3 • N-GRAMLANGUAGEMODELS
+trigram probability that a given letter would be a vowel given the previous one or
+twoletters. Shannon(1948)appliedn-gramstocomputeapproximationstoEnglish
+wordsequences.BasedonShannon’swork,Markovmodelswerecommonlyusedin
+engineering,linguistic,andpsychologicalworkonmodelingwordsequencesbythe
+1950s. InaseriesofextremelyinfluentialpapersstartingwithChomsky(1956)and
+includingChomsky(1957)andMillerandChomsky(1963),NoamChomskyargued
+that “finite-state Markov processes”, while a possibly useful engineering heuristic,
+wereincapableofbeingacompletecognitivemodelofhumangrammaticalknowl-
+edge. These arguments led many linguists and computational linguists to ignore
+workinstatisticalmodelingfordecades.
+The resurgence of n-gram language models came from Fred Jelinek and col-
+leagues at the IBM Thomas J. Watson Research Center, who were influenced by
+Shannon, and James Baker at CMU, who was influenced by the prior, classified
+workofLeonardBaumandcolleaguesonthesetopicsatlabsliketheUSInstitute
+for Defense Analyses (IDA) after they were declassified. Independently these two
+labssuccessfullyusedn-gramsintheirspeechrecognitionsystemsatthesametime
+(Baker1975b,Jelineketal.1975,Baker1975a,Bahletal.1983,Jelinek1990). The
+terms“languagemodel”and“perplexity”werefirstusedforthistechnologybythe
+IBM group. Jelinek and his colleagues used the term language model in a pretty
+modernway,tomeantheentiresetoflinguisticinfluencesonwordsequenceprob-
+abilities,includinggrammar,semantics,discourse,andevenspeakercharacteristics,
+ratherthanjusttheparticularn-grammodelitself.
+Add-onesmoothingderivesfromLaplace’s1812lawofsuccessionandwasfirst
+appliedasanengineeringsolutiontothezerofrequencyproblembyJeffreys(1948)
+based on an earlier Add-K suggestion by Johnson (1932). Problems with the add-
+onealgorithmaresummarizedinGaleandChurch(1994).
+Awidevarietyofdifferentlanguagemodelingandsmoothingtechniqueswere
+proposedinthe80sand90s,includingGood-Turingdiscounting—firstappliedtothe
+n-gramsmoothingatIBMbyKatz(Na´das1984,ChurchandGale1991)—Witten-
+class-based Belldiscounting(WittenandBell,1991),andvarietiesofclass-basedn-grammod-
+n-gram
+els that used information about word classes. Starting in the late 1990s, Chen and
+Goodman performed a number of carefully controlled experiments comparing dif-
+ferentalgorithmsandparameters(ChenandGoodman1999,Goodman2006,inter
+alia). They showed the advantages of Modified Interpolated Kneser-Ney, which
+becamethestandardbaselineforn-gramlanguagemodelingaroundtheturnofthe
+century, especially because they showed that caches and class-based models pro-
+vided only minor additional improvement. SRILM (Stolcke, 2002) and KenLM
+(Heafield 2011, Heafield et al. 2013) are publicly available toolkits for building n-
+gramlanguagemodels.
+Largelanguagemodelsarebasedonneuralnetworksratherthann-grams,en-
+ablingthemtosolvethetwomajorproblemswithn-grams:(1)thenumberofparam-
+etersincreasesexponentiallyasthen-gramorderincreases,and(2)n-gramshaveno
+waytogeneralizefromtrainingexamplestotestsetexamplesunlesstheyuseiden-
+ticalwords. Neurallanguagemodelsinsteadprojectwordsintoacontinuousspace
+inwhichwordswithsimilarcontextshavesimilarrepresentations. We’llintroduce
+transformer-basedlargelanguagemodelsinChapter8,alongthewayintroducing
+feedforwardlanguagemodels(Bengioetal.2006,Schwenk2007)inChapter6and
+recurrentlanguagemodels(Mikolov,2012)inChapter13.
+
+--- PAGE_23 ---
+EXERCISES 23
+Exercises
+3.1 Writeouttheequationfortrigramprobabilityestimation(modifyingEq.3.11).
+Nowwriteoutallthenon-zerotrigramprobabilitiesfortheI am Samcorpus
+onpage4.
+3.2 Calculatetheprobabilityofthesentencei want chinese food. Givetwo
+probabilities,oneusingFig.3.2andthe‘usefulprobabilities’justbelowiton
+page6, andanotherusingtheadd-1smoothedtableinFig.3.7. Assumethe
+additionaladd-1smoothedprobabilitiesP(i|<s>)=0.19andP(</s>|food)=
+0.40.
+3.3 Whichofthetwoprobabilitiesyoucomputedinthepreviousexerciseishigher,
+unsmoothedorsmoothed? Explainwhy.
+3.4 Wearegiventhefollowingcorpus,modifiedfromtheoneinthechapter:
+<s> I am Sam </s>
+<s> Sam I am </s>
+<s> I am Sam </s>
+<s> I do not like green eggs and Sam </s>
+Using a bigram language model with add-one smoothing, what is P(Sam |
+am)? Include<s>and</s>inyourcountsjustlikeanyothertoken.
+3.5 Suppose we didn’t use the end-symbol </s>. Train an unsmoothed bigram
+grammaronthefollowingtrainingcorpuswithoutusingtheend-symbol</s>:
+<s> a b
+<s> b b
+<s> b a
+<s> a a
+Demonstratethatyourbigrammodeldoesnotassignasingleprobabilitydis-
+tributionacrossallsentencelengthsbyshowingthatthesumoftheprobability
+ofthefourpossible2wordsentencesoverthealphabet{a,b}is1.0, andthe
+sumoftheprobabilityofallpossible3wordsentencesoverthealphabet{a,b}
+isalso1.0.
+3.6 Suppose we train a trigram language model with add-one smoothing on a
+givencorpus. ThecorpuscontainsVwordtypes. Expressaformulaforesti-
+matingP(w3|w1,w2),wherew3isawordwhichfollowsthebigram(w1,w2),
+in terms of various n-gram counts and V. Use the notation c(w1,w2,w3) to
+denotethenumberoftimesthattrigram(w1,w2,w3)occursinthecorpus,and
+soonforbigramsandunigrams.
+3.7 Wearegiventhefollowingcorpus,modifiedfromtheoneinthechapter:
+<s> I am Sam </s>
+<s> Sam I am </s>
+<s> I am Sam </s>
+<s> I do not like green eggs and Sam </s>
+If we use linear interpolation smoothing between a maximum-likelihood bi-
+grammodelandamaximum-likelihoodunigrammodelwithλ = 1 andλ =
+1 2 2
+1, what is P(Sam|am)? Include <s> and </s> in your counts just like any
+2
+othertoken.
+3.8 Writeaprogramtocomputeunsmoothedunigramsandbigrams.
+
+--- PAGE_24 ---
+24 CHAPTER3 • N-GRAMLANGUAGEMODELS
+3.9 Runyourn-gramprogramontwodifferentsmallcorporaofyourchoice(you
+might use email text or newsgroups). Now compare the statistics of the two
+corpora. Whatarethedifferencesinthemostcommonunigramsbetweenthe
+two? Howaboutinterestingdifferencesinbigrams?
+3.10 Addanoptiontoyourprogramtogeneraterandomsentences.
+3.11 Addanoptiontoyourprogramtocomputetheperplexityofatestset.
+3.12 You are given a training set of 100 numbers that consists of 91 zeros and 1
+eachoftheotherdigits1-9. Nowweseethefollowingtestset: 00000300
+00. Whatistheunigramperplexity?
+
+--- PAGE_25 ---
+Exercises 25
+Algoet,P.H.andT.M.Cover.1988. Asandwichproofof Jelinek,F.andR.L.Mercer.1980. Interpolatedestimation
+theShannon-McMillan-Breimantheorem. TheAnnalsof ofMarkovsourceparametersfromsparsedata. InE.S.
+Probability,16(2):899–909. GelsemaandL.N.Kanal, eds, Proceedings, Workshop
+Bahl, L.R., F.Jelinek, andR.L.Mercer.1983. Amaxi- onPatternRecognitioninPractice,381–397.NorthHol-
+mumlikelihoodapproachtocontinuousspeechrecogni- land.
+tion.IEEETransactionsonPatternAnalysisandMachine Jelinek,F.,R.L.Mercer,andL.R.Bahl.1975. Designofa
+Intelligence,5(2):179–190. linguisticstatisticaldecoderfortherecognitionofcontin-
+Baker,J.K.1975a. TheDRAGONsystem–Anoverview. uousspeech. IEEETransactionsonInformationTheory,
+IEEETransactionsonASSP,ASSP-23(1):24–29. IT-21(3):250–256.
+Baker, J. K. 1975b. Stochastic modeling for automatic Johnson,W.E.1932. Probability: deductiveandinductive
+speechunderstanding.InD.R.Reddy,ed.,SpeechRecog- problems(appendixto).Mind,41(164):421–423.
+nition.AcademicPress. Jurafsky,D.,C.Wooters,G.Tajchman,J.Segal,A.Stolcke,
+Bengio,Y.,H.Schwenk,J.-S.Sene´cal,F.Morin,andJ.-L. E.Fosler,andN.Morgan.1994.TheBerkeleyrestaurant
+Gauvain.2006.Neuralprobabilisticlanguagemodels.In project.ICSLP.
+InnovationsinMachineLearning,137–186.Springer. Jurgens,D.,Y.Tsvetkov,andD.Jurafsky.2017. Incorpo-
+Blodgett,S.L.andB.O’Connor.2017. Racialdisparityin ratingdialectalvariabilityforsociallyequitablelanguage
+naturallanguageprocessing:Acasestudyofsocialmedia identification.ACL.
+African-AmericanEnglish.FAT/MLWorkshop,KDD. Kane, S.K., M.R.Morris, A.Paradiso, andJ.Campbell.
+Brants, T., A. C. Popat, P. Xu, F. J. Och, and J. Dean. 2017. “at times avuncular and cantankerous, with the
+2007. Large language models in machine translation. reflexesofamongoose”: Understandingself-expression
+EMNLP/CoNLL. throughaugmentativeandalternativecommunicationde-
+vices.CSCW.
+Chen,S.F.andJ.Goodman.1999. Anempiricalstudyof
+smoothingtechniquesforlanguagemodeling. Computer King,S.2020. FromAfricanAmericanVernacularEnglish
+SpeechandLanguage,13:359–394. toAfricanAmericanLanguage: Rethinkingthestudyof
+Chomsky, N. 1956. Three models for the description of
+raceandlanguageinAfricanAmericans’speech.Annual
+language. IRE Transactions on Information Theory, ReviewofLinguistics,6:285–300.
+2(3):113–124. Lin, Y., J.-B. Michel, E. Aiden Lieberman, J. Orwant,
+Chomsky,N.1957.SyntacticStructures.Mouton. W.Brockman,andS.Petrov.2012.Syntacticannotations
+fortheGooglebooksNGramcorpus.ACL.
+Church,K.W.andW.A.Gale.1991. Acomparisonofthe
+enhanced Good-Turing and deleted estimation methods Liu,J.,S.Min,L.Zettlemoyer,Y.Choi,andH.Hajishirzi.
+for estimating probabilities of English bigrams. Com- 2024. Infini-gram: Scalingunboundedn-gramlanguage
+puterSpeechandLanguage,5:19–54. modelstoatrilliontokens.ArXivpreprint.
+Cover,T.M.andJ.A.Thomas.1991. ElementsofInforma- Markov,A.A.1913. Essaid’unerecherchestatistiquesur
+tionTheory.Wiley. letexteduroman“EugeneOnegin”illustrantlaliaison
+desepreuveenchain(‘Exampleofastatisticalinvestiga-
+Davies, M. 2020. The Corpus of Contemporary Amer-
+tionofthetextof“EugeneOnegin”illustratingthede-
+ican English (COCA): One billion words, 1990-2019.
+pendencebetweensamplesinchain’). IzvistiaImpera-
+https://www.english-corpora.org/coca/.
+torskoiAkademiiNauk(Bulletindel’Acade´mieImpe´riale
+Franz, A. and T. Brants. 2006. All our n-gram are desSciencesdeSt.-Pe´tersbourg),7:153–162.
+belong to you. https://research.google/blog/
+Mikolov,T.2012.Statisticallanguagemodelsbasedonneu-
+all-our-n-gram-are-belong-to-you/.
+ralnetworks. Ph.D.thesis,BrnoUniversityofTechnol-
+Gale,W.A.andK.W.Church.1994. Whatiswrongwith
+ogy.
+addingone? InN.OostdijkandP.deHaan,eds,Corpus-
+Miller,G.A.andN.Chomsky.1963.Finitarymodelsoflan-
+BasedResearchintoLanguage,189–198.Rodopi.
+guageusers. InR.D.Luce,R.R.Bush,andE.Galanter,
+Goodman, J.2006. Abitofprogressinlanguagemodel-
+eds,HandbookofMathematicalPsychology,volumeII,
+ing:Extendedversion.TechnicalReportMSR-TR-2001-
+419–491.JohnWiley.
+72,MachineLearningandAppliedStatisticsGroup,Mi-
+Miller,G.A.andJ.A.Selfridge.1950. Verbalcontextand
+crosoftResearch,Redmond,WA.
+therecallofmeaningfulmaterial. AmericanJournalof
+Heafield, K. 2011. KenLM: Faster and smaller language
+Psychology,63:176–185.
+modelqueries. WorkshoponStatisticalMachineTrans-
+Na´das,A.1984. Estimationofprobabilitiesinthelanguage
+lation.
+model of the IBM speech recognition system. IEEE
+Heafield,K.,I.Pouzyrevsky,J.H.Clark,andP.Koehn.2013.
+TransactionsonASSP,32(4):859–861.
+Scalable modified Kneser-Ney language model estima-
+tion.ACL. Schwenk, H. 2007. Continuous space language models.
+ComputerSpeech&Language,21(3):492–518.
+Jeffreys,H.1948.TheoryofProbability,2ndedition.Claren-
+donPress.Section3.23. Shannon, C. E. 1948. A mathematical theory of commu-
+nication. BellSystemTechnicalJournal,27(3):379–423.
+Jelinek, F. 1990. Self-organized language modeling for
+Continuedinthefollowingvolume.
+speech recognition. In A. Waibel and K.-F. Lee, eds,
+ReadingsinSpeechRecognition,450–506.MorganKauf- Stolcke, A. 1998. Entropy-based pruning of backoff lan-
+mann. OriginallydistributedasIBMtechnicalreportin guagemodels. Proc.DARPABroadcastNewsTranscrip-
+1985. tionandUnderstandingWorkshop.
+
+--- PAGE_26 ---
+26 Chapter3 • N-gramLanguageModels
+Stolcke,A.2002.SRILM–anextensiblelanguagemodeling
+toolkit.ICSLP.
+Trnka, K., D. Yarrington, J. McCaw, K. F. McCoy, and
+C.Pennington.2007. Theeffectsofwordpredictionon
+communicationrateforAAC.NAACL-HLT.
+Witten,I.H.andT.C.Bell.1991.Thezero-frequencyprob-
+lem:Estimatingtheprobabilitiesofnoveleventsinadap-
+tivetextcompression.IEEETransactionsonInformation
+Theory,37(4):1085–1094.
+
+============================================================
+FILE: 1 Introduction to Natural language processing (1).pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Natural Language Text Processing
+
+
+--- SLIDE_2 ---
+Natural Language
+Languages that  are spoken  naturally in  human being
+
+--- SLIDE_3 ---
+Languages
+Human to Human
+Machine to machine
+
+
+
+--- SLIDE_4 ---
+Perspective on  NLP:Areas of AI and their inter-dependencies.
+
+--- SLIDE_5 ---
+Layer 1
+Search  
+Search algorithms try to find out the best possible strategy, the optimal strategy for computer. 
+
+Logic 
+Logic is a vehicle for reasoning and inferencing. In logic we are concerned with several constructs like if x is true then y is true.
+
+C. Knowledge Representation
+knowledge must be extracted and embedded in the Machine.
+
+--- SLIDE_6 ---
+Layer 2
+Machine Learning
+NLP is using lots of Statistical Techniques. Statistical Techniques are Machine Learning techniques; they make use of the knowledge content in the data. 
+
+Planning 
+Planning in AI is the process of producing a series of actions or procedures to accomplish a particular goal. Planning in AI is often used for tasks that require reasoning, problem-solving, and decision-making, such as robotics, games, or scheduling
+
+--- SLIDE_7 ---
+Perspective on  NLP:Areas of AI and their inter-dependencies.
+NLP-concerned with computer being able to process human language like Hindi, Marathi,Gujrathi,French,English , and understand .
+
+Computer Vision-NLP is followed by Computer Vision where machine processes seen and understand how to operate in seen.
+
+Robotics-there is an embedded software inside  robots that asking it to perform certain actions like navigating etc.
+
+--- SLIDE_8 ---
+Perspective on  NLP:Areas of AI and their inter-dependencies.
+Expert System-Expert System is concerned with ,the expert level performance of the software on a specific task.
+
+For example –The task could be diagnosis of diseases and curing it.
+
+A doctor is known to operate with number of rules ,a very large no of rules obtained by years of education and practice on patience .
+
+So, the expert system is concerned with emulating this behavior of the expert.
+
+
+--- SLIDE_9 ---
+2 nd layer :feeding Layer 
+Machine Learning and planning feed into several layers in the outer most category.
+
+For example, Natural Language Processing is fed by Machine Learning and Natural Language Processing is also fed by Knowledge Representation. 
+
+The reason for this is that in current world, Natural Language Processing is using lots of Statistical Techniques. 
+
+Statistical Techniques are Machine Learning techniques; they make use of
+the knowledge content in the data.
+
+--- SLIDE_10 ---
+Introduction to Natural Language  Processing
+ branch of artificial intelligence  that helps computers understand, interpret and manipulate human  language.
+
+
+it deals with the interaction between  computers and humans using the natural language.
+
+
+ objective  is to read, decipher, understand, and  make sense of the human languages in a manner that is valuable.
+
+is an interdisciplinary subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language
+
+
+
+--- SLIDE_11 ---
+Natural language processing 
+It refers to the branch of computer science—and more specifically, the branch of artificial intelligence or AI
+
+
+concerned with giving computers the ability to understand text and spoken words in much the same way human beings can.
+
+is an interdisciplinary subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language
+
+
+--- SLIDE_12 ---
+
+INPUT Text  (Document
+/Paragraph
+/Sentense
+/word}
+
+OUTPUT
+(Text/  Rating
+/Graph
+/Audio)
+NLP System
+
+--- SLIDE_13 ---
+
+Text  (Document
+/Paragraph
+/Sen tense
+/word}
+
+Speech
+Processing
+
+Audio
+
+
+OUTPUT
+(Text/  Rating
+/Graph)
+NLP System
+
+--- SLIDE_14 ---
+
+Text  (Document
+/Paragraph
+/Sen tense
+/word}
+
+Speech
+Processing
+
+OCR
+Processing
+
+Audio
+
+Image
+
+
+OUTPUT
+(Text/  Rating
+/Graph)
+NLP System
+
+--- SLIDE_15 ---
+Stages of Natural language Processing 
+To converse with human a program must understand the syntax(grammar),semantics(word meaning) and morphology (word level analysis),and pragmatics(conversation).
+
+There are certain phases in which Natural language processing is performed .
+
+
+
+--- SLIDE_16 ---
+Steps in NLP
+Morphological Analysis
+Syntactic analysis
+Semantic Analysis
+Discourse Analysis
+Pragmatic Analysis
+Word-Level Analysis
+Sentence-Level Analysis
+Sentence-Level Analysis
+Sentence-Level Analysis
+Sentence-Level Analysis
+
+--- SLIDE_17 ---
+Morphological Analysis
+
+studies the structure of words or formation of the words.
+
+
+How words are built from smaller pieces
+
+
+
+Identification ,analysis of root words , affixes (suffixes and prefixes)
+
+Example 
+Washing – wash+ ​ing
+Browser – Browse + er
+Incomplete- In+ Complete
+
+
+--- SLIDE_18 ---
+Morphological Analysis
+
+1. Tokenization​
+John ate the pizza ! !
+2. Stop Word Removal  (removing the words that occur commonly across all the documents ,typically, articles and pronouns are generally classified as stop words )​
+​
+Example
+Search Engines
+News article categorization & Spam Detection
+Chatbots & Virtual Assistants: 
+    “I want to know the status of my order”→ know status order
+
+--- SLIDE_19 ---
+Morphological Analysis
+Syntactic analysis
+Semantic Analysis
+Discourse Analysis
+Pragmatic Analysis
+3. Stemming
+Stemming is a process of reducing words  into its base form (Root form/stem form).
+
+Process of  converting infected word to their word  stem.
+John->John  Ate -> eat  Pizza->Pizza
+
+--- SLIDE_20 ---
+4. Lemmatization
+text normalization technique used for Natural Language Processing (NLP). 
+
+It can convert any word's inflections to the base root form.
+
+For example:
+Playing, Plays, Played ------- Play (Common root form "play")
+
+
+
+
+--- SLIDE_21 ---
+Stemming vs Lemmatization
+Stemming Real-world Uses:
+Search engines
+Information retrieval systems
+Text mining
+Recommendation systems
+
+Lemmatization Real-world Uses:
+Chatbots
+Machine translation
+Medical & legal NLP
+Sentiment analysis
+
+
+--- SLIDE_22 ---
+Stemming vs Lemmatization
+
+--- SLIDE_23 ---
+Morphological Analysis
+Syntactic analysis
+Semantic Analysis
+Discourse Analysis
+Pragmatic Analysis
+4. N-Gram Language Model
+Continuous sequence of N-Items from a given sample text.   
+1-gram-
+John
+Ate
+the
+Pizza
+Bigram -
+Trigram -
+4-Gram -
+John	Ate	the	Pizza
+John Ate the ?
+John
+Ate
+the
+Pizza
+
+--- SLIDE_24 ---
+Syntactic analysis
+John Ate the Apple
+Ate	the Apple John
+
+
+analyzing the grammatical syntax of a sentence to understand its meaning
+
+--- SLIDE_25 ---
+Syntactic analysisset of rules needed to ensure a sentence is grammatically correct
+John Ate the Apple
+Ate	the Apple John
+
+
+
+--- SLIDE_26 ---
+Morphological Analysis
+Semantic Analysis
+Discourse Analysis
+
+Pragmatic Analysis
+She drank Some Milk
+She drank Some books
+
+
+semantics refers to meaning
+a computer understands the meaning of a text by analyzing the text as a whole and not just looking at individual words
+context in which a word is used is very important 
+ “Does it all sound like a joke to you?”
+Example 1
+Example 2
+
+--- SLIDE_27 ---
+Morphological Analysis
+Syntactic analysis
+Semantic Analysis
+Discourse Analysis
+Pragmatic Analysis
+Monkeys Eat Banana,  when they Wake up.
+Who is they here?
+-Monkey
+Monkeys eat Banana,
+when they are ripe.
+Who is they here?
+-Banana
+Resolving the reference as per the context .
+
+--- SLIDE_28 ---
+Morphological Analysis
+Syntactic analysis
+Semantic Analysis
+Discourse Analysis
+Pragmatic Analysis
+Close the Door
+-Order
+Please Close the Door
+- Request ,affirmation
+knowledge of the relationship of meaning to the goals and intentions of the speaker.
+
+--- SLIDE_29 ---
+Ambiguity in Natural language
+Text is ambiguous if there are  multiple  alternative Ambiguous linguistic structures that can be built for it
+
+situation where a word or a sentence may have more than one meaning.
+
+There are different types of ambiguities
+Lexical
+Syntactical
+Semantic
+Discourse Ambiguity
+Pragmatic Ambiguity
+
+
+
+
+--- SLIDE_30 ---
+Lexical Ambiguity
+is the ambiguity of a single word
+
+It can be resolved by parts of speech tagging
+
+Word has more than one meaning/category
+
+E.g.
+Book – Noun –Textbook/Novel
+Book – Verb - Book ticket/seat
+
+Bank-Noun –Financial institute
+Bank-Noun - River Bank
+Bank- Verb-  Banking Transaction
+
+
+
+--- SLIDE_31 ---
+
+Syntactical Ambiguity(Grammar or rules are ambiguous)
+
+
+it exists in the presence of two or more possible meanings within the sentence.
+
+Specify the possible arrangements of  words in sentence used
+Example
+ I saw the girl with the binocular.
+
+In the above example, did I have the binoculars? Or did the girl have the binoculars?
+
+
+
+--- SLIDE_32 ---
+
+Semantic Ambiguity
+
+When a sentence has more than one meaning then it is called as semantic ambiguity 
+
+Rahul loves his cat and Dipesh does too.
+
+Whether Dipesh loves his cat or Rahul's cat
+
+--- SLIDE_33 ---
+Anaphoric Ambiguity
+
+
+Occurs due to use of Anaphoric entities in discourse.
+
+Anaphora-When same beginning of sentence is repeated in the sentence several times , we makes  the pronoun instead of noun .
+
+For example, My mother liked the house very much , but she couldn't purchase it
+Example:-
+•Monkeys Eat Banana, when they  Wake up. -Who is they here? Monkey
+
+•Monkeys eat Banana, when they  are ripe.-Who is they here?-Banana
+
+Identify When, Where, by whom  occurrence was said
+
+
+
+
+
+--- SLIDE_34 ---
+Pragmatic Ambiguity
+
+Understanding speaker's intention.
+
+Eg. You are Late
+
+
+
+
+
+
+--- SLIDE_35 ---
+Challenges in NLP
+Elongated words
+
+I am sooooo sorry.
+I t was toooo yummy.
+
+Shortcuts
+Pls	-
+BTW	-
+Wat	-
+K	-
+Please
+By the way  What
+OK
+
+--- SLIDE_36 ---
+Challenges in NLP
+Emojis
+
+
+
+--- SLIDE_37 ---
+Challenges in NLP
+Mix Use of Languages
+
+I liked that movie. Salman khan ka acting was  Lajabab. Too good. जबरदस्त.
+
+--- SLIDE_38 ---
+Challenges in NLP
+Ellipsis
+Peter worked hard and passed exam, Kevin too.
+
+Interpretation
+Kevin worked hard
+Kevin passed exam
+Kevin worked hard also he passed exam
+
+--- SLIDE_39 ---
+Challenges in NLP
+Punctuational Ambiguity
+
+Women, without her man, is nothing.
+
+Women! without her, man is nothing.
+
+--- SLIDE_40 ---
+
+Applications of NLP
+
+1. Question Answering
+Question Answering focuses on building systems that automatically answer the questions asked by humans in a natural language.
+
+
+--- SLIDE_41 ---
+
+Applications of NLP
+
+2. Spam Detection
+Spam detection is used to detect unwanted e-mails getting to a user's inbox.
+
+
+--- SLIDE_42 ---
+3. Sentiment Analysis
+ A combination of NLP (Natural Language Processing) and statistics by assigning the values to the text (positive, negative, or natural), identify the mood of the context (happy, sad, angry, etc.)​
+
+--- SLIDE_43 ---
+4. Machine Translation (Example: Google Translator)
+
+Machine translation is used to translate text or speech from one natural language to another natural language.
+
+
+--- SLIDE_44 ---
+5. Spelling correction
+
+Microsoft Corporation provides word processor software like MS-word, PowerPoint for the spelling correction.
+
+Chek's the spelling while typing.
+
+Example Wrong Speling will be underlined with the red color as done in this sentence   
+
+--- SLIDE_45 ---
+6. Chatbot
+
+Implementing the Chatbot is one of the important applications of NLP. It is used by many companies to provide the customer's chat services.
+
+
+--- SLIDE_46 ---
+Practice Questions 
+Identify the Type Of Ambiguity for Given Sentence 
+Identify The Type of Preprocessing with respect to given scenario-based corpus 
+Steps in NLP
+Challenges in NLP
+Ambiguities in NLP
+
+
+
+
+--- SLIDE_47 ---
+Lexical Ambiguity
+Occurs when a word has multiple meanings.
+Example: "The fisherman went to the bank." 
+"Bank" could mean a financial institution or the riverbank (edge of a river).
+This ambiguity arises due to polysemy (multiple meanings of a word).
+Syntactic (Structural) Ambiguity
+Occurs when a sentence can have multiple grammatical interpretations due to different ways of parsing it.
+Example: "The manager told the employee that he was fired." 
+Who is fired? The manager or the employee?
+The sentence structure allows both interpretations, leading to confusion.
+Semantic Ambiguity
+Occurs when the meaning of a sentence is unclear due to vague or multiple possible meanings.
+Example: "Visiting relatives can be annoying." 
+Does it mean relatives who visit are annoying or the act of visiting relatives is annoying?
+Pragmatic Ambiguity
+Occurs when the meaning depends on context, tone, or external knowledge.
+Example: "Can you pass the salt?" 
+Literally, this asks if the person has the ability to pass salt.
+But in a real-world context, it is a request to pass the salt.
+Referential Ambiguity
+Occurs when pronouns (he, she, it, they) refer to multiple possible antecedents.
+Example: "John met Mike at the café, and he ordered a coffee." 
+Who ordered the coffee—John or Mike?
+
+
+--- SLIDE_48 ---
+Practice Questions 
+Q.  Identify the Type Of Ambiguity for Given Sentence 
+
+Consider the following sentences and identify type of ambiguity
+The manager told the employee that he was fired.
+The fisherman went to the bank.
+  Solution: 
+"The manager told the employee that he was fired."
+Type of Ambiguity: Syntactic Ambiguity / Referential Ambiguity
+Unclear whether "he" refers to the manager or the employee.
+"The fisherman went to the bank."
+Type of Ambiguity: Lexical Ambiguity
+The word "bank" can mean a financial institution or a riverbank.
+
+
+
+--- SLIDE_49 ---
+
+Consider the following sentences and identify type of ambiguity
+He saw the seal at the zoo.  
+John told Mike that he won the award.
+
+
+--- SLIDE_50 ---
+Identify The Type of Preprocessing with respect to given scenario-basedcorpus 
+Q1 .A search engine ignores common words such as “the”, “is”, “and”, “of” while indexing web pages to improve search speed and relevance. Which text preprocessing technique is required?
+Q2. A customer review sentiment analysis system removes symbols like !, ?, #, and . before extracting features from text. Which text preprocessing technique is required?
+Q3. A medical chatbot converts words such as “diagnoses”, “diagnosed”, and “diagnosing” into their base dictionary form “diagnose” to preserve meaning. Which text preprocessing technique is required?
+Q4. A news classification system treats “COVID”, “Covid”, and “covid” as the same term during model training. Which text preprocessing technique is required?
+Q5. A document retrieval system reduces words like “playing”, “played”, and “player” to “play” without checking grammatical correctness. Which text preprocessing technique is required?
+
+--- SLIDE_51 ---
+
+Q6
+A social media analytics platform removes URLs, HTML tags, emojis, and special characters from tweets before analysis. Which text preprocessing technique is required?
+Q7
+A plagiarism detection system breaks paragraphs into individual words before computing similarity measures. Which text preprocessing technique is required?
+Q8
+An e-commerce search engine automatically corrects misspelled queries such as “samsng” to “samsung”. Which text preprocessing technique is required?
+Q9
+A financial report analysis system replaces values like “₹10,000”, “2023”, and “5%” with a generic token to reduce vocabulary size. Which text preprocessing technique is required?
+Q10
+A sentiment analysis system captures expressions like “not satisfied” and “very good” as meaningful units instead of individual words. Which text preprocessing technique is required?
+
+--- SLIDE_52 ---
+Answers
+
+============================================================
+FILE: 2 Language Model_KD.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Language Modeling
+
+Introduction to N-grams
+
+
+--- SLIDE_2 ---
+Why?
+Machine Translation:
+P(high winds tonite) > P(large winds tonite)
+
+
+Spell Correction
+The office is about fifteen minuets from my house
+P(about fifteen minutes from) > P(about fifteen minuets from)
+
+
+--- SLIDE_3 ---
+Why ?
+Speech Recognition
+P(I saw a van) >> P(eyes awe of an)
++ Summarization, question-answering, etc., etc.!!
+
+OCR(optical character recognition) & Hand Recognition
+In, OCR LM can be used to predict a word that is not easily readable in the given image .
+
+
+--- SLIDE_4 ---
+Why ?
+Suggestions while typing
+We get suggestion on our cell phone while messaging 
+
+Context Sensitive Spelling Correction 
+Eg. "college is closed on Saturday and Sunday
+Spelling error : college has been typed as collage 
+College :Education institution 
+Collage : Artwork 
+Suppose both words college and collage are present in corpus .
+Spelling Mistake detection and correction will not work as both words are present in corpus.
+Need Spelling Correction based on local context.
+P(College is closed on Saturday and Sunday )> p(Collage is closed on Saturday and Sunday )
+
+--- SLIDE_5 ---
+Probabilistic Language Modeling
+compute the probability of a sentence or sequence of words occurring together:
+     P(W) = P(w1,w2,w3,w4,w5…wn)   Joint Probability
+
+probability of an upcoming word:
+      P(w5|w1,w2,w3,w4) Conditional Probability 
+
+
+
+--- SLIDE_6 ---
+How to estimate these probabilities
+Could we just count and divide?
+
+
+
+
+
+No!  Too many possible sentences!
+We’ll never see enough data for estimating these
+
+
+
+--- SLIDE_7 ---
+
+Drawback of estimating probabilities directly from counts
+
+Large corpora (like the web) allow probability estimation using word counts.
+This approach often fails because even huge datasets are not large enough.
+Language is productive and constantly creates new sentences.
+Many valid sentences or phrases never appear in the data.
+Unseen sentences or phrases get zero counts, leading to poor probability estimates.
+
+
+Solution is join probability
+
+--- SLIDE_8 ---
+Joint Probability  P(W) 
+How to compute this joint probability:
+
+P(its, water, is, so, transparent, that)
+
+Intuition: let’s rely on the Chain Rule of Probability
+
+--- SLIDE_9 ---
+Reminder: The Chain Rule
+Recall the definition of conditional probabilities
+p(B|A) = P(A,B)/P(A)	Rewriting:   P(A,B) = P(A)P(B|A)
+
+More variables:
+ P(A,B,C,D) = P(A)P(B|A)P(C|A,B)P(D|A,B,C)
+The Chain Rule in General
+  P(x1,x2,x3,…,xn) = P(x1)P(x2|x1)P(x3|x1,x2)…P(xn|x1,…,xn-1)
+
+
+--- SLIDE_10 ---
+Markov Assumption
+
+
+In other words, we approximate each component in the product
+
+
+
+
+
+--- SLIDE_11 ---
+Markov Assumption
+Simplifying assumption:
+
+
+
+Or maybe
+
+
+Andrei Markov
+
+--- SLIDE_12 ---
+N-gram model 
+A model that applies markov assumption to text
+
+For Example, bigram 
+The bigram model, approximates  the conditional probability of the preceding word P(wn|wn−1).
+
+
+--- SLIDE_13 ---
+Example 
+instead of computing the probability
+
+P(the|Walden Pond’s water is so transparent that) 
+
+we approximate it with the probability 
+
+P(the|that)
+
+
+--- SLIDE_14 ---
+How do we estimate these bigram or n-gram probabilities?
+The Maximum Likelihood Estimate
+
+--- SLIDE_15 ---
+
+
+--- SLIDE_16 ---
+
+
+--- SLIDE_17 ---
+An example
+Corpus:
+<s> I am Sam </s>
+<s> Sam I am </s>
+<s> I do not like green eggs and ham </s>
+
+
+
+
+
+
+
+
+--- SLIDE_18 ---
+Exercise 1: 
+Estimating Bi-gram probabilities
+What is the most probable next word predicted by the model for the following word sequence?
+<S> Do ?
+ <S> I like Henry ?
+ 
+
+--- SLIDE_19 ---
+1) <S> Do ?
+Next word prediction probability Wᵢ₋₁ = do
+
+I is most Probable 
+
+--- SLIDE_20 ---
+<S> I like Henry ?
+Next word prediction probability Wᵢ₋₁ = Henry
+
+</S> is more probable
+
+
+--- SLIDE_21 ---
+Questions 
+
+--- SLIDE_22 ---
+Solution
+
+--- SLIDE_23 ---
+Problems with Using Raw Probabilities
+
+1. Numerical Underflow
+2. Computational Inefficiency
+
+--- SLIDE_24 ---
+Practical Issues
+We do everything in log space
+Avoid underflow
+(also adding is faster than multiplying)
+
+--- SLIDE_25 ---
+Probabilities ≤ 1 shrink when multiplied repeatedly
+Multiplying many n-gram probabilities causes numerical underflow
+Using log probabilities avoids very small numbers
+Multiplication in probability space becomes addition in log space
+Addition is faster and more stable than multiplication
+Convert back to probabilities only when final results are needed
+
+
+log(p1 X p2 X p3 X p4 ) =log p1 +log p2 + log p3 + log p4
+Log Probabilities
+
+--- SLIDE_26 ---
+Example 
+
+--- SLIDE_27 ---
+Example 
+
+--- SLIDE_28 ---
+
+Thank You
+
+--- SLIDE_29 ---
+Practice Question 
+Extract bigrams from the given corpus:
+
+
+Corpus C:
+there is a big garden
+children play in a garden
+they play inside beautiful garden
+
+
+--- SLIDE_30 ---
+Practice Question 1
+Extract bigrams from the given corpus:
+
+
+Corpus C:
+there is a big garden
+children play in a garden
+they play inside beautiful garden
+
+Preprocess
+Adding sentence boundaries <s> and </s>:
+<s> there is a big garden </s> 
+<s> children play in a garden </s> 
+<s> they play inside beautiful garden </s>
+
+
+--- SLIDE_31 ---
+Practice Question
+extract bigrams from the given corpus:
+
+
+Corpus C:
+there is a big garden
+children play in a garden
+they play inside beautiful garden
+
+Adding sentence boundaries <s> and </s>:
+
+
+<s> there is a big garden </s> 
+<s> children play in a garden </s> 
+<s> they play inside beautiful garden </s>
+
+Bigram Frequency Table:
+
+--- SLIDE_32 ---
+Practice Question 2
+Compute P(in|play) using a Bigram Model
+
+
+Corpus C:
+there is a big garden
+children play in a garden
+they play inside beautiful garden
+
+
+--- SLIDE_33 ---
+P(in|play)
+Practice Question 2
+Compute P(in|play) using a Bigram Model
+
+
+Corpus C:
+there is a big garden
+children play in a garden
+they play inside beautiful garden
+
+
+--- SLIDE_34 ---
+Practice Question-3
+ Compute P(they play in a big garden) using a Bigram Model
+
+Corpus C:
+there is a big garden
+children play in a garden
+they play inside beautiful garden
+
+Adding sentence boundaries <s> and </s>:
+
+
+<s> there is a big garden </s> 
+<s> children play in a garden </s> 
+<s> they play inside beautiful garden </s>
+
+Unigram Frequency Table:
+Bigram Frequency Table:
+
+--- SLIDE_35 ---
+Practice Question
+Compute P(they play in a big garden) using a Bigram Model
+
+
+Corpus C:
+there is a big garden
+children play in a garden
+they play inside beautiful garden
+
+Unigram Frequency Table:
+Bigram Frequency Table:
+
+--- SLIDE_36 ---
+
+
+--- SLIDE_37 ---
+Calculations are made easy by a.b.c=exp.log(a.b.c)
+a⋅b⋅c=exp(loga+logb+logc)
+
+--- SLIDE_38 ---
+Practice Question 6
+"there is a big garden"
+Trigrams: (there, is, a), (is, a, big), (a, big, garden)
+"children play in a garden"
+Trigrams: (children, play, in), (play, in, a), (in, a, garden)
+"they play inside beautiful garden"
+Trigrams: (they, play, inside), (play, inside, beautiful), (inside, beautiful, garden)
+
+Total Trigrams
+Total unique trigrams = 9
+Total trigrams including repetitions = 9 (No duplicates here)
+
+
+Trigram Counts:
+Bigram Counts:
+
+--- SLIDE_39 ---
+
+
+
+============================================================
+FILE: 3 Evaluating Language Models_.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Evaluating Language Models
+Natural Language Processing
+1
+
+--- SLIDE_2 ---
+Natural Language Processing
+2
+Does our language model prefer good sentences to bad ones?
+Assign higher probability to “real” or “frequently observed” sentences than  “ungrammatical” or “rarely observed” sentences?
+We train parameters of our model on a training set.
+We test the model’s performance on data we haven’t seen.
+A test set is an unseen dataset that is different from our training set, totally unused.
+An evaluation metric tells us how well our model does on the test set.
+Evaluating Language Models
+
+--- SLIDE_3 ---
+Natural Language Processing
+3
+Evaluating Language Models
+Extrinsic Evaluation(Application Based)
+Extrinsic Evaluation of a N-gram language model is to use it in an application and  measure how much the application improves.
+To compare two language models A and B:
+Use each of language model in a task such as spelling corrector, MT(Machine Translation) system.
+Get an accuracy for A and for B
+How many misspelled words corrected properly
+How many words translated correctly
+Compare accuracy for A and B
+The model produces the better accuracy is the better model.
+Extrinsic evaluation can be time-consuming.
+
+--- SLIDE_4 ---
+Natural Language Processing
+4
+Evaluating Language Models
+Intrinsic Evaluation
+An intrinsic evaluation metric is one that measures the quality of a model  independent of any application.
+When a corpus of text is given and to compare two different n-gram models,
+Divide the data into training and test sets,
+Train the parameters of both models on the training set, and
+Compare how well the two trained models fit the test set.
+Whichever model assigns a higher probability to the test set
+In practice, probability-based metric called perplexity is used instead of raw  probability as our metric for evaluating language models.
+
+--- SLIDE_5 ---
+Evaluating Language Models
+Perplexity
+The best language model is one that best predicts an unseen test set
+–	Gives the highest P(testset)
+The perplexity of a language model on a test set is the inverse probability of the test  set, normalized by the number of words.
+Minimizing perplexity is the same as maximizing probability
+The perpelexity PP for a test set W=w1w2…wn is
+
+PP(W)	by chain rule
+The perpelexity PP for bigrams:  PP(W)
+Natural Language Processing
+5
+
+--- SLIDE_6 ---
+Evaluating Language Models
+Perplexity as branching factor
+Perplexity can be seen as the weighted average branching factor of a language.
+–	The branching factor of a language is the number of possible next words that can follow any word.
+Let’s suppose a sentence consisting of random digits
+What is the perplexity of this sentence according to a model that assign P=1/10 to each  digit?
+6
+
+--- SLIDE_7 ---
+Example 
+<s>I am a human</s>
+<s>I am not a stone </s>
+</s>I I live in Mumbai</s>
+Using a bigram language model compute:P("I I am not")
+
+--- SLIDE_8 ---
+Natural Language Processing
+8
+The n-gram model, like many statistical models, is dependent on the training corpus. the probabilities often encode specific facts about a given training corpus. 
+
+N-grams only work well for word prediction if the test corpus looks like the training corpus In real life, it often doesn’t We need to train robust models that generalize! 
+One kind of generalization: Getting rid of Zeros! Things that don’t ever occur in the training set, but occur in the test set Zeros: things that don’t ever occur in the training set but do occur in the test set causes problem for two reasons. First, underestimating the probability of all sorts of words that might occur, Second, if probability of any word in test set is 0, entire probability of test set is 0. 
+Generalization and Zeros
+
+--- SLIDE_9 ---
+Natural Language Processing
+9
+N-gram models depend on the training corpus
+Perform well only if test data matches training data
+Zero probabilities occur for unseen words
+One zero makes the entire test probability zero
+Generalization and Zeros
+
+--- SLIDE_10 ---
+Natural Language Processing
+10
+We have to deal with words we haven’t seen before, which we call unknown words.
+We can model these potential unknown words in the test set by adding a pseudo-word
+called <UNK> into our training set too.
+
+
+One way to handle unknown words is:
+Replace words in the training data by <UNK> based on their frequency.
+For example we can replace by <UNK> all words that occur fewer than n times in the  training set, where n is some small number, or
+Equivalently select a vocabulary size V in advance (say 50,000) and choose the top V  words by frequency and replace the rest by <UNK>.
+Proceed to train the language model as before, treating <UNK> like a regular word.
+Unknown Words
+
+--- SLIDE_11 ---
+11
+Real data contains unknown words not seen in training
+Unknown words are modeled using a pseudo-word <UNK>
+<UNK> is added to the training vocabulary
+Rare words in training are replaced with <UNK>
+Or fix vocabulary size V and keep top V frequent words
+Replace all remaining words with <UNK>
+Train the language model treating <UNK> as a normal word
+
+Unknown Words
+
+--- SLIDE_12 ---
+<s>I am Henry</s>
+<s> I like college </s>
+<s>Do Henry like college </s>
+<s>Henry I am</s>
+ <s>Do I like Henry</s>
+ <s>Do I like college </s>
+<s>I do like Henry </s>
+
+<s> like college</s>
+<s>Do I like Henry</s>
+
+Consider the Following Corpus and Identify the most Probable statement from the given sentence 
+
+--- SLIDE_13 ---
+<s> like college </s>
+= P(like | <s>) × P(college | like) × P(</s> | college)
+= 0/7 × 3/5 × 3/3 = 0
+
+<s> Do I like Henry </s>
+= P(do | <s>) × P(I | do) × P(like | I) × P(Henry | like) × P(</s> | Henry)
+= 3/7 × 2/4 × 3/6 × 2/5 × 3/5
+= 9/350 = 0.0257
+
+
+--- SLIDE_14 ---
+Natural Language Processing
+14
+We lower the probability of common word pairs a little and use that leftover probability to give rare or unseen word pairs a small non-zero probability.
+This modification is called smoothing (or discounting).
+
+With smoothing:
+Unseen words get a small chance
+The model becomes more realistic and useful 
+
+Smoothing
+
+--- SLIDE_15 ---
+
+15
+There are many ways to do smoothing, and some of themare:
+Add-1 smoothing (Laplace Smoothing)
+Add-k smoothing,
+
+
+Smoothing
+
+--- SLIDE_16 ---
+Natural Language Processing
+16
+The simplest way to do smoothing is to add one to all the counts, before we  normalize them into probabilities.
+–	All the counts that used to be zero will now have a count of 1, the counts of 1 will be 2, and  so on.
+This algorithm is called Laplace smoothing (Add-1 Smoothing).
+We pretend that we saw each word one more time than we did, and we just add one to
+all the counts!,
+Laplace Smoothing
+
+--- SLIDE_17 ---
+17
+The unsmoothed maximum likelihood estimate of the unigram probability of the word wi is its count ci normalized by the total number of word tokens N:
+P(wi) = ci / N
+Laplace smoothing adds one to each count. Since there are V words in the vocabulary  and each one was incremented, we also need to adjust the denominator to take into  account the extra V observations.
+PLaplace(wi) = (ci + 1) / (N + V)
+Laplace Smoothing  ( Add-1 Smoothing )
+Where
+N = total word tokens in corpus, 
+V = number of unique words in the vocabulary.
+
+
+--- SLIDE_18 ---
+The normal bigram probabilities are computed by normalizing each bigram counts  by the unigram count:
+Add-one smoothed bigram probabilities:
+Laplace Smoothing for Bigrams
+Natural Language Processing
+18
+
+--- SLIDE_19 ---
+
+
+
+Unique words are: <S>, </S>, I, Henry, do, like, am, college
+
+Total unique words: 8
+But we exclude </S> 
+
+Total unique words: 7
+Give the following bi-gram probabilities estimated by Laplace model.
+
+
+
+
+
+
+
+
+--- SLIDE_20 ---
+
+1. <S> like college </S>
+= P(like | <S>) × P(college | like) × P(</S> | college)
+= (0 + 1) / (7 + 7) × (3 + 1) / (5 + 7) × (3 + 1) / (3 + 7)
+= 1/14 × 4/12 × 4/10
+= 0.0095
+
+
+
+2. <S> Do I like Henry </S>
+= P(do | <S>) × P(I | do) × P(like | I) × P(Henry | like) × P(</S> | Henry)
+= (3 + 1) / (7 + 7) × (2 + 1) / (4 + 7) × (3 + 1) / (6 + 7) × (2 + 1) / (5 + 7) × (3 + 1) / (5 + 7)
+= 4/14 × 3/11 × 4/13 × 3/12 × 4/12
+= 0.0020
+
+
+--- SLIDE_21 ---
+Now consider a Bi-gram Language model (without smoothing). Which of the following sentences has the highest probability estimate?
+
+a. S1: <s> michael played at the playground </s>b. S2: <s> bob went to the school </s>c. S3: <s> the school was huge </s>d. S4: <s> zack went to the playground </s>
+
+P(S1) = 0P(S2) = 0P(S3) = 2/5 × 3/5 × 2/5 × 1/2 × 1 = 2/25P(S4) = 0
+
+
+--- SLIDE_22 ---
+Laplace-smoothed Bigrams
+Corpus: Berkeley Restaurant Project Sentences
+Natural Language Processing
+22
+
+--- SLIDE_23 ---
+Laplace-smoothed Bigrams
+Corpus: Berkeley Restaurant Project Sentences: Adjusted counts
+Natural Language Processing
+23
+
+--- SLIDE_24 ---
+Laplace-smoothed Bigrams
+Corpus: Berkeley Restaurant Project Sentences: Adjusted counts
+Natural Language Processing
+24
+
+--- SLIDE_25 ---
+Problem with Add-1 Smoothing 
+We fix zeros by pretending every possible bigram happened once:
+
+Where V = vocabulary size.
+
+But here’s the issue:
+
+Adding 1 to every possible word is huge when V is big.
+
+From the slide:
+C(want → to) changed 608 → 238 after smoothing
+P(to | want) dropped 0.66 → 0.26
+
+So we:
+Steal probability from common events
+Give too much to rare/unseen events
+This is called over-smoothing.
+
+
+--- SLIDE_26 ---
+The sharp change in counts and probabilities occurs because too much probability
+mass is moved to all the zeros.
+One alternative to add-one smoothing is to move a bit less of the probability mass  from the seen to the unseen events.
+Instead of adding 1 to each count, we add a fractional count k (.5? .05? .01?).
+This algorithm is called add-k smoothing.
+Add-k Smoothing
+26
+What this does:
+
+
+
+--- SLIDE_27 ---
+Numerical
+Consider the following Corpus 
+<s> I love natural language processing </s>
+<s> language models learn patterns </s>
+<s> I love machine learning </s>
+<s> natural language models are powerful </s>
+<s> machine learning uses data </s>
+
+
+============================================================
+FILE: 4 EditDistance.pptx
+============================================================
+
+
+--- SLIDE_1 ---
+Minimum Edit Distance
+
+Definition of Minimum Edit Distance
+
+
+
+--- SLIDE_2 ---
+How similar are two strings?
+Spell correction
+The user typed “graffe”
+Which is closest? 
+graf
+graft
+grail
+giraffe
+
+
+
+Computational Biology
+Align two sequences of nucleotides
+
+
+Resulting alignment:
+Also for Machine Translation, Information Extraction, Speech Recognition
+AGGCTATCACCTGACCTCCAGGCCGATGCCC
+TAGCTATCACGACCGCGGTCGATTTGCCCGAC
+-AGGCTATCACCTGACCTCCAGGCCGA--TGCCC---
+TAG-CTATCAC--GACCGC--GGTCGATTTGCCCGAC
+
+--- SLIDE_3 ---
+Edit Distance
+Edit distance gives us a way to quantify intuitions about string similarity. 
+
+The minimum edit distance between two strings
+
+Is the minimum number of editing operations
+Insertion
+Deletion
+Substitution
+Needed to transform one into the other
+
+--- SLIDE_4 ---
+Minimum Edit Distance
+Two strings and their alignment:
+
+--- SLIDE_5 ---
+Minimum Edit Distance
+If each operation has cost of 1
+Distance between these is 5
+If substitutions cost 2 (Levenshtein)
+Distance between them is 8
+
+--- SLIDE_6 ---
+Alignment in Computational Biology
+Given a sequence of bases
+
+
+An alignment:
+
+
+Given two sequences, align each letter to a letter or gap
+-AGGCTATCACCTGACCTCCAGGCCGA--TGCCC---
+TAG-CTATCAC--GACCGC--GGTCGATTTGCCCGAC
+AGGCTATCACCTGACCTCCAGGCCGATGCCC
+TAGCTATCACGACCGCGGTCGATTTGCCCGAC
+
+--- SLIDE_7 ---
+Alignment in Computational Biology
+Given a sequence of bases
+
+
+An alignment:
+
+
+Given two sequences, align each letter to a letter or gap
+-AGGCTATCACCTGACCTCCAGGCCGA--TGCCC---
+TAG-CTATCAC--GACCGC--GGTCGATTTGCCCGAC
+AGGCTATCACCTGACCTCCAGGCCGATGCCC
+TAGCTATCACGACCGCGGTCGATTTGCCCGAC
+
+--- SLIDE_8 ---
+Other uses of Edit Distance in NLP
+Evaluating Machine Translation and speech recognition
+R Spokesman confirms    senior government adviser was appointed
+H Spokesman said    the senior            adviser was appointed
+              S      I              D                        I
+Named Entity Extraction and Entity Coreference
+IBM Inc. announced today
+IBM profits
+Stanford Professor Jennifer Eberhardt announced yesterday
+for Professor Eberhardt…
+
+
+
+--- SLIDE_9 ---
+How to find the Min Edit Distance?
+Searching for a path (sequence of edits) from the start string to the final string:
+Initial state: the word we’re transforming
+Operators: insert, delete, substitute
+Goal state:  the word we’re trying to get to
+Path cost: what we want to minimize: the number of edits
+
+
+--- SLIDE_10 ---
+Minimum Edit as Search
+But the space of all edit sequences is huge!
+We can’t afford to navigate naïvely
+Lots of distinct paths wind up at the same state.
+We don’t have to keep track of all of them
+Just the shortest path to each of those revisted states.
+
+
+--- SLIDE_11 ---
+Defining Min Edit Distance
+For two strings
+X of length n 
+Y of length m
+We define D(i,j)
+the edit distance between X[1..i] and Y[1..j] 
+i.e., the first i characters of X and the first j characters of Y
+The edit distance between X and Y is thus D(n,m)
+
+--- SLIDE_12 ---
+Minimum Edit Distance
+
+Definition of Minimum Edit Distance
+
+
+
+--- SLIDE_13 ---
+Dynamic Programming for Minimum Edit Distance
+Dynamic programming: A tabular computation of D(n,m)
+Solving problems by combining solutions to subproblems.
+Bottom-up
+We compute D(i,j) for small i,j 
+And compute larger D(i,j) based on previously computed smaller values
+i.e., compute D(i,j) for all i (0 < i < n)  and j (0 < j < m)
+
+
+
+
+--- SLIDE_14 ---
+Defining Min Edit Distance (Levenshtein)
+Initialization
+D(i,0) = i
+D(0,j) = j
+Recurrence Relation:
+For each  i = 1…M
+	  For each  j = 1…N
+                          D(i-1,j) + 1
+          D(i,j)= min   D(i,j-1) + 1
+                          D(i-1,j-1) +   2;  if X(i) ≠ Y(j)   
+                                         0;  if X(i) = Y(j)
+Termination:
+D(N,M) is distance 
+
+
+
+
+--- SLIDE_15 ---
+The Edit Distance Table
+j
+
+i
+
+--- SLIDE_16 ---
+
+The Edit Distance Table
+
+--- SLIDE_17 ---
+Edit Distance
+
+--- SLIDE_18 ---
+The Edit Distance Table
+
+--- SLIDE_19 ---
+Computing alignments
+Edit distance isn’t sufficient
+We often need to align each character of the two strings to each other
+We do this by keeping a “backtrace”
+Every time we enter a cell, remember where we came from
+When we reach the end, 
+Trace back the path from the upper right corner to read off the alignment
+
+--- SLIDE_20 ---
+Edit Distance
+
+--- SLIDE_21 ---
+Exercise 
+
+--- SLIDE_22 ---
+Solution
+
+--- SLIDE_23 ---
+MinEdit with Backtrace
+
+--- SLIDE_24 ---
+Adding Backtrace to Minimum Edit Distance
+Base conditions:                                                        Termination:
+D(i,0) = i         D(0,j) = j         D(N,M) is distance 
+Recurrence Relation:
+For each  i = 1…M
+	 For each  j = 1…N
+                           D(i-1,j) + 1
+      D(i,j)=     min   D(i,j-1) + 1
+                           D(i-1,j-1) +  2; if X(i) ≠ Y(j)   
+                                         0; if X(i) = Y(j)
+                        LEFT
+            ptr(i,j)=   DOWN
+                        DIAG
+
+
+
+
+insertion
+deletion
+substitution
+insertion
+deletion
+substitution
+
+--- SLIDE_25 ---
+The Distance Matrix
+Slide adapted from Serafim Batzoglou with Permission
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+y0 ………………………………  yM
+x0 ……………………  xN
+Every non-decreasing path 
+
+from (0,0) to (M, N) 
+
+corresponds to 
+an alignment 
+of the two sequences
+
+An optimal alignment is composed of optimal subalignments
+
+--- SLIDE_26 ---
+Result of Backtrace
+Two strings and their alignment:
+
+--- SLIDE_27 ---
+Minimum Edit Distance
+
+Weighted Minimum Edit Distance
+
+
+
+--- SLIDE_28 ---
+Weighted Edit Distance
+Why would we add weights to the computation?
+Spell Correction: some letters are more likely to be mistyped than others
+Biology: certain kinds of deletions or insertions are more likely than others
+
+--- SLIDE_29 ---
+Confusion matrix for spelling errors
+
+--- SLIDE_30 ---
+
+
+--- SLIDE_31 ---
+Weighted Min Edit Distance
+Initialization:
+D(0,0) = 0
+D(i,0) = D(i-1,0) + del[x(i)];    1 < i ≤ N
+D(0,j) = D(0,j-1) + ins[y(j)];    1 < j ≤ M
+Recurrence Relation:
+             D(i-1,j)   + del[x(i)]
+D(i,j)= min  D(i,j-1)   + ins[y(j)]
+             D(i-1,j-1) + sub[x(i),y(j)]
+Termination:
+D(N,M) is distance 
+
+
+
+--- SLIDE_32 ---
+Question 
+Find the minimum edit distance in transforming the word DOG to COW using Levenshtein distance, ie., insertion = deletion =1 and substitution = 2.
+
+--- SLIDE_33 ---
+Solution
+
+--- SLIDE_34 ---
+Example
+
+--- SLIDE_35 ---
+
+
+--- SLIDE_36 ---
+
+
+--- SLIDE_37 ---
+
+
+--- SLIDE_38 ---
+
+
+--- SLIDE_39 ---
+
+
+============================================================
+FILE: Module 1 Notes.docx
+============================================================
+
+Introduction: 
+Generic Natural Language Processing (NLP) system [CO1]
+NLP is the field that enables computers to understand and respond to human language. It is crucial for applications like email filtering (e.g., spam detection). NLP has evolved from traditional rule-based systems to using machine learning and deep learning techniques, especially from the 1980s onward. Natural language processing (NLP) is a branch of artificial intelligence that helps computers understand, interpret and manipulate human language. ​
+​
+Natural Language Processing, usually shortened as NLP, is a branch of artificial intelligence that deals with the interaction between computers and humans using the natural language. ​
+​
+
+
+The ultimate objective of NLP is to read, decipher, understand, and make sense of the human languages in a manner that is valuable. It is an interdisciplinary subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language​.
+ ​
+
+Text Analytics and NLP 
+Text analytics focuses on extracting meaningful insights from text data, which may not always be human language. In contrast, NLP includes both text and speech recognition. The two branches of NLP are: - 
+Natural Language Understanding (NLU): Comprehension of spoken or written language by machines. 
+Natural Language Generation (NLG): Machines producing human-understandable text.
+Stages in NLP, [CO1]
+To converse with human a program must understand the syntax(grammar), semantics (word meaning) and morphology (word level analysis), and pragmatics(conversation). ​
+
+There are certain phases in which Natural language processing is performed.
+ ​
+
+1. Morphological Analysis
+It deals with morphemes which are the smallest units of meaning in a word. It is important for understanding structure of words and their parts by identifying free morphemes (independent words like "cat") and bound morphemes (like prefixes or suffixes e.g. "un-" or "-ing").
+Key tasks in morphological analysis:
+Stemming: Reducing words to their root form like "running" to "run".
+Lemmatization: Converting words to their base or dictionary form considering the context like "better" becomes "good".
+Importance of Morphological Analysis
+Understanding Word Structure: It helps in breaking the composition of complex words.
+Improving Accuracy: It enhances accuracy of tasks such as part-of-speech tagging, syntactic parsing and machine translation.
+By identifying and analysing morphemes system can identify text correctly at the most basic level which helps in more advanced NLP applications.
+2.   Syntactic Analysis (Parsing)
+Syntax is the foundation of language, it’s how words and phrases come together to form meaningful sentences. Syntactic analysis (or parsing) lets NLP systems understand sentence structure and relationships between words rather than analyzing them in isolation.
+This ensures that AI-powered chatbots, smart IVR systems, and voice assistants interpret user queries correctly.
+When NLP performs syntactic analysis, it:
+Identifies sentence structure: Breaks a sentence into subject, predicate, objects, clauses, etc.
+Determines relationships between words: Determines which words depend on or modify others.
+Checks for grammatical correctness: Ensures the sentence follows valid language rules.
+Syntactic analysis is important for chatbots and virtual assistants to improve customer experience with smart IVR. When a customer says, “I need help to reset my password”, the system uses syntactic analysis to recognize:
+“I” as the subject
+“need help” as the action
+“resetting my password” as the specific request 
+This structured understanding helps the AI respond appropriately, directing users to the right solution without confusion or misinterpretation.
+3. Semantic Analysis
+Semantic Analysis focuses on understanding meaning behind words and sentences. It ensures that the text is not only grammatically correct but also logically coherent and contextually relevant. It aims to understand dictionary definitions of words and their usage in context and also find whether the arrangement of words in a sentence makes logical sense.
+Key Tasks in Semantic Analysis
+Named Entity Recognition (NER): It identifies and classifies entities such as names of people, locations, organizations, dates and more. These entities provide important meaning in the text and help in understanding the context. For example in the sentence "Tesla announced its new electric vehicle in California," NER would identify "Tesla" as an organization and "California" as a location.
+Word Sense Disambiguation (WSD): Many words have multiple meanings depending on the context in which they are used. It identifies the correct meaning of a word based on its surrounding text. For example word "bank" can refer to a financial institution or the side of a river. It uses context to identify which meaning applies in a given sentence which ensures that interpretation is accurate.
+Example of Semantic Analysis
+"Apple eats a John." while grammatically correct this sentence doesn’t make sense semantically because an apple cannot "eat" a person. Semantic analysis ensures that the meaning is logically sound and contextually appropriate. It is important for various NLP applications including machine translation, information retrieval and question answering.
+4. Discourse Integration
+It is the process of understanding how individual sentences or segments of text connect and relate to each other within a broader context. This phase ensures that the meaning of a text is consistent and coherent across multiple sentences or paragraphs. It is important for understanding long or complex texts where meaning focuses on previous statements.
+example In the text, “Jack is a bright student. He spends most of the time in the library.” Here, discourse assigns “he” to refer to “Jack”.
+It is important for NLP applications like machine translation, Chabot’s and text summarization. It ensures that meaning remains same across sentences which helps machines to understand context. This enables accurate and natural responses in applications like conversational AI and document translation.
+5. Pragmatic Analysis
+The final stage of NLP, Pragmatics interprets the given text using information from the previous steps. Given a sentence, “Turn off the lights” is an order or request to switch off the lights.
+
+Ambiguity in Natural language, [CO1]
+Input is ambiguous if there are multiple alternative Ambiguous linguistic structures that can be built for it​ situation where a word or a sentence may have more than one meaning. ​ Ambiguity in Natural Language Processing (NLP) happens because human language can have multiple meanings. Computers sometimes confuse to understand exactly what we mean unlike humans, who can use intuition and background knowledge to infer meaning, computers rely on precise algorithms and statistical patterns.
+The sentence "The chicken is ready to eat" is ambiguous because it can be interpreted in two different ways:
+The chicken is cooked and ready to be eaten.
+The chicken is hungry and ready to eat food.
+This dual meaning arises from the structure of the sentence, which does not clarify the subject's role (the eater or the one being eaten). Resolving such ambiguities is essential for accurate NLP applications like Chabot’s, translation, and sentiment analysis.
+There are different types of ambiguities​
+Lexical​
+Syntactical​
+Semantic​
+Discourse Ambiguity​
+Pragmatic Ambiguity​
+
+1. Lexical Ambiguity
+Lexical ambiguity occurs when a single word has multiple meanings, making it unclear which meaning is intended in a particular context. This is a common challenge in language.
+For example, the word "bat" can have two different meanings. It could refer to a flying mammal; like the kind you might see at night. Alternatively, "bat" could also refer to a piece of sports equipment used in games like baseball or cricket.
+For computers, determining the correct meaning of such a word requires looking at the surrounding context to decide which interpretation makes sense.
+2. Syntactic Ambiguity
+Syntactic ambiguity occurs when the structure or grammar of a sentence allows for more than one interpretation. This happens because the sentence can be understood in different ways depending on how it is put together.
+For example, take the sentence, “The boy kicked the ball in his jeans.” This sentence can be interpreted in two different ways: one possibility is that the boy was wearing jeans and he kicked the ball while he was wearing them. Another possibility is that the ball was inside the boy’s jeans, and he kicked the ball out of his jeans. 
+A computer or NLP system must carefully analyse the structure to figure out which interpretation is correct, based on the context.
+3. Semantic Ambiguity
+Semantic ambiguity occurs when a sentence has more than one possible meaning because of how the words are combined. This type of ambiguity makes it unclear what the sentence is truly trying to say.
+For example, take the sentence, “Visiting relatives can be annoying.” This sentence could be understood in two different ways. One meaning could be that relatives who are visiting you are annoying, implying that the relatives themselves cause annoyance. Another meaning could be that the act of visiting relatives is what is annoying, suggesting that the experience of going to see relatives is unpleasant.
+The confusion comes from how the words "visiting relatives" can be interpreted: is it about the relatives who are visiting, or is it about the action of visiting? In cases like this, semantic ambiguity makes it hard to immediately understand the exact meaning of the sentence, and the context is needed to clarify it. 
+4. Referential Ambiguity/ Anaphoric Ambiguity​
+Referential ambiguity occurs when a pronoun (like "he," "she," "it," or "they") or a phrase is unclear about what or who it is referring to. This type of ambiguity happens when the sentence doesn’t provide enough information to determine which person, object, or idea the pronoun is referring to.
+For example, consider the sentence, “Alice told Jane that she would win the prize.” In this case, it’s unclear whether the pronoun "she" refers to Alice or Jane. Both could be possible interpretations, and without further context, we can’t be sure. If the sentence was about a competition, "she" could be referring to Alice, meaning Alice is telling Jane that she would win the prize. However, it could also mean that Alice is telling Jane that Jane would win the prize. 
+
+5. Pragmatic Ambiguity
+Pragmatic ambiguity occurs when the meaning of a sentence depends on the speaker’s intent, tone, or the situation in which it is said. This type of ambiguity is common in everyday conversations, and it can be tricky for computers to understand because it often requires knowing the broader context.
+For example, consider the sentence, “Can you open the window?” In one situation, it could be understood as a literal question asking if the person is physically able to open the window. However, in another context, it could be a polite request, where the speaker is asking the listener to open the window, even though they’re not directly giving an order. 
+The meaning changes based on the tone of voice or social context, which is something that is difficult for NLP systems to capture without understanding the surrounding situation
+
+
+Challenges of NLP, [CO1]
+
+ Applications of NLP Machine Translation, Sentiment Analysis etc. [CO1]
+1. Sentiment analysis
+ · Sentiment analysis, also referred to as opinion mining, is an approach to natural language processing (NLP) that identifies the emotional tone behind a body of text. 
+· This is a popular way for organizations to determine and categorize opinions about a product, service or idea.
+ · Sentiment analysis systems help organizations gather insights into real-time customer sentiment, customer experience and brand reputation.
+ · Generally, these tools use text analytics to analyze online sources such as emails, blog posts, online reviews, news articles, survey responses, case studies, web chats, tweets, forums and comments.
+ · Sentiment analysis uses machine learning models to perform text analysis of human language. The metrics used are designed to detect whether the overall sentiment of a piece of text is positive, negative or neutral. 
+2.Machine Translation 
+Machine translation, sometimes referred to by the abbreviation MT, is a sub-field of computational linguistics that investigates the use of software to translate text or speech from one language to another. 
+On a basic level, MT performs mechanical substitution of words in one language for words in another, but that alone rarely produces a good translation because recognition of whole phrases and their closest counterparts in the target language is needed. 
+Not all words in one language have equivalent words in another language, and many words have more than one meaning. 
+Solving this problem with corpus statistical and neural techniques is a rapidly growing field that is leading to better translations, handling differences in linguistic typology, translation of idioms, and the isolation of anomalies. 
+ Corpus: A collection of written texts, especially the entire works of a particular author.
+ 3. Text Extraction
+ · There are several natural language processing techniques that can be used to extract information from text or unstructured data. 
+· These techniques can be used to extract information such as entity names, locations, quantities, and more. 
+· With the help of natural language processing, computers can make sense of the vast amount of unstructured text data that is generated every day, and humans can reap the benefits of having this information readily available. 
+· Industries such as healthcare, finance, and e-commerce are already using natural language processing techniques to extract information and improve business processes. 
+· As the machine learning technology continues to develop, we will only see more and more information extraction use cases covered. 
+4. Text Classification 
+ Unstructured text is everywhere, such as emails, chat conversations, websites, and social media. Nevertheless, it’s hard to extract value from this data unless it’s organized in a certain way. 
+Text classification also known as text tagging or text categorization is the process of categorizing text into organized groups. By using Natural Language Processing (NLP), text classifiers can automatically analyze text and then assign a set of pre-defined tags or categories based on its content. 
+ Text classification is becoming an increasingly important part of businesses as it allows to easily get insights from data and automate business processes.
+ 5. Speech Recognition
+ · Speech recognition is an interdisciplinary subfield of computer science and computational linguistics that develops methodologies and technologies that enable the recognition and translation of spoken language into text by computers. 
+· It is also known as automatic speech recognition (ASR), computer speech recognition or speech to text (STT). 
+· It incorporates knowledge and research in the computer science, linguistics and computer engineering fields. The reverse process is speech synthesis. 3 Speech recognition use cases Ø A wide number of industries are utilizing different applications of speech technology today, helping businesses and consumers save time and even lives.
+ Some examples include: 
+Ø Automotive: Speech recognizers improves driver safety by enabling voice-activated navigation systems and search capabilities in car radios.
+ Ø Technology: Virtual agents are increasingly becoming integrated within our daily lives, particularly on our mobile devices. We use voice commands to access them through our smartphones, such as through Google Assistant or Apple’s Siri, for tasks, such as voice search, or through our speakers, via Amazon’s Alexa or Microsoft’s Cortana, to play music. They’ll only continue to integrate into the everyday products that we use, fueling the “Internet of Things” movement. 
+Ø Healthcare: Doctors and nurses leverage dictation applications to capture and log patient diagnoses and treatment notes. 
+Ø Sales: Speech recognition technology has a couple of applications in sales. It can help a call centre transcribe thousands of phone calls between customers and agents to identify common call patterns and issues. 
+AI Chabot’s can also talk to people via a webpage, answering common queries and solving basic requests without needing to wait for a contact centre agent to be available. In both instances speech recognition systems help reduce time to resolution for consumer issues.
+ 6. Chatbot 
+· Chabot’s are computer programs that conduct automatic conversations with people. They are mainly used in customer service for information acquisition. As the name implies, these are bots designed with the purpose of chatting and are also simply referred to as “bots.” 
+· You’ll come across Chabot’s on business websites or messengers that give pre-scripted replies to your questions. As the entire process is automated, bots can provide quick assistance 24/7 without human intervention.
+
+ 7. Email Filter 
+Ø One of the most fundamental and essential applications of NLP online is email filtering. It began with spam filters, which identified specific words or phrases that indicate a spam message. But, like early NLP adaptations, filtering has been improved. 
+Ø Gmail's email categorization is one of the more common, newer implementations of NLP. Based on the contents of emails, the algorithm determines whether they belong in one of three categories (main, social, or promotional).
+ Ø This maintains your inbox manageable for all Gmail users, with critical, relevant emails you want to see and reply to fast.
+ 8. Search Autocorrect and Autocomplete 
+· When you type 2-3 letters into Google to search for anything, it displays a list of probable search keywords. Alternatively, if you search for anything with mistakes, it corrects them for you while still returning relevant results. Isn't it incredible? 4 
+· Everyone uses Google search autocorrect autocomplete on a regular basis but seldom gives it any thought. It's a fantastic illustration of how natural language processing is touching millions of people across the world, including you and me. 
+· Both, search autocomplete and autocorrect make it much easier to locate accurate results.
+
+
+Text Processing [CO1]
+Natural Language Processing (NLP) has advanced significantly and now plays an important role in multiple real-world applications like Chabot’s, search engines and sentiment analysis. An early step in any NLP workflow is text pre-processing, which prepares raw textual data for further analysis and modelling.
+Text processing involves cleaning and preparing raw text data for further analysis or model training. Proper text pre-processing can significantly impact the performance and accuracy of NLP models.
+
+Importance of Text Pre-processing
+Raw text data is usually noisy and unstructured, containing various inconsistencies such as typos, slang, abbreviations and irrelevant information. Pre-processing helps in:
+Improving Data Quality: Removing noise and irrelevant information ensures that the data fed into the model is clean and consistent.
+Enhancing Model Performance: Well-pre-processed text can lead to better feature extraction, improving the performance of NLP models.
+Reducing Complexity: Simplifying the text data can reduce the computational complexity and make the models more efficient.
+Text Pre-processing 
+1. Text Cleaning:
+This is the first step where we remove unwanted things from the text. We get rid of HTML tags if the text is from the web, remove special characters like punctuation and numbers, and change all text to lowercase to make it uniform.
+2. Tokenization:
+In this step, we break the text into smaller parts called tokens. Tokens can be individual words or sentences. There are two types: word tokenization (splitting into words) as well as sentence tokenization (splitting into sentences).
+3. Stop Word Removal:
+Stop words are common words that don't add much meaning, like "and," "the," and "is." We remove these words to make the data smaller and help models work better.
+4. Stemming and Lemmatization:
+These NLP preprocessing techniques reduce words to their basic forms. Stemming cuts off the ends of words (like "running" to "run"). Lemmatization considers the meaning and context (like "better" to "good").
+5. Part-of-Speech Tagging:
+This step labels each word with its part of speech, such as noun or verb. It helps us understand the grammar of the text better.
+6. Named Entity Recognition (NER):
+NER identifies important names in the text, like people, places, and organizations. This helps extract useful information from the text.
+7. Vectorization:
+Finally, we convert the cleaned and tokenized text into numbers that machine learning algorithms can use. Common methods include Bag of Words (BoW), which creates a matrix of words, and Term Frequency–Inverse Document Frequency (TF-IDF), which highlights important words in the text.
+Stemming Vs Lemmatization:
+ 
+ 
+
+Language Model:
+A language model is a machine learning LM model that predicts upcoming words. More formally, a language model assigns a probability to each possible next word, or equivalently gives a probability distribution over possible next words. Language models can also assign a probability to an entire sentence. Thus an LM could tell us that the following sequence has a much higher probability of appearing in a text: 
+all of a sudden I notice three guys standing on the sidewalk 
+than does this same set of words in a different order: 
+on guys all I of notice sidewalk three a sudden standing the
+Understanding N-grams:
+Definition:
+N-grams are contiguous sequences of ’n’ items, typically words in the context of NLP. These items can be characters, words, or even syllables, depending on the granularity desired. The value of ’n’ determines the order of the N-gram.
+Examples:
+Unigrams (1-grams): Single words, e.g., “cat,” “dog.”
+Bigrams (2-grams): Pairs of consecutive words, e.g., “natural language,” “deep learning.”
+Trigrams (3-grams): Triplets of consecutive words, e.g., “machine learning model,” “data science approach.”
+4-grams, 5-grams, etc.: Sequences of four, five, or more consecutive words.
+
+
+N-gram language model, 
+Let’s begin with the task of computing P(w|h), the probability of a word w given some history h. Suppose the history h is “The water of Walden Pond is so beautifully” and we want to know the probability that the next word is blue: 
+P(blue|The water of Walden Pond is so beautifully) 
+Why Language Models Are Needed
+LMs help choose more likely word sequences in:
+Machine Translation
+ Example:
+ P(high winds tonight)>P(large winds tonight)
+Spell Correction
+ P(about fifteen minutes from)>P(about fifteen minuets from)
+Speech Recognition
+ P(I saw a van)≫P(eyes awe of an)
+OCR & Handwriting Recognition – predicting unclear words from context 
+Typing Suggestions / Context-sensitive spelling
+ P(College is closed...)>P(Collage is closed...)
+Goal of Ngram Language Model 
+To compute the probability of a sentence or sequence of words occurring together: 
+     P(W) = P (w1, w2, w3, w4, w5…wn)   Joint Probability 
+ Related task: probability of an upcoming word: 
+      P (w5|w1, w2, w3, w4) Conditional Probability  
+ A model that computes either of these: 
+          P(W) or     P (wn|w1, w2…wn-1) is called a language model
+
+How N-gram Language Models Work
+An n-gram language model uses n-grams to estimate how likely a given sequence of words is. The core idea is the Markov assumption: the probability of each word depends only on the preceding n-1 words, not the entire history. In other words, n-gram models approximate language by looking at a sliding window of n words.
+One way to estimate this probability is directly from relative frequency counts: take a very large corpus, count the number of times we see The water of Walden Pond is so beautifully, and count the number of times this is followed by blue. This would be answering the question “Out of the times we saw the history h, how many times was it followed by the word w”, as follows: 
+
+Problem of estimating probabilities directly from counts 
+With a large enough corpus, such as the web, we can compute these counts and estimate the probability from above equation.  While this method works fine in many cases, but in most cases, it turns out that even the web isn’t big enough to give us good estimates. This is because language is creative; new sentences are created all the time, and we won’t always be able to count entire sentences. Even simple extensions of the example sentence may have counts of zero on the web (such as “Walden Pond’s water is so transparent that the”; well, used to have counts of zero)
+
+Probabilistic Language Modeling
+Probabilistic language modeling represents how likely a sequence of words is using probability theory.
+
+There are two main objectives:
+(1) Joint Probability of a Sentence
+We compute the probability of a full sentence consisting of a sequence of words:
+P(W) = P(w1, w2, w3, …, wn)
+This tells us how likely an entire sentence is to occur.
+(2) Conditional Probability of the Next Word
+We compute the probability of a word given the words that come before it:
+P(wn | w1, w2, …, w(n−1))
+This is used for prediction tasks such as typing suggestions, speech recognition, and text generation.
+A model that computes either joint probability or conditional probability is called a Language Model (LM).
+
+Chain Rule of Probability
+Language modeling uses the Chain Rule to break the probability of a sentence into smaller conditional probabilities.
+Basic identity:
+P(B | A) = P(A, B) / P(A)
+⇒ P(A, B) = P(A) P(B | A)
+For multiple variables:
+P(A, B, C, D) = P(A) P(B | A) P(C | A, B) P(D | A, B, C)
+General Chain Rule:
+P(x1, x2, x3, …, xn) = P(x1) P(x2 | x1) P(x3 | x1, x2) … P(xn | x1, …, x(n−1))
+Example
+For the sentence: “its water is so transparent”
+P(its water is so transparent) =
+P(its) × P(water | its) × P(is | its water) ×
+P(so | its water is) × P(transparent | its water is so)
+Thus, the probability of a sentence is the product of probabilities of each word given all previous words.
+
+N-Gram Model
+Using the full chain rule is impractical because each word depends on all previous words.
+Definition
+An n-gram is a sequence of n words.
+Bigram (2-gram): two-word sequence (e.g., “turn your”)
+Trigram (3-gram): three-word sequence (e.g., “turn your homework”)
+Core Idea
+Instead of using the entire history, we approximate using only the last few words.
+For a bigram model:
+P(wn | w1, w2, …, w(n−1)) ≈ P(wn | w(n−1))
+Example approximation:
+P(the | Walden Pond’s water is so transparent that)
+≈ P(the | that)
+
+ Markov Assumption
+This simplification is called the Markov Assumption.
+OR
+ Statement: The probability of a word depends only on a limited number of previous words, not the entire history.
+In a bigram model:
+P(wn | w1, …, w(n−1)) ≈ P(wn | w(n−1))
+This reduces complexity and makes language modeling computationally feasible.
+
+In Terms of Probability calculation
+
+
+In other words, we approximate each component in the product
+
+
+Estimating N-Gram Probabilities
+Probabilities are estimated from counts in a corpus using Maximum Likelihood Estimation (MLE).
+
+Maximum Likelihood Estimation for NGrams
+
+
+Challenges:
+Extremely large number of possible sentences
+Not all sequences appear in the corpus
+Many valid word combinations have zero counts
+Language is creative; new sentences are always formed
+This problem is known as data sparsity.
+
+ Bigram Sentence Probability
+Example sentence with boundaries:
+I want english food
+Its probability under a bigram model is:
+P(I | Start) × P(want | I) × P(english | want) × P(food | english) × P( End| food)
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ngram Model Numerical Example 
+
+Numerical 1: Consider the following corpus 
+<s> I am Sam </s> 
+<s> Sam I am </s> 
+<s> I do not like green eggs and ham </s>
+Calculate the Probability for all Bigrams.
+
+Answer:
+P (I | <s>) = 2/3 = .67
+P(</s> | Sam) = 1/2 = 0.5
+P (Sam | <s>) = 1/3 = .33
+P (Sam | am) = 1/2 = .5
+P (am | I) = 2/3 = .67
+P (do | I) = 1/3 = .33
+
+Numerical 2: Estimating Bi-gram probabilities
+Question:
+ What is the most probable next word predicted by the model for the following word sequence? Consider the following Corpus 
+<s> I am Henry </s>
+<s> I like college </s>
+<s> Do Henry like college </s>
+<s> Henry I am </s>
+<s> Do I like Henry </s>
+<s> Do I like college </s>
+<s> I do like Henry </s>
+
+Word Frequencies
+<s>       7
+</s>      7
+I         6
+am        2
+Henry     5
+like      5
+college   3
+do        4
+
+
+
+
+
+
+
+1) <s> Do?
+Next word prediction probability
+ wi−1=do
+Formula:
+
+P(</s> | do) = 0/4
+P (I | do) = 2/4
+P (am | do) =0/4
+P (Henry | do) = 1/4
+P (like | do) = 1/4
+P (college | do) = 0/4
+P (do | do) = 0/4
+
+2) <s> I like Henry?
+
+Next word prediction probability
+ wi−1=Henry
+Formula:
+
+P(</s> | Henry) = 3/5
+P (I | Henry) = 1/5
+P (am | Henry) = 0
+P (Henry | Henry) = 0
+P (like | Henry) = 1/5
+P (college | Henry) = 0
+P (do | Henry) = 0
+
+</s> is more probable
+
+
+
+
+
+
+
+
+
+Numerical 3:
+For the following corpus C₁ of 3 sentences, what is the total count of unique bigrams for which the likelihood will be estimated? Assume we do not perform any pre-processing, and we are using the corpus as given.
+Alice went to the cafe
+Bob was waiting for Alice
+Alice and Bob went to the museum
+a. 15
+ b. 16
+ c. 17
+ d. 18
+Why Do We Use Log Probabilities in N-gram Language Models?
+In an N-gram language model, the probability of a sentence is computed as a product of many conditional probabilities:
+
+Since each probability is less than 1, multiplying many of them creates several practical problems. Log probabilities solve these issues.
+
+Problems with Using Raw Probabilities
+1. Numerical Underflow
+Conditional probabilities are small numbers (e.g., 0.1, 0.01, 0.001).
+Multiplying many small numbers of results in extremely tiny values.
+Computers may round these values to 0 due to limited floating-point precision.
+This makes different sentences appear equally improbable.
+2. Computational Inefficiency
+Sentence probability requires many multiplications.
+Multiplication is computationally more expensive than addition.
+Large-scale NLP systems perform millions of such calculations.
+3. Difficulty in Comparison
+Exact probability values are not important; we only need to compare which sentence is more probable.
+Raw probabilities become too small to compare reliably.
+4. Mathematical Complexity
+Many machine learning objectives (e.g., cross-entropy, perplexity, maximum likelihood) involve products of probabilities.
+Products are harder to differentiate and optimize than sums.
+5. Loss of Numerical Precision
+Floating-point systems have limited precision.
+Repeated multiplication increases rounding errors.
+Solution: Using Log Probabilities
+We apply the logarithm to convert products into sums:
+log⁡(ab)=log⁡a+log⁡b
+So, sentence probability becomes:
+
+
+Evaluating Language Models: Training, Test Sets, and Perplexity [CO3]
+1. Extrinsic and Intrinsic Evaluation
+Extrinsic Evaluation
+Evaluates a language model by embedding it in a real application.
+Measures how much the overall application improves.
+Example applications include speech recognition and machine translation.
+It is the only way to know whether improvements in a language model actually help a task.
+This type of evaluation is expensive because it requires running complete NLP systems. 
+Evaluating language model
+Intrinsic Evaluation
+Measures the quality of a language model independently of any application.
+Provides a fast way to compare language models.
+Perplexity is the standard intrinsic evaluation metric.
+Used for both n-gram models and large neural language models.
+
+Evaluating Models Using Probability
+A better language model assigns a higher probability to the test set.
+Higher probability means better prediction of word sequences.
+Models are compared by how well they predict unseen test data.
+Probability must be computed only on data not seen during training.
+Perplexity
+Definition
+Perplexity is the inverse probability of the test set.
+It is normalized by the number of words or tokens.
+It measures how surprised a model is by the test data.
+Lower perplexity indicates a better language model. 
+Evaluating language model
+Perplexity Formula
+ For a test set W=w1, w2, wn:
+
+Using the chain rule:
+
+Perplexity for Different n-gram Models
+Unigram Model
+
+Bigram Model 
+
+
+
+
+Interpretation of Perplexity
+Lower perplexity means the model predicts words better.
+Higher probability → lower perplexity.
+Perplexity values are only comparable when models use the same vocabulary.
+A reduction in perplexity does not always guarantee better task performance.
+End-to-end evaluation is still important.
+Perplexity as Weighted Average Branching Factor
+Branching factor = number of possible next words.
+Perplexity represents a weighted average branching factor.
+If word probabilities are uniform, perplexity equals branching factor.
+If some words are more probable, perplexity becomes smaller.
+This shows how predictability reduces perplexity.
+Perplexity as Weighted Average Branching Factor
+It turns out that perplexity can also be thought of as the weighted average branch ing factor of a language. The branching factor of a language is the number of possible next words that can follow any word. For example consider a mini artificial language that is deterministic (no probabilities), any word can follow any word, and whose vocabulary consists of only three colors: 
+L ={red,blue,green} 
+The branching factor of this language is 3. Now let's make a probabilistic version of the same LM, let’s call it A, where each word  follows each other with equal probability 1 3 (it was trained on a training set with equal counts for the 3 colours), and a test set T = “red red red red blue”. Let’s first convince ourselves that if we compute the perplexity of this artificial colour language on this test set (or any such test set) we indeed get 3. By Eq. 3.15, the perplexity of A on T is:
+
+But now suppose red was very likely in the training set of a different LM B, and so B has the following probabilities: P(red) =0.8 P(green)=0.1 P(blue)=0.1
+We should expect the perplexity of the same test set red red red red blue for language model Btobelowersince mostof the time the next color will be red, which is very predictable, i.e. has a high probability. So the probability of the test set will be higher, and since perplexity is inversely related to probability, the perplexity will be lower. Thus, although the branching factor is still 3, the perplexity or weighted branching factor is smaller:
+
+Advanced: Perplexity's Relation to Entropy [CO3]
+
+Basic Smoothing, Advanced Smoothing Models. 
+Problem with Maximum Likelihood Estimates (MLE)
+Any finite training corpus will miss some valid English word sequences.
+Some n-grams may never occur in training data but appear in the test set.
+Example: the words ruby and slippers appear in training data, but the phrase ruby slippers does not.
+Such unseen n-grams are called zeros (zero-probability n-grams).
+Why Zero-Probability n-grams Are a Problem
+Zero-probability sequences cause underestimation of probabilities for valid word sequences.
+This reduces the performance of applications using the language model.
+If any word in the test set has probability 0, the probability of the entire test set becomes 0.
+Perplexity is based on the inverse probability of the test set.
+If the test set probability is 0, perplexity cannot be computed because division by zero is not possible.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Edit distance - Dynamic Programming Approach
+We often need a way to compare how similar two words or strings are in tasks like automatic speech recognition or machine translation, where we want to know how similar the sequence of words is to some reference sequence of words.
+Edit distance gives us a way to quantify these intuitions about string similarity. More formally, the minimum edit distance between two strings is defined as the minimum number of editing operations (operations like insertion, deletion, substitution) needed to transform one string into another. 
+For example, the gap between intention and execution, is 5 (delete an i, substitute e for n, substitute x for t, insert c, substitute u for n). It’s much easier to see this by looking at the most important visualization for string distances, an alignment between the two strings, shown in Fig. Below. Representing the minimum edit distance between two strings as an alignment. The final row gives the operation list for converting the top string into the bottom string: d for deletion, s for substitution, i for insertion.
+
+Given two sequences, an alignment is a correspondence between substrings of the two sequences. Thus, we say I aligns with the empty string, N with E, and so on. Beneath the aligned strings is another representation; a series of symbols expressing an operation list for converting the top string into the bottom string: d for deletion, s for substitution, i for insertion.
+We can also assign a particular cost or weight to each of these operations. The Levenshtein distance between two sequences is the simplest weighting factor in which each of the three operations has a cost of 1 (Levenshtein, 1966)—we assume that the substitution of a letter for itself, for example, t for t, has zero cost. The Lev enshtein distance between intention and execution is 5.
+ Levenshtein also proposed an alternative version of his metric in which each insertion or deletion has a cost of 1 and substitutions are not allowed. (This is equivalent to allowing substitution, but giving each substitution a cost of 2 since any substitution can be represented by one insertion and one deletion). 
+Using this version, the Levenshtein distance between intention and execution is 8.
+
+
+
+
+
+
+The Minimum Edit Distance Algorithm 
+How do we find the minimum edit distance? 
+We can think of this as a search task, in which we are searching for the shortest path—a sequence of edits—from one string to another.
+
+The space of all possible edits is enormous, so we can’t search naively. 
+
+However, lots of distinct edit paths will end up in the same state (string), so rather than recomputing all those paths, we could just remember the shortest path to a state each time we saw it. We can do this by using dynamic programming.
+The intuition of a dynamic programming problem is that a large problem can be solved by properly combining the solutions to various subproblems. Consider the shortest path of transformed words that represents the minimum edit distance between the strings intention and execution shown in Fig below
+
+
+The minimum edit distance algorithm
+It an example of the class of dynamic programming algorithms. The various costs can either be fixed (e.g., ∀x,ins-cost(x) = 1) or can be specific to the letter (to model the fact that some letters are more likely to be in serted than others). We assume that there is no cost for substituting a letter for itself (i.e., sub-cost(x,x) = 0)
+
+Applying the above algorithm to Calculate the Minimum Edit Distance between intention and execution
+
+Alignment
+Knowing the minimum edit distance is useful for algorithms like find ing potential spelling error corrections.
+ But the edit distance algorithm is important in another way; with a small change, it can also provide the minimum cost align ment between two strings. 
+Aligning two strings is useful throughout speech and language processing. In speech recognition, minimum edit distance alignment is used to compute the word error rate
+Alignment plays a role in ma chine translation, in which sentences in a parallel corpus (a corpus with a text in two languages) need to be matched to each other.
+Figure above also shows the intuition of how to compute this alignment path. The computation proceeds in two steps.
+Step 1: we augment the minimum edit distance algorithm to store back pointers in each cell. The back pointer from a cell point to the previous cell (or cells) that we came from in entering the current cell. We’ve shown a schematic of these back pointers in Fig. above. Some cells have multiple back pointers because the minimum extension could have come from multiple previous cells.
+Step 2: we perform a backtrace. In a backtrace, we start from the last cell (at the final row and column) and follow the pointers back through the dynamic programming matrix. Each complete path between the final cell and the initial cell is a minimum distance alignment.
+
+
+
+
+

@@ -1,0 +1,1618 @@
+
+============================================================
+FILE: ML-III - Module 2 - Bandit Problems Updated.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Bandit Problems
+Module-2
+
+--- Slide 2 ---
+
+Table of Content
+Bandit problems
+Value-action based methods (sample average)
+Greedy method, €-greedy method
+Incremental Implementation
+Non-stationary problem
+Optimistic Initial values
+UCB algorithm
+Thompson Sampling.
+
+--- Slide 3 ---
+
+
+--- Slide 4 ---
+
+The Multi-Armed Bandit (MAB) problem serves as a foundational concept, illustrating the challenges and strategies of decision-making under uncertainty.
+
+--- Slide 5 ---
+
+Bandit Problem?
+A bandit is defined as someone who steals your money. 
+
+A one-armed bandit is a simple slot machine wherein you insert a coin into the machine, pull a lever, and get an immediate reward. 
+
+But why is it called a bandit? 
+
+It turns out all casinos configure these slot machines in such a way that all gamblers end up losing money!
+
+--- Slide 6 ---
+
+Multi/N/K - Armed Bandit Problem
+
+--- Slide 7 ---
+
+What is K-armed Bandit Problem?
+Think of the bandit as a slot machine, and each of the k arms as a lever. Pulling on one of the k levers will give you a positive reward. Your goal, as in most reinforcement learning problems, is to maximize your total reward, given a fixed number (say 1000) of pulls. 
+The only prior information you have is that the average reward for each lever is doesn’t change over time.
+
+--- Slide 8 ---
+
+The core challenge in the MAB problem is balancing exploration and exploitation.
+
+
+Exploration involves trying different arms to gather information about their rewards.
+
+
+Exploitation means leveraging known information to choose the arm believed to offer the highest reward.
+
+--- Slide 9 ---
+
+
+--- Slide 10 ---
+
+Scenario
+The below table shows the sample results for a 5-armed Bernoulli bandit with arms labelled as 1, 2, 3, 4 and 5:
+
+--- Slide 11 ---
+
+What is the best Strategy Here?
+
+--- Slide 12 ---
+
+Strategy 1
+If we knew the average reward for each lever, this problem would be easy.
+We would just always pull on the lever with the highest average reward. So one possible approach is to first use some pulls to figure out which lever has the highest average reward, and then only pull on that lever.
+How should we figure out which lever is the best? We need to try all the levers multiple times, because even though the average reward per lever is fixed, each individual lever pull will give a different reward. Once we’ve tried each lever a bunch of times, we can take the average of all the pulls as an approximation of the true reward.
+
+--- Slide 13 ---
+
+Strategy 1(Greedy)
+Algorithm 1
+Pull each lever n times, and average the n rewards from each lever.
+Whichever lever has the highest average is the best one. Pull that one exclusively from now on.
+
+--- Slide 14 ---
+
+Problem with Strategy 1
+There is a problem with this, which is that we don’t know how to set n. 
+For example, let’s say we use n = 3. For one of the levers we do 3 pulls and we get rewards of 14, 15, and 16, averaging out to 15. However, the true average reward for that lever was 5 — we just got very lucky for those three pulls. 
+Now we are in trouble, because we will always assume this lever is much better than it actually is. 
+We could make n larger, which would make us more confident that our averages are accurate. However, since we have a limited number of time steps, we don’t want to waste lever pulls. Therefore setting a large n has problems too
+
+--- Slide 15 ---
+
+Strategy 2
+Algorithm 2
+Before doing any pulls, set the running average of each lever to 0.
+For each timestep:
+Pick the lever with the highest running average. If there is a tie, pick randomly between the tied levers.
+Pull the lever we just picked, observe the reward, and modify the running average for that lever with the reward.
+
+--- Slide 16 ---
+
+Problem with Strategy 2
+Theoretically, this algorithm has the advantage of always getting closer and closer to the true average reward for each lever. 
+There is no number of pulls per lever n after which we stop learning. Unfortunately, it doesn’t work. 
+Issue – No Exploration!
+
+--- Slide 17 ---
+
+Strategy 3
+One fix for this problem is to use another parameter, epsilon, that controls if we pull the lever with the highest running average or if we pull a random lever.
+
+--- Slide 18 ---
+
+Strategy 3(Epsilon-Greedy)
+Algorithm 3
+Before doing any pulls, set the running average of each lever to 0.
+Set epsilon to a number in [0, 1].
+For each timestep:
+Get a random number (from the uniform distribution) x in [0, 1].
+If x > epsilon, Pick the lever with the highest running average. If there is a tie, pick randomly between the tied levers.
+If x < epsilon, pick a random lever.
+Pull the lever we just picked, observe the reward, and modify the running average for that lever with the reward.
+
+--- Slide 19 ---
+
+Value Action Based Method
+We denote the true (actual) value of action a as Q*(a), and the estimated value on the tth time step as Qt(a). Recall that the true value of an action is the mean reward received when that action is selected.
+In other words, if at the tth play action a  has been chosen k times prior to t, yielding rewards                  ,   then its value is estimated to be
+
+--- Slide 20 ---
+
+Value Action Based Method
+The estimated action value is:
+
+--- Slide 21 ---
+
+Sample Average Method
+We call this the sample-average method for estimating action values because each estimate is a simple average of the sample of relevant rewards.
+
+--- Slide 22 ---
+
+The algorithm updates action values using the sample mean of observed rewards.
+If an action has never been played, we initialize its value.
+Over time, as the number of samples grows, the estimate converges to the true expected reward.
+
+--- Slide 23 ---
+
+Greedy Method
+The simplest action selection rule is to select the action (or one of the actions) with the highest estimated action value, that is, to select at step t one of the greedy actions,      for which 
+
+This greedy action selection method can be written as: 
+Greedy action selection always exploits current knowledge to maximize immediate reward; it spends no time at all sampling apparently inferior actions to see if they might really be better.
+
+--- Slide 24 ---
+
+What is the problem?
+If we always choose the action with the highest estimated reward (greedy method), we may get stuck with a suboptimal choice.
+If we always explore, we may never exploit what we have learned.
+
+Solution: 
+The ε-Greedy Method is a simple yet effective way to balance exploration (trying new actions) and exploitation (choosing the best-known action) in multi-armed bandit problems and reinforcement learning.
+
+--- Slide 25 ---
+
+Epsilon-Greedy Method
+
+--- Slide 26 ---
+
+Example Greedy Policy (1)
+Epsilon is hyper parameter that controls trade-off between exploration and exploitation
+Exploration rate: Epsilon determines the probability of choosing a random action (exploration) instead of the greedy action (exploitation).
+Range: Epsilon is typically set between 0 and 1. 
+1. ε = 0: Pure exploitation (always choose the greedy action).   
+ 2. ε = 1: Pure exploration (always choose a random action).
+
+Common values: Typical values for epsilon include 0.1, 0.01, or 0.001, depending on the problem and the desired level of exploration.  
+With a low epsilon value, the agent explores less and focuses on exploiting the current knowledge.
+
+--- Slide 27 ---
+
+Epsilon Greedy Policy
+To use an epsilon-greedy policy with ε = 0.1. This means that 10% of the time, the robot will choose a random action instead of the greedy action.
+Action - Reward 
+	Up -10 
+	Down - 5 
+	Left - 8 
+	Right - 12 
+With ε = 0.1, the robot will choose the greedy action (Right) 90% of the time and a random action 10% of the time.
+
+--- Slide 28 ---
+
+Epsilon Greedy Policy (1)
+Possible scenario:
+The robot is at the starting point of the maze.
+2. It chooses the greedy action (Right) with probability 0.9.
+3. With probability 0.1, it chooses a random action (say, Up).
+4. If it chooses Up, it moves up and updates its value function.
+5. If it chooses Right, it moves right and updates its value function.
+By using an epsilon-greedy policy, the robot balances exploration (choosing random actions) and exploitation (choosing the greedy action). 
+This helps the robot discover new paths and avoid getting stuck in local optima.
+
+--- Slide 29 ---
+
+Epsilon Greedy Policy (1)
+Epsilon Greedy policy is a policy of choosing action using the current Q value estimation 
+with probability 1 - ε choose the action which has a highest Q value.
+with probability ε choose any action at random.
+
+--- Slide 30 ---
+
+Epsilon-Greedy Method
+An advantage of these methods is that, in the limit as the number of plays increases, every action will be sampled an infinite number of times, guaranteeing that Nt(a) → ∞ for all a, and thus ensuring that all the Qt(a) converge to q*(a). 
+This of course implies that the probability of selecting the optimal action converges to greater than 1 − ε, that is, to near certainty.
+
+--- Slide 31 ---
+
+Greedy Method
+
+--- Slide 32 ---
+
+Epsilon-Greedy Method
+Comparing Results of Algorithms: 
+Three algorithms are tried: 
+with e=0 (pure greedy)
+with e=0.01 (low exploration)
+with e=0.1 (more exploration)
+
+All curves are averaged over many runs of a k-armed bandit problem.
+The goal is to show how exploration affects learning quality over time.
+
+--- Slide 33 ---
+
+The figure compares greedy and ε-greedy strategies in a multi-armed bandit problem. The top graph shows average reward over time, while the bottom graph shows the percentage of selecting the optimal action. 
+
+The greedy method (ε = 0) quickly converges but often to a suboptimal action, resulting in lower long-term reward. 
+ε-greedy methods explore occasionally, allowing them to discover the optimal action more reliably. 
+
+A higher ε (0.1) leads to more exploration, higher optimal-action selection, and ultimately the highest average reward, demonstrating the importance of balancing exploration and exploitation.
+
+--- Slide 34 ---
+
+Incremental Implementation
+The sample-average technique used to estimate action-values above has a problem: 
+Memory	
+computation requirements grow over time. 
+This isn’t necessary, we can devise an incremental solution instead
+
+--- Slide 35 ---
+
+Derivation of Incremental Implementation
+Entire derivation in class notes
+
+--- Slide 36 ---
+
+Incremental Implementation
+
+--- Slide 37 ---
+
+
+--- Slide 38 ---
+
+Stationary vs Non-Stationary Problems
+An interesting thing to note, is that we assumed that our rewards distribution from each slot machine is stationary.
+A non-stationary reward distribution means that the reward distribution changes over time.
+
+--- Slide 39 ---
+
+Real-World Examples of Non-Stationary Rewards:
+Stock Market 📈
+The return on a stock changes over time due to market conditions, news, or economic shifts.
+Online Advertising 🎯
+Click-through rates (CTR) for ads may change over time as user preferences shift.
+Recommendation Systems 🍕🎬
+Users' interests in food delivery or movie recommendations evolve, making past data less useful.
+
+--- Slide 40 ---
+
+Non-Stationary Problem
+The averaging method we talked about until now are appropriate in a stationary environments, but not if the bandit is changing over time (non stationary problems). 
+When we deal with non stationary problems, it makes sense to care more about recent rewards than long-past ones.
+One of the most popular ways of doing this is to use a constant step-size parameter
+
+--- Slide 41 ---
+
+Example
+Suppose:
+First 100 days: Restaurant A gives rating 4.8
+After management change: rating drops to 2.0
+If we average all 200 days:
+The estimate will still be high.
+We react too slowly to change.
+That’s bad in dynamic environments.
+Think of predicting stock price:
+Yesterday you predicted ₹100
+Today actual price is ₹120
+Error = 20
+If α=0.1:
+New estimate=100+0.1(20)=102
+
+You don’t jump fully to 120.
+You adjust gradually.
+That makes you adaptable.
+
+--- Slide 42 ---
+
+Non-Stationary Problem (Step Size)
+where the step-size parameter α ∈ (0, 1] is constant. a half-open (or half-closed) interval that includes the endpoint 1 but excludes 0. 
+“α” tells us how much to weight (you can think about it as how much we “care” about) the next update of the value function. As we move forward in time, “α” will make sure that a value function will be updated less for a given change in the rewards.
+This gives us Qk+1, which is now the sum of the initial estimate Q1, and a weighted average of the past rewards
+
+--- Slide 43 ---
+
+(Step Size)
+Case 1: α is small (e.g., 0.01)
+Very slow learning
+Old data still matters
+Smooth updates
+Slow adaptation
+Good for: Stable environments
+
+
+Case 2: α is large (e.g., 0.5)
+Fast learning
+New data dominates
+Quick reaction to changes
+More fluctuations
+Good for: Changing environments
+Example:
+Imagine grading students:
+
+If a student suddenly performs badly once:
+Do you immediately say they are weak?
+Or do you slightly revise your opinion?
+
+α controls how strongly you revise your belief.
+
+--- Slide 44 ---
+
+Non-Stationary Problem (Exponential Recency Weighted Average (ERWA) method)
+
+--- Slide 45 ---
+
+For non-stationary problems, a constant step-size update rule ensures that recent rewards contribute more to the action-value estimate, allowing the agent to adapt more effectively to changes in the environment.
+For stationary environments, using a constant step size can cause the estimate to fluctuate around the true value instead of converging smoothly.
+
+--- Slide 46 ---
+
+Upper Confidence Bound(UCB)
+The Ice Cream Shop Scenario
+You visit a new ice cream shop with 5 flavors. Each day, you can try one scoop.
+Goal: Find the best flavor while minimizing regret (trying bad flavors)
+
+--- Slide 47 ---
+
+Epsilon-Greedy Strategy (ε = 0.2)
+20% of the time (ε = 0.2):
+Explore - Choose a RANDOM flavor
+ 
+80% of the time:
+Exploit - Choose the current BEST flavor
+⚠️ The Problem with Epsilon-Greedy
+Blind exploration - picks flavors randomly, even terrible ones!
+Wastes time on Mint (4/10) even after knowing it's bad
+Might randomly pick Strawberry (9/10) during exploration phase
+
+--- Slide 48 ---
+
+Upper Confidence Bound (UCB)
+Smart Exploration: "Optimism in the Face of Uncertainty"
+Average Reward
+How good has this flavor been so far? (Exploitation)
+ 
+Exploration Bonus
+How uncertain are we? (Larger for untested flavors)
+Always picks the flavor with the highest UCB score!
+general form:
+Q_t(a): The current estimated value (average reward) of action a. (This is the Exploitation term)
+c: A confidence hyper parameter that controls the level of exploration.
+t: The total number of trials so far.
+N_t(a): The number of times action a has been selected. (This is the Exploration term).
+
+--- Slide 49 ---
+
+How UCB Works: Confidence Intervals
+After trying each flavor once:
+Chocolate (8/10)
+11
+Vanilla (6/10)
+9
+Strawberry (9/10)
+12
+Mint (4/10)
+7
+Mango (7/10)
+10
+0
+12
+UCB picks Strawberry (highest upper bound = 12)
+
+--- Slide 50 ---
+
+Day-by-Day Comparison
+UCB quickly learns and exploits, while ε-greedy keeps wasting tries
+
+--- Slide 51 ---
+
+Why UCB is Superior
+Smart Exploration
+Explores uncertain options, not random ones
+Adaptive
+Automatically reduces exploration as confidence grows
+No Bad Choices
+Avoids obviously poor options after learning
+Theoretical Guarantees
+Proven logarithmic regret bounds
+UCB balances exploration and exploitation intelligently!
+
+--- Slide 52 ---
+
+Key Takeaways
+ε-Greedy explores randomly (wasteful)
+ 
+UCB explores optimistically (intelligent)
+ 
+UCB uses confidence intervals to guide exploration
+ 
+UCB achieves better cumulative reward over time
+ 
+UCB has proven theoretical guarantees
+
+--- Slide 53 ---
+
+Upper Confidence Bound(UCB)
+UCB is another technique for balancing exploration and exploitation.
+Remember that ε-greedy selects an action with a uniform prob. after deciding not to take the greedy action.
+The UCB algorithm addresses this tradeoff by employing a strategy that balances exploration and exploitation through a confidence interval-based approach. The core idea is to select actions based not only on their estimated rewards but also on the uncertainty or confidence in these estimates.
+
+--- Slide 54 ---
+
+The UCB algorithm can be described as follows:
+1. Initialization: Initialize the count of pulls and the estimated rewards for each arm. Initially, each arm is pulled once to gather preliminary data.
+2. Selection: At each step, select the arm that maximizes the UCB value, which is a combination of the estimated reward and a term that represents the uncertainty or confidence interval.
+3. Update: After selecting an arm and receiving the reward, update the count of pulls and the estimated reward for that arm.
+
+--- Slide 55 ---
+
+UCB1 algorithm:
+
+--- Slide 56 ---
+
+Intuition
+This term quantifies uncertainty in estimating the reward of arm i.
+If an arm has been played many times (ni(t) is large), the uncertainty shrinks.
+If an arm has been rarely played, the term remains large, encouraging exploration.
+The logarithmic factor logt ensures that even well-explored arms still get occasional trials.
+
+--- Slide 57 ---
+
+Upper Confidence Bound(UCB)
+The square root term is a measure of the uncertainity in our estimate. It is proportional to t i.e. how many timesteps have passed and inversely proportional to Nt(a) i.e. how many times that action has been visited. The more time has passed, and the less we have sampled an action, the higher our upper-confidence-bound.
+
+--- Slide 58 ---
+
+Upper Confidence Bound(UCB)
+• As the timesteps increases, the denominator dominates the numerator as the ln term flattens.
+• Each time we select an action our uncertainty decreases because N is the denominator of this equation.
+• UCB will often perform better than e-greedy methods
+
+--- Slide 59 ---
+
+Upper Confidence Bound(UCB)
+Epsilon-greedy action selection forces the agent to explore new actions, but it does so indiscriminately.
+It would be better to select among non-greedy actions according to their potential for actually being optimal, taking into account both how close their estimates are to being maximal and the uncertainty in those estimates
+
+--- Slide 60 ---
+
+Advantages
+1. Theoretical Guarantees: The UCB algorithm provides strong theoretical guarantees on performance, often expressed in terms of regret bounds. Regret is the difference between the reward obtained by the algorithm and the reward that could have been obtained by always selecting the best arm. UCB algorithms typically achieve logarithmic regret, which is optimal for the multi-armed bandit problem.
+2. Simplicity and Efficiency: The UCB algorithm is relatively simple to implement and computationally efficient. The calculations for UCB values involve basic arithmetic operations, making it suitable for real-time applications.
+3. Adaptability: The UCB algorithm can be adapted to various settings, including non-stationary environments where the reward distributions change over time. Extensions such as UCB1-Tuned and Discounted UCB modify the confidence interval term to account for changing conditions
+
+--- Slide 61 ---
+
+Limitations
+1. Assumption of Bounded Rewards: The UCB algorithm relies on the assumption that the rewards are bounded within a known range. 
+2. Exploration Overhead: In the initial stages, the UCB algorithm may explore suboptimal arms more frequently, leading to higher exploration overhead. This can be mitigated by incorporating domain knowledge or using hybrid approaches that combine UCB with other exploration strategies.
+3. Scalability: While the UCB algorithm is efficient for small to moderate numbers of arms, it may face scalability challenges in environments with a large number of actions.
+
+--- Slide 62 ---
+
+
+--- Slide 63 ---
+
+
+--- Slide 64 ---
+
+Algorithm 3: Thompson Sampling
+Probabilistic Bayesian Approach
+Step 1:
+Maintain a Beta(α, β) distribution for each flavor
+ 
+Step 2:
+Sample a random value from each distribution
+ 
+Step 3:
+Pick the flavor with the highest sample!
+"What if this flavor is actually the best? Let's give it a chance!"
+
+--- Slide 65 ---
+
+Thompson Sampling: How It Works
+After a few tries:
+Wide distributions (high uncertainty) = more exploration
+Narrow distributions (high confidence) = more exploitation
+Bad flavors get low samples → rarely chosen
+Automatically balances exploration and exploitation!
+
+--- Slide 66 ---
+
+Thompson Sampling (Bayesian Bandits algorithm)
+Up until now, all of the methods we’ve seen for tackling the Bandit Problem have selected their actions based on the current averages of the rewards received from those actions.
+Thompson Sampling (also sometimes referred to as the Bayesian Bandits algorithm) takes a slightly different approach; rather than just refining an estimate of the mean reward it extends this, to instead build up a probability model from the obtained rewards, and then samples from this to choose an action.
+
+--- Slide 67 ---
+
+Thompson Sampling
+In this way, not only is an increasingly accurate estimate of the possible reward obtained, but the model also provides a level of confidence in this reward, and this confidence increases as more samples are collected. 
+This process of updating your beliefs as more evidence becomes available is known as Bayesian Inference.
+
+--- Slide 68 ---
+
+Baby Robot Problem
+Baby Robot is lost in the mall. Using Reinforcement Learning we want to help him find his way back to his mum. However, before he can even begin looking for her, he needs to recharge, from a set of power sockets that each give a slightly different amount of charge.
+Using the strategies from the multi-armed bandit problem we need to find the best socket, in the shortest amount of time, to allow Baby Robot to get charged up and on his way
+
+--- Slide 69 ---
+
+Baby Robot Problem
+
+--- Slide 70 ---
+
+Bernoulli Thomson Sampling
+As an introduction, and to make things easier to work with, let’s simplify the power socket problem. 
+Now, instead of each socket returning a varying amount of charge, each socket will either return some charge or no charge; the rewards have only two possible values: 1 when the chosen socket supplies a charge and 0 when it doesn’t. 
+When a random variable has only two possible outcomes its behaviour can be described by the Bernoulli distribution.
+
+--- Slide 71 ---
+
+Bernoulli Thomson Sampling
+So now, instead of the amount of charge varying per socket, the probability of a socket producing a charge varies with each socket. 
+We want to find the socket with the highest probability of returning a charge, rather than the socket that gives the most charge.
+As already mentioned, Thompson Sampling generates a model of the reward probabilities. 
+When, as in this case, the available rewards are binary (win or lose, yes or no, charge or no charge) then the Beta distribution is ideal to model this type of probability.
+
+--- Slide 72 ---
+
+Bernoulli Thomson Sampling
+The Beta distribution takes two parameters, ‘α’ (alpha) and ‘β’ (beta). In the simplest terms these parameters can be thought of as respectively the count of successes and failures.
+Additionally, a Beta distribution has a mean value given by:
+
+.
+
+--- Slide 73 ---
+
+Bernoulli Thomson Sampling
+.
+Prior: Beta(α,β)
+Posterior: If reward: Beta(α+1,β)
+                 Else :       Beta(α,β+1)
+Figure: The Beta distribution for various values of alpha and beta.
+
+--- Slide 74 ---
+
+Bernoulli Thomson Sampling
+Initially we have no idea what the probability is of any given socket producing an output, so we can start by setting both ‘α’ and ‘β’ to one, which produces a flat line Uniform distribution (shown as the flat, red, line in previous figure).
+This initial guess at the probability of the socket producing an output is known as the Prior Probability; it is the probability of the specific event occurring before we have collected any evidence and in this case is represented by the Beta distribution Beta(1,1)
+
+--- Slide 75 ---
+
+Bernoulli Thomson Sampling
+Once we test a socket, and obtain a reward, we can modify our belief in the likelihood of that socket returning some charge. 
+This new probability, after some evidence has been collected, is known as the Posterior Probability. 
+Again this is given by a Beta distribution, but now the values of ‘α’ and ‘β’ are updated with the value of the returned reward.
+
+--- Slide 76 ---
+
+Bernoulli Thomson Sampling
+So, if a socket returns some charge, the reward will be 1 and ‘α’, the count of the number of successes, will increment by 1. 
+The count of the number of failures, ‘β’, will not increase. If instead no reward was obtained, then ‘α’ will stay the same and ‘β’ will increment by 1. 
+As more data is collected the Beta distribution moves from being a flat line to become an increasingly accurate model of the probability of the mean reward. 
+By maintaining the values of ‘α’ and ‘β’ a Thompson sampling algorithm is able to describe the estimated mean reward and the level of confidence in this estimate.
+
+--- Slide 77 ---
+
+Bernoulli Thomson Sampling
+In contrast to the Greedy algorithm, which at each time step selects the action with the highest estimated reward, even if the confidence in that estimate is low, Thompson sampling instead samples from the Beta distribution of each action and chooses the action with the highest returned value. 
+Since actions that have been tried infrequently have wide distributions (see the blue curve in figure), they have a larger range of possible values. In this way, a socket that currently has a low estimated mean reward, but has been tested fewer times than a socket with a higher estimated mean, can return a larger sample value and therefore become the selected socket at this time step.
+
+--- Slide 78 ---
+
+Bernoulli Thomson Sampling
+In the graph above, the blue curve has a lower estimated mean reward than the green curve. Therefore, under Greedy selection, green would be chosen and the blue socket would never be selected. 
+In contrast, Thompson Sampling effectively considers the full width of the curve, which for the blue socket can be seen to extend beyond that of the green socket. In this case the blue socket may be selected in preference to the green one.
+
+--- Slide 79 ---
+
+Bernoulli Thomson Sampling
+As the number of trials of a socket increases the confidence in the estimated mean increases. This is reflected in the probability distribution becoming narrower and the sampled value will then be drawn from a range of values that are closer to the true mean (see the green curve in figure). 
+As a result, exploration decreases and exploitation increases, since the sockets with a higher probability of returning a reward will begin to be selected with increasing frequency
+
+--- Slide 80 ---
+
+Bernoulli Thomson Sampling
+On the other hand, sockets with a low estimated mean will start to be selected less frequently and will tend to be dropped early from the selection process. Consequently, their true mean may never be found.
+Since we are only interested in finding the socket with the highest probability of returning a reward, and finding it as quickly as possible, we don’t care if full information of poorly performing sockets is never obtained.
+
+--- Slide 81 ---
+
+Comparing All Three Algorithms
+Each algorithm has trade-offs - choose based on your needs!
+
+--- Slide 82 ---
+
+When to Use Each Algorithm?
+ε-Greedy
+Best for: Learning/teaching, simple baseline, quick prototyping
+UCB
+Best for: Deterministic decisions, theoretical guarantees needed, no randomness
+Thompson Sampling
+Best for: A/B testing, online advertising, real-world applications (often wins!)
+For most production systems: Start with Thompson Sampling!
+
+--- Slide 83 ---
+
+Key Takeaways
+All solve the exploration-exploitation tradeoff
+ 
+ε-Greedy: Simple but wasteful (random exploration)
+ 
+UCB: Smart with confidence bounds (deterministic)
+ 
+Thompson: Bayesian and probabilistic (often best)
+ 
+Choose based on your constraints and requirements!
+
+--- Slide 84 ---
+
+Which to Use?
+UCB:
+Use if you need a simple, deterministic algorithm with strong theoretical guarantees.
+Suitable for stationary environments where user preferences do not change over time.
+Thompson Sampling:
+Use if you want better empirical performance and adaptability to changing environments.
+Suitable for non-stationary environments or when you have prior knowledge about ad performance.
+
+============================================================
+FILE: Module 2 Policy Gradient Approaches.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Policy Gradient Approaches
+Module-2
+
+--- Slide 2 ---
+
+Table of Content
+Linear reward Penalty Algorithm, 
+Objective Function[Parameterised policy representation(Θ)]
+Deriving the Policy Gradient Expression[ Evaluation of policy(ɳ(Θ))]
+REINFORCE algorithm
+
+--- Slide 3 ---
+
+Linear Reward-Penalty (LR-P) algorithm
+The Linear Reward-Penalty algorithm is rooted in the theory of learning automata, which are adaptive decision-making systems. A learning automaton is an abstract model that interacts with a random environment and learns to choose the best action based on feedback.
+Key features of learning automata:
+The automaton has a set of actions to choose from.
+It maintains a probability distribution over these actions.
+Based on the feedback (reward or penalty), it updates its action probabilities to improve performance over time.
+
+Learning Automaton is the simplest possible reinforcement learner — no states, no model, no memory — just a probability vector over actions that gets nudged by environmental feedback until it concentrates on the best action.
+
+--- Slide 4 ---
+
+The Linear Reward-Penalty algorithm is a specific type of learning automaton. Its core idea is to linearly adjust the probabilities of actions based on whether the agent receives a reward or a penalty:
+If the agent receives a reward, it increases the probability of selecting the same action again.
+If the agent receives a penalty, it decreases the probability of selecting the same action and redistributes the probabilities to other actions.
+This process ensures that the agent explores different actions and exploits the ones that yield higher rewards.
+
+--- Slide 5 ---
+
+Action Probabilities
+Let n be the number of actions available to the agent.
+Let pi​(t) be the probability of selecting action i at time t.
+Initially, all actions have equal probabilities:
+
+--- Slide 6 ---
+
+Update Rules
+The probabilities are updated based on the feedback (reward or penalty).
+Here:
+α is the reward learning rate (controls how much to increase the probability of the selected action).
+β is the penalty learning rate (controls how much to decrease the probability of the selected action).
+
+--- Slide 7 ---
+
+Reward Case:
+If the agent receives a reward, it means the selected action was good.
+The algorithm increases the probability of selecting this action again in the future.
+The probabilities of other actions are decreased to ensure the total probability sums to 1.
+Penalty Case:
+If the agent receives a penalty, it means the selected action was bad.
+The algorithm decreases the probability of selecting this action again in the future.
+The probabilities of other actions are increased to encourage exploration.
+
+--- Slide 8 ---
+
+The algorithm ensures that actions yielding rewards are reinforced, while actions yielding penalties are discouraged.
+Over time, the probabilities converge to a distribution where the best action(s) have the highest probabilities.
+The linear nature of the updates ensures smooth and gradual changes, making the algorithm stable and predictable.
+
+--- Slide 9 ---
+
+Imagine you're at a casino with 3 slot machines:
+ε-Greedy: "I'll usually play my favorite machine, but every now and then I'll randomly try another one." — Simple but dumb exploration.
+UCB: "I'll play machines I haven't tried much, because maybe they're secretly better — I'll be optimistic about unknowns." — Smart, systematic exploration.
+Thompson Sampling: "I maintain a belief about each machine's true payout. I randomly sample from my beliefs and play the machine that looks best in that sample." — Elegant, Bayesian.
+LR-P: "I don't track counts or beliefs — I just maintain a tendency (probability) toward each machine, and nudge it up or down based on feedback." — Lightweight, reactive.
+
+--- Slide 10 ---
+
+Limitations
+Slow Convergence: The algorithm may take a long time to converge, especially in environments with many actions or sparse rewards.
+Sensitivity to Learning Rates: The choice of α and β can significantly affect performance.
+Not Suitable for Large Action Spaces: The algorithm becomes inefficient as the number of actions increases.
+
+--- Slide 11 ---
+
+The difference between policy-based and policy-gradient methods
+Policy-gradient methods, is a subclass of policy-based methods.
+
+The difference between these two methods lies on how we optimize the parameter θ:
+
+In policy-based methods, we search directly for the optimal policy. We can optimize the parameter θ indirectly by maximizing the local approximation of the objective function with techniques like hill climbing, simulated annealing, or evolution strategies.
+In policy-gradient methods, because it is a subclass of the policy-based methods, we search directly for the optimal policy. But we optimize the parameter θ directly by performing the gradient ascent on the performance of the objective function J(θ).
+
+--- Slide 12 ---
+
+
+--- Slide 13 ---
+
+Policy Gradient Methods
+
+--- Slide 14 ---
+
+Policy Based Gradient
+More Principled approach.
+Allows us to use continues action spaces.
+Are able to learn truly random stochastic policies. 
+
+Policy Gradient takes a completely different approach: Skip the value function. Directly learn the policy itself. You represent the policy as a parameterized function (usually a neural network) with weights θ, and you directly optimize those weights to maximize expected reward using gradient ascent.
+
+--- Slide 15 ---
+
+Advantages of Policy-Based RL
+
+--- Slide 16 ---
+
+Policy Gradient Algorithm
+Policy gradient algorithm is a policy iteration approach where policy is directly manipulated to reach the optimal policy that maximises the expected return. 
+This type of algorithms is model-free reinforcement learning(RL). 
+The model-free indicates that there is no prior knowledge of the model of the environment. In other words, we do not know the environment dynamics or transition probability. 
+The environment dynamics or transition probability is indicated as below
+
+--- Slide 17 ---
+
+
+--- Slide 18 ---
+
+The probability of a trajectory (given that action comes from πθ​)
+
+--- Slide 19 ---
+
+Return and Reward
+We can define our return as the sum of rewards from the current state to the goal state i.e. the sum of rewards in a trajectory(we are just considering finite undiscounted horizon).
+
+
+
+Where τ = (s0​,a0​,…,sT−1​,aT−1​)
+
+--- Slide 20 ---
+
+Objective Function
+In policy gradient, the policy is usually modelled with a parameterized function respect to θ, πθ(a|s). From a mathematical perspective, an objective function is to minimise or maximise something. We consider a stochastic, parameterized policy πθ and aim to maximise the expected return using objective function J(πθ)
+
+--- Slide 21 ---
+
+Objective Function
+Here R(st, at) is defined as reward obtained at timestep t by performing an action at from the state st. We know the fact that R(st, at) can be represented as R(τ).
+We can maximise the objective function J to maximises the return by adjusting the policy parameter θ to get the best policy. The best policy will always maximise the return. The gradient ascent is the optimisation algorithm that iteratively searches for optimal parameters that maximise the objective function.
+
+--- Slide 22 ---
+
+Objective Function
+If we can find out the gradient ∇ of the objective function J, as shown below
+
+
+
+Then, we can update the policy parameter θ(for simplicity, we are going to use θ instead of πθ), using the gradient ascent rule. 
+This way, we can update the parameters θ in the direction of the gradient(Remember the gradient gives the direction of the maximum change, and the magnitude indicates the maximum rate of change ).
+
+--- Slide 23 ---
+
+Objective Function
+The gradient update rule is as shown below:
+
+--- Slide 24 ---
+
+Deriving the Policy Gradient Expression
+The expectation of a discrete random variable X can be defined as
+
+
+
+where x is the value of random variable X and P(x) is the probability function of x.
+Now we can rewrite our gradient as below:
+:
+
+--- Slide 25 ---
+
+Deriving the Policy Gradient Expression
+We can derive this equation as follows:
+
+--- Slide 26 ---
+
+Deriving the Policy Gradient Expression
+Probability of trajectory with respect to parameter θ, P(τ|θ) can be expanded as follows:
+
+
+
+
+Where p(s0) is the probability distribution of starting state and P(st+1|st, at) is the transition probability of reaching new state st+1 by performing the action at from the state st
+
+--- Slide 27 ---
+
+Deriving the Policy Gradient Expression
+If we take the log-probability of the trajectory, then it can be derived as below:
+
+
+We can take the gradient of the log-probability of a trajectory thus gives
+
+--- Slide 28 ---
+
+Deriving the Policy Gradient Expression
+We can modify this function as shown below based on the transition probability model, P(st+1​∣st​, at​) disappears because we are considering the model-free policy gradient algorithm where the transition probability model is not necessary
+
+--- Slide 29 ---
+
+Deriving the Policy Gradient Expression
+We can now go back to the expectation of our algorithm and time to replace the gradient of the log-probability of a trajectory with the derived equation above.
+
+
+
+Now the policy gradient expression is derived as:
+
+--- Slide 30 ---
+
+Deriving the Policy Gradient Expression
+The left-hand side of the equation can be replaced as below:
+
+--- Slide 31 ---
+
+REINFORCE
+REINFORCE is the Monte-Carlo sampling of policy gradient methods. That means the RL agent sample from starting state to goal state directly from the environment, rather than bootstrapping compared to other methods such as Temporal Difference Learning and Dynamic programming.
+
+--- Slide 32 ---
+
+The REINFORCE algorithm is a classic policy gradient method in Reinforcement Learning (RL) used to optimize stochastic policies. It belongs to the Monte Carlo family, meaning it updates policies based on complete episode rollouts rather than incremental steps.
+
+--- Slide 33 ---
+
+What Actually Makes REINFORCE Monte Carlo
+The policy gradient theorem says we need:
+∇θ J(θ) = E [ ∇θ log πθ(a|s) · Q(s,a) ]
+The problem is Q(s,a) — the true expected future return from state s taking action a. 
+This is impossible to compute exactly because it would require knowing all possible futures and their probabilities.
+Monte Carlo says:"Don't compute Q(s,a) exactly. 
+Just play the episode to the end and use the actual return you got as your estimate."
+
+--- Slide 34 ---
+
+
+--- Slide 35 ---
+
+REINFORCE
+We can rewrite our policy gradient expression in the context of Monte-Carlo sampling
+
+
+
+
+Where N is the number of trajectories is for one gradient update
+
+--- Slide 36 ---
+
+REINFORCE
+Sample N trajectories by following the policy πθ.
+Evaluate the gradient using the below expression
+
+--- Slide 37 ---
+
+REINFORCE
+Update the policy parameters
+
+
+Repeat 1 to 3 until we find the optimal policy πθ
+
+--- Slide 38 ---
+
+Monte Carlo Sampling
+▪The REINFORCE algorithm numerically estimates the policy gradient using Monte Carlo sampling. ▪
+ Monte Carlo sampling refers to any method that uses random sampling to generate data used to approximate a function. 
+ In essence, it is just “approximation with random sampling. 
+Example: Estimate the value of π (the mathematical constant)—the ratio of a circle’s circumference to its diameter
+
+--- Slide 39 ---
+
+Reinforce Algorithm
+
+--- Slide 40 ---
+
+When to Use REINFORCE?
+When the action space is continuous or large (where Q-learning struggles).
+When you need an explicit stochastic policy (e.g., exploration is crucial).
+When episodes are not too long (to reduce variance).
+
+--- Slide 41 ---
+
+REINFORCE relies on Monte Carlo estimates of the gradient, which often have high variance, making learning unstable.
+High variance leads to slow convergence and requires variance reduction techniques like baseline subtraction (e.g., using a value function).
+
+============================================================
+FILE: policy gradient expression.pdf
+============================================================
+
+
+--- Page 1 ---
+
+
+--- Page 2 ---
+
+
+--- Page 3 ---
+
+
+--- Page 4 ---
+
+
+============================================================
+FILE: PolicyGradient_Derivation.pdf
+============================================================
+
+
+--- Page 1 ---
+
+REINFORCEMENT LEARNING
+Policy Gradient Method
+Complete Mathematical Derivation
+From objective function to the final policy gradient expression
+Overview
+The Vanilla Policy Gradient (REINFORCE) is the fundamental algorithm for policy-based
+reinforcement learning. While it is rarely used directly in realistic settings, it is critical for building
+intuition and theoretical background for more complex algorithms like PPO, A3C, and TRPO.
+Approach Description
+Value-Based Methods Q-learning, DQN — learn good action values first, then derive a
+policy from them
+Policy-Based Methods Policy Gradient — directly optimise the policy parameters θ with
+respect to the RL objective
+In policy gradient methods, when we parameterise a policy we will explicitly model π. Learning
+is now done by approximate gradient ascent updates on J(θ), where J is the expected return
+objective.
+Part 1 — The Objective Function J(θ)
+1.1 Definition
+We define the objective function as the expected cumulative discounted reward when
+following policy πθ:
+EQUATION 1 — OBJECTIVE FUNCTION
+J(θ) = E_{τ ~ π_θ} [ Σ_{t=0}^{T} γᵗ R(sₜ , aₜ ) ]
+= E_{τ ~ π_θ} [ R(τ) ]
+
+[TABLE]
+ |  |  |  |  | 
+ | Approach |  |  | Description | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+Value-Based Methods |  |  |  | Q-learning, DQN — learn good action values first, then derive a | 
+ |  |  |  | policy from them | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+Policy-Based Methods |  |  |  | Policy Gradient — directly optimise the policy parameters θ with | 
+ |  |  |  | respect to the RL objective | 
+ |  |  |  |  | 
+
+[TABLE]
+ |  | 
+ | EQUATION 1 — OBJECTIVE FUNCTION | 
+ | J(θ) = E_{τ ~ π_θ} [ Σ_{t=0}^{T} γᵗ R(sₜ , aₜ ) ] | 
+ |  | 
+ | = E_{τ ~ π_θ} [ R(τ) ] | 
+ |  | 
+
+--- Page 2 ---
+
+1.2 Terms Explained
+Symbol Meaning
+θ Parameters of the policy (weights of the neural network)
+π_θ Parameterised policy — maps state s to probability distribution over
+actions
+τ Trajectory: the sequence (s₀ ,a₀ ,r₀ ), (s₁ ,a₁ ,r₁ ), ..., (sT,aT,rT) the
+agent observes. It is random with probability distribution P_θ, which
+is a function of θ
+R(sₜ ,aₜ ) Reward function — unknown to the agent. Gives reward based on
+environment dynamics given state sₜ and action aₜ
+R(τ) Cumulative return from a trajectory — sum of discounted rewards
+γ Discount factor (0 < γ ≤ 1) — future rewards matter less than
+immediate ones
+Key Insight — What J(θ) Says
+J(θ) is the expected total reward when following policy πθ. We want to find θ that
+maximises J(θ). Since τ is a function of the policy, and the policy is a function of θ, J is
+ultimately a function of θ alone.
+Part 2 — Gradient Ascent on J(θ)
+A natural approach to maximise J(θ) is to take a gradient step in the ascending direction.
+The update rule is:
+PARAMETER UPDATE RULE
+θ_{k+1} = θ_k + α · ∇_θ J(π_{θ_k})
+where α is the step size (learning rate). The term ∇θ J(πθ) is called the policy gradient term
+— and finding this term is the central challenge of the whole derivation.
+The Core Problem
+To compute ∇θ J(θ), we need to know how reward changes as θ changes. But the
+environment is a black box — we cannot differentiate through it. We need a way to
+estimate this gradient purely from sampled trajectories.
+
+[TABLE]
+ |  |  |  |  | 
+ | Symbol |  |  | Meaning | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+ | θ |  |  | Parameters of the policy (weights of the neural network) | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+π_θ |  |  |  | Parameterised policy — maps state s to probability distribution over | 
+ |  |  |  | actions | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+τ |  |  |  | Trajectory: the sequence (s₀ ,a₀ ,r₀ ), (s₁ ,a₁ ,r₁ ), ..., (sT,aT,rT) the | 
+ |  |  |  | agent observes. It is random with probability distribution P_θ, which | 
+ |  |  |  | is a function of θ | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+R(sₜ ,aₜ ) |  |  |  | Reward function — unknown to the agent. Gives reward based on | 
+ |  |  |  | environment dynamics given state sₜ and action aₜ | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+ | R(τ) |  |  | Cumulative return from a trajectory — sum of discounted rewards | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+γ |  |  |  | Discount factor (0 < γ ≤ 1) — future rewards matter less than | 
+ |  |  |  | immediate ones | 
+ |  |  |  |  | 
+
+[TABLE]
+ |  | 
+ | Key Insight — What J(θ) Says | 
+ | J(θ) is the expected total reward when following policy πθ. We want to find θ that | 
+ | maximises J(θ). Since τ is a function of the policy, and the policy is a function of θ, J is | 
+ | ultimately a function of θ alone. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | PARAMETER UPDATE RULE | 
+ | θ_{k+1} = θ_k + α · ∇_θ J(π_{θ_k}) | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | The Core Problem | 
+ | To compute ∇θ J(θ), we need to know how reward changes as θ changes. But the | 
+ | environment is a black box — we cannot differentiate through it. We need a way to | 
+ | estimate this gradient purely from sampled trajectories. | 
+ |  | 
+
+--- Page 3 ---
+
+Part 3 — Expanding J(θ) Explicitly
+We compute the expected return J(θ) explicitly by summing over all possible trajectories —
+weighted by the probability of taking each trajectory given θ:
+EQUATION 1 — EXPLICIT OBJECTIVE
+J(θ) = Σ_τ P(τ; θ) · R(τ) ... (Eq. 1)
+3.1 Expanding P(τ; θ)
+The trajectory probability P(τ;θ) is a chain of products across every timestep — the probability
+of observing a state, taking a particular action given that state, and observing the next state:
+EQUATION 2 — TRAJECTORY PROBABILITY
+P(τ; θ) = Π_{t=0}^{T} P(sₜ ₊₁ | sₜ , aₜ ) · π_θ(aₜ | sₜ )
+... (Eq. 2)
+╰─────────────────────╯ ╰─────────────────╯
+Environment dynamics Policy probability
+(state transition) (under our control)
+Term Meaning
+P(sₜ ₊ ₁ |sₜ ,aₜ ) Environment state transition dynamics — probability of reaching next
+state. NOT controlled by θ
+π_θ(aₜ |sₜ ) Policy probability — probability of taking action aₜ in state sₜ under
+parameters θ. This IS controlled by θ
+Why This Matters
+Notice that P(τ;θ) contains two kinds of terms. Only πθ(aₜ |sₜ ) depends on θ. The
+environment dynamics P(sₜ ₊ ₁ |sₜ ,aₜ ) do not. This observation is what allows us to
+eliminate the environment from the gradient computation in Part 5.
+Part 4 — Computing ∇_θ J(θ)
+Taking the gradient of Equation 1 with respect to θ and moving it inside the sum:
+
+[TABLE]
+ |  | 
+ | EQUATION 1 — EXPLICIT OBJECTIVE | 
+ | J(θ) = Σ_τ P(τ; θ) · R(τ) ... (Eq. 1) | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | EQUATION 2 — TRAJECTORY PROBABILITY | 
+ | P(τ; θ) = Π_{t=0}^{T} P(sₜ ₊₁ | sₜ , aₜ ) · π_θ(aₜ | sₜ ) | 
+ | ... (Eq. 2) | 
+ |  | 
+ | ╰─────────────────────╯ ╰─────────────────╯ | 
+ | Environment dynamics Policy probability | 
+ | (state transition) (under our control) | 
+ |  | 
+
+[TABLE]
+ |  |  |  |  | 
+ | Term |  |  | Meaning | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+P(sₜ ₊ ₁ |sₜ ,aₜ ) |  |  |  | Environment state transition dynamics — probability of reaching next | 
+ |  |  |  | state. NOT controlled by θ | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+π_θ(aₜ |sₜ ) |  |  |  | Policy probability — probability of taking action aₜ in state sₜ under | 
+ |  |  |  | parameters θ. This IS controlled by θ | 
+ |  |  |  |  | 
+
+[TABLE]
+ |  | 
+ | Why This Matters | 
+ | Notice that P(τ;θ) contains two kinds of terms. Only πθ(aₜ |sₜ ) depends on θ. The | 
+ | environment dynamics P(sₜ ₊ ₁ |sₜ ,aₜ ) do not. This observation is what allows us to | 
+ | eliminate the environment from the gradient computation in Part 5. | 
+ |  | 
+
+--- Page 4 ---
+
+∇_θ J(θ) = ∇_θ Σ_τ P(τ;θ) · R(τ)
+= Σ_τ ∇_θ P(τ;θ) · R(τ)
+The problem: ∇θ P(τ;θ) is impossible to compute directly because it involves differentiating
+through the unknown environment dynamics. We need a trick.
+4.1 The Log Derivative Trick
+This trick (also called the likelihood ratio trick) is a simple rule of calculus:
+LOG DERIVATIVE IDENTITY
+∇_x log f(x) = ∇_x f(x) / f(x)
+Therefore: ∇_x f(x) = f(x) · ∇_x log f(x)
+Applying this to our gradient — we multiply and divide by P(τ;θ):
+APPLYING THE LOG DERIVATIVE TRICK
+∇_θ J(θ) = Σ_τ ∇_θ P(τ;θ) · R(τ)
+= Σ_τ P(τ;θ) · [∇_θ P(τ;θ) / P(τ;θ)] · R(τ)
+= Σ_τ P(τ;θ) · ∇_θ log P(τ;θ) · R(τ) ... (Eq.
+2)
+= E_{τ ~ π_θ} [ ∇_θ log P(τ;θ) · R(τ) ]
+Why This Is So Powerful
+By applying the log derivative trick, we have converted an impossible derivative (through
+the environment) into an expectation that we can estimate by sampling! We simply run the
+policy, collect trajectories, and average.
+This is the Monte Carlo estimation step — instead of computing the expectation exactly
+(which would require summing over all possible trajectories), we approximate it from m
+sampled trajectories:
+
+[TABLE]
+ |  | 
+ | ∇_θ J(θ) = ∇_θ Σ_τ P(τ;θ) · R(τ) | 
+ |  | 
+ | = Σ_τ ∇_θ P(τ;θ) · R(τ) | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | LOG DERIVATIVE IDENTITY | 
+ | ∇_x log f(x) = ∇_x f(x) / f(x) | 
+ |  | 
+ | Therefore: ∇_x f(x) = f(x) · ∇_x log f(x) | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | APPLYING THE LOG DERIVATIVE TRICK | 
+ | ∇_θ J(θ) = Σ_τ ∇_θ P(τ;θ) · R(τ) | 
+ |  | 
+ | = Σ_τ P(τ;θ) · [∇_θ P(τ;θ) / P(τ;θ)] · R(τ) | 
+ |  | 
+ | = Σ_τ P(τ;θ) · ∇_θ log P(τ;θ) · R(τ) ... (Eq. | 
+ | 2) | 
+ |  | 
+ | = E_{τ ~ π_θ} [ ∇_θ log P(τ;θ) · R(τ) ] | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | Why This Is So Powerful | 
+ | By applying the log derivative trick, we have converted an impossible derivative (through | 
+ | the environment) into an expectation that we can estimate by sampling! We simply run the | 
+ | policy, collect trajectories, and average. | 
+ |  | 
+ | This is the Monte Carlo estimation step — instead of computing the expectation exactly | 
+ | (which would require summing over all possible trajectories), we approximate it from m | 
+ | sampled trajectories: | 
+ |  | 
+ |  | 
+
+--- Page 5 ---
+
+∇_θ J(θ) ≈ (1/m) Σᵢ ∇_θ log P(τⁱ ; θ) · R(τⁱ )
+By taking the average (1/m), we obtain an unbiased estimate that reduces the variance of
+the gradient estimate. More trajectories = less noisy gradient.
+Part 5 — Simplifying ∇_θ log P(τ; θ)
+We now expand ∇θ log P(τ;θ). Using the full expansion of P(τ;θ) from Equation 2:
+EXPANDING THE LOG
+∇_θ log P_θ(τ, θ) = ∇_θ log [ μ(s₀)
+· Π_{t=0} P(sₜ ₊₁|sₜ ,aₜ )
+· π_θ(aₜ |sₜ ) ]
+Using the log of a product = sum of logs rule:
+= ∇_θ log μ(s₀)
++ Σ_t ∇_θ log P(sₜ ₊₁|sₜ ,aₜ )
++ Σ_t ∇_θ log π_θ(aₜ |sₜ )
+5.1 Dropping the Environment Terms
+Now we apply a crucial observation — two of the three terms have zero gradient with respect to
+θ:
+Term Why It Drops Out
+∇_θ log μ(s₀) = 0 Initial state distribution. The policy parameter θ does NOT affect
+which state the task starts in. Since μ(s₀ ) is independent of θ, its
+derivative with respect to θ is zero.
+∇_θ log P(sₜ ₊₁|sₜ ,aₜ ) State transition dynamics. The policy parameters θ do not affect
+= 0 state-to-state transition probabilities (those are determined by the
+environment). So the derivative with respect to θ is zero.
+Therefore, the only term that survives is the policy term:
+SIMPLIFIED GRADIENT OF LOG TRAJECTORY PROBABILITY
+
+[TABLE]
+ |  | 
+ | ∇_θ J(θ) ≈ (1/m) Σᵢ ∇_θ log P(τⁱ ; θ) · R(τⁱ ) | 
+ | By taking the average (1/m), we obtain an unbiased estimate that reduces the variance of | 
+ | the gradient estimate. More trajectories = less noisy gradient. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | EXPANDING THE LOG | 
+ | ∇_θ log P_θ(τ, θ) = ∇_θ log [ μ(s₀) | 
+ | · Π_{t=0} P(sₜ ₊₁|sₜ ,aₜ ) | 
+ | · π_θ(aₜ |sₜ ) ] | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | = ∇_θ log μ(s₀) | 
+ | + Σ_t ∇_θ log P(sₜ ₊₁|sₜ ,aₜ ) | 
+ | + Σ_t ∇_θ log π_θ(aₜ |sₜ ) | 
+ |  | 
+
+[TABLE]
+ |  |  |  |  | 
+ | Term |  |  | Why It Drops Out | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+∇_θ log μ(s₀) = 0 |  |  |  | Initial state distribution. The policy parameter θ does NOT affect | 
+ |  |  |  | which state the task starts in. Since μ(s₀ ) is independent of θ, its | 
+ |  |  |  | derivative with respect to θ is zero. | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+∇_θ log P(sₜ ₊₁|sₜ ,aₜ )
+= 0 |  |  |  | State transition dynamics. The policy parameters θ do not affect | 
+ |  |  |  | state-to-state transition probabilities (those are determined by the | 
+ |  |  |  | environment). So the derivative with respect to θ is zero. | 
+ |  |  |  |  | 
+
+[TABLE]
+∇_θ log P(sₜ ₊₁|sₜ ,aₜ )
+= 0
+
+[TABLE]
+ |  | 
+ | SIMPLIFIED GRADIENT OF LOG TRAJECTORY PROBABILITY | 
+ |  | 
+
+--- Page 6 ---
+
+∇_θ log P(τ; θ) = Σ_{t=0}^{T} ∇_θ log π_θ(aₜ | sₜ )
+The Environment Disappears Completely
+This is the most elegant result of the derivation. The environment dynamics — which
+are unknown and uncontrollable — vanish entirely from the gradient. Only the policy log
+probability remains, which we can compute and differentiate through our neural network.
+Part 6 — The Policy Gradient Expression
+Substituting the simplified ∇θ log P(τ;θ) back into Equation 2:
+FINAL — POLICY GRADIENT EXPRESSION
+∇_θ J(θ) = Σ_τ P(τ;θ) · [ Σ_{t=0}^{T} ∇_θ log π_θ(aₜ |sₜ ) ] ·
+R(τ)
+= E_{τ ~ π_θ} [ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · R(τ) ]
+This is the
+Policy Gradient Theorem.
+In practice, R(τ) (the total trajectory return) is replaced by Gₜ — the discounted return from
+timestep t onwards. This gives the REINFORCE update rule:
+REINFORCE UPDATE RULE
+θ ← θ + α · Σ_t [ ∇_θ log π_θ(aₜ |sₜ ) · Gₜ ]
+where Gₜ = rₜ + γr_{t+1} + γ²r_{t+2} + ...
+Part 7 — Complete Derivation at a Glance
+Define objective
+1 J(θ) = E_{τ ~ π_θ} [ R(τ) ]
+Maximise expected return over trajectories sampled from the policy
+
+[TABLE]
+ |  | 
+ | ∇_θ log P(τ; θ) = Σ_{t=0}^{T} ∇_θ log π_θ(aₜ | sₜ ) | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | The Environment Disappears Completely | 
+ | This is the most elegant result of the derivation. The environment dynamics — which | 
+ | are unknown and uncontrollable — vanish entirely from the gradient. Only the policy log | 
+ | probability remains, which we can compute and differentiate through our neural network. | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | FINAL — POLICY GRADIENT EXPRESSION | 
+ | ∇_θ J(θ) = Σ_τ P(τ;θ) · [ Σ_{t=0}^{T} ∇_θ log π_θ(aₜ |sₜ ) ] · | 
+ | R(τ) | 
+ |  | 
+ | = E_{τ ~ π_θ} [ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · R(τ) ] | 
+ |  | 
+
+[TABLE]
+ |  | 
+ | REINFORCE UPDATE RULE | 
+ | θ ← θ + α · Σ_t [ ∇_θ log π_θ(aₜ |sₜ ) · Gₜ ] | 
+ |  | 
+ | where Gₜ = rₜ + γr_{t+1} + γ²r_{t+2} + ... | 
+ |  | 
+
+[TABLE]
+ |  |  | 
+1 |  | Define objective | 
+ |  | J(θ) = E_{τ ~ π_θ} [ R(τ) ] | 
+ |  | Maximise expected return over trajectories sampled from the policy | 
+ |  |  | 
+
+--- Page 7 ---
+
+Write expectation as sum
+2 J(θ) = Σ_τ P(τ;θ) · R(τ) (Eq. 1)
+Sum over all possible trajectories, weighted by their probability
+Take gradient
+3 ∇_θ J(θ) = Σ_τ ∇_θ P(τ;θ) · R(τ)
+Move gradient inside the sum
+Apply log derivative trick
+4 = Σ_τ P(τ;θ) · ∇_θ log P(τ;θ) · R(τ) (Eq. 2)
+Multiply and divide by P(τ;θ) → converts to an expectation we can sample
+Expand log P(τ;θ)
+∇_θ log P(τ;θ) = ∇_θ log μ(s₀) + Σ_t ∇_θ log P(sₜ ₊₁|sₜ ,aₜ ) +
+5
+Σ_t ∇_θ log π_θ(aₜ |sₜ )
+Use log(product) = sum of logs
+Drop zero-gradient terms
+6 ∇_θ log P(τ;θ) = Σ_t ∇_θ log π_θ(aₜ |sₜ )
+μ(s₀) and P(sₜ₊₁|sₜ,aₜ) do not depend on θ → their gradients are zero
+Substitute back into Eq. 2
+7 ∇_θ J(θ) = E_{τ} [ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · R(τ) ]
+Final policy gradient expression — environment has vanished completely
+Estimate by sampling (Monte Carlo)
+8 ∇_θ J(θ) ≈ (1/m) Σᵢ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · Gₜ
+Run m episodes, use actual returns Gₜ as estimates — this is REINFORCE
+Part 8 — Intuition Behind the Final Expression
+8.1 What Each Term Does
+Term Role
+∇_θ log π_θ(aₜ |sₜ ) The score function. Points in the direction in θ-space that makes
+action aₜ more probable in state sₜ . This is what we can compute
+by backpropagating through our neural network.
+Gₜ (or R(τ)) The return. Tells us how good this outcome was. Scales the gradient
+update — big return = big step, small return = small step, negative
+return = reverse direction.
+· (multiply) The core mechanism. High return → push hard toward making this
+action more likely. Low return → push gently. This is literally
+"reinforce what worked".
+
+[TABLE]
+ |  |  | 
+2 |  | Write expectation as sum | 
+ |  | J(θ) = Σ_τ P(τ;θ) · R(τ) (Eq. 1) | 
+ |  | Sum over all possible trajectories, weighted by their probability | 
+ |  |  | 
+ |  |  | 
+3 |  | Take gradient | 
+ |  | ∇_θ J(θ) = Σ_τ ∇_θ P(τ;θ) · R(τ) | 
+ |  | Move gradient inside the sum | 
+ |  |  | 
+ |  |  | 
+4 |  | Apply log derivative trick | 
+ |  | = Σ_τ P(τ;θ) · ∇_θ log P(τ;θ) · R(τ) (Eq. 2) | 
+ |  | Multiply and divide by P(τ;θ) → converts to an expectation we can sample | 
+ |  |  | 
+ |  |  | 
+5 |  | Expand log P(τ;θ) | 
+ |  | ∇_θ log P(τ;θ) = ∇_θ log μ(s₀) + Σ_t ∇_θ log P(sₜ ₊₁|sₜ ,aₜ ) + | 
+ |  | Σ_t ∇_θ log π_θ(aₜ |sₜ ) | 
+ |  | Use log(product) = sum of logs | 
+ |  |  | 
+ |  |  | 
+6 |  | Drop zero-gradient terms | 
+ |  | ∇_θ log P(τ;θ) = Σ_t ∇_θ log π_θ(aₜ |sₜ ) | 
+ |  | μ(s₀) and P(sₜ₊₁|sₜ,aₜ) do not depend on θ → their gradients are zero | 
+ |  |  | 
+ |  |  | 
+7 |  | Substitute back into Eq. 2 | 
+ |  | ∇_θ J(θ) = E_{τ} [ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · R(τ) ] | 
+ |  | Final policy gradient expression — environment has vanished completely | 
+ |  |  | 
+ |  |  | 
+8 |  | Estimate by sampling (Monte Carlo) | 
+ |  | ∇_θ J(θ) ≈ (1/m) Σᵢ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · Gₜ | 
+ |  | Run m episodes, use actual returns Gₜ as estimates — this is REINFORCE | 
+ |  |  | 
+
+[TABLE]
+ |  |  |  |  | 
+ | Term |  |  | Role | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+∇_θ log π_θ(aₜ |sₜ ) |  |  |  | The score function. Points in the direction in θ-space that makes | 
+ |  |  |  | action aₜ more probable in state sₜ . This is what we can compute | 
+ |  |  |  | by backpropagating through our neural network. | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+Gₜ (or R(τ)) |  |  |  | The return. Tells us how good this outcome was. Scales the gradient | 
+ |  |  |  | update — big return = big step, small return = small step, negative | 
+ |  |  |  | return = reverse direction. | 
+ |  |  |  |  | 
+ |  |  |  |  | 
+· (multiply) |  |  |  | The core mechanism. High return → push hard toward making this | 
+ |  |  |  | action more likely. Low return → push gently. This is literally | 
+ |  |  |  | "reinforce what worked". | 
+ |  |  |  |  | 
+
+--- Page 8 ---
+
+E_{τ} [ ... ] The expectation. In practice estimated by averaging over m sampled
+episodes (Monte Carlo). More episodes = less noisy gradient
+estimate.
+8.2 Why the Environment Disappears
+The key insight is that ∇θ only acts on terms that depend on θ. The environment dynamics
+P(s'|s,a) and the initial state distribution μ(s₀ ) are fixed by the world — θ cannot change them.
+So their derivatives with respect to θ are zero and they drop out.
+This means we can compute the policy gradient without ever knowing the environment
+model. We only need to be able to sample from it — which we can always do by running the
+agent.
+8.3 Connection to LR-P (Learning Automata)
+Property LR-P vs Policy Gradient
+Policy representation Probability vector p vs Neural network π_θ
+Update on good outcome p_i += a(1-p_i) vs θ += α · ∇log π · G
+Update on bad outcome p_i -= b·p_i vs θ += α · ∇log π · G (negative G)
+Environment model None (both)
+States No (LR-P) vs Yes (Policy Gradient)
+The Deep Connection
+LR-P is essentially a hand-coded, stateless, linear policy gradient algorithm. Both
+say: "actions that led to good outcomes should become more probable." LR-P does it with
+arithmetic; REINFORCE does it with calculus and neural networks. The philosophy is
+identical.
+Part 9 — The REINFORCE Algorithm
+Putting it all together, the complete REINFORCE algorithm is:
+Initialise
+1
+Set θ randomly — start with an ignorant policy
+Collect episode
+2
+Run π_θ → record (s₀,a₀,r₀), (s₁,a₁,r₁), ..., (sT,aT,rT)
+
+[TABLE]
+ |  |  | 
+E_{τ} [ ... ] |  | The expectation. In practice estimated by averaging over m sampled | 
+ |  | episodes (Monte Carlo). More episodes = less noisy gradient | 
+ |  | estimate. | 
+ |  |  | 
+
+[TABLE]
+ |  |  |  | 
+Property |  |  | LR-P vs Policy Gradient | 
+ |  |  |  | 
+ |  |  |  | 
+Policy representation |  |  | Probability vector p vs Neural network π_θ | 
+ |  |  |  | 
+ |  |  |  | 
+Update on good outcome |  |  | p_i += a(1-p_i) vs θ += α · ∇log π · G | 
+ |  |  |  | 
+ |  |  |  | 
+Update on bad outcome |  |  | p_i -= b·p_i vs θ += α · ∇log π · G (negative G) | 
+ |  |  |  | 
+ |  |  |  | 
+Environment model |  |  | None (both) | 
+ |  |  |  | 
+ |  |  |  | 
+States |  |  | No (LR-P) vs Yes (Policy Gradient) | 
+ |  |  |  | 
+
+[TABLE]
+ |  | 
+ | The Deep Connection
+LR-P is essentially a hand-coded, stateless, linear policy gradient algorithm. Both
+say: "actions that led to good outcomes should become more probable." LR-P does it with
+arithmetic; REINFORCE does it with calculus and neural networks. The philosophy is
+identical. | 
+ |  | 
+
+[TABLE]
+ |  |  | 
+1 |  | Initialise | 
+ |  | Set θ randomly — start with an ignorant policy | 
+ |  |  | 
+ |  |  | 
+2 |  | Collect episode | 
+ |  | Run π_θ → record (s₀,a₀,r₀), (s₁,a₁,r₁), ..., (sT,aT,rT) | 
+ |  |  | 
+
+--- Page 9 ---
+
+This is the Monte Carlo sampling step
+Compute returns
+3 Gₜ = rₜ + γr_{t+1} + γ²r_{t+2} + ... for each t
+Walk backwards through episode — arithmetic only, not backprop
+Compute gradient
+4 ∇_θJ ≈ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · Gₜ
+Backpropagate through the neural network for ∇_θ log π_θ
+Update parameters
+5 θ ← θ + α · ∇_θJ
+Gradient ascent step
+Repeat from Step 2
+↺ Until policy converges
+Each repeat = one new Monte Carlo sample of the gradient
+REINFORCE is Monte Carlo Policy Gradient
+REINFORCE is called a Monte Carlo method because it estimates Q(s,a) — the true
+expected future return — by actually playing the episode to the end and using the
+observed return Gₜ as the estimate. No model, no bootstrapping. Just raw sampled
+experience.
+Next: Variance problem & baseline subtraction → Actor-Critic → PPO
+
+[TABLE]
+ |  |  | 
+ |  | This is the Monte Carlo sampling step | 
+ |  |  | 
+ |  |  | 
+3 |  | Compute returns | 
+ |  | Gₜ = rₜ + γr_{t+1} + γ²r_{t+2} + ... for each t | 
+ |  | Walk backwards through episode — arithmetic only, not backprop | 
+ |  |  | 
+ |  |  | 
+4 |  | Compute gradient | 
+ |  | ∇_θJ ≈ Σ_t ∇_θ log π_θ(aₜ |sₜ ) · Gₜ | 
+ |  | Backpropagate through the neural network for ∇_θ log π_θ | 
+ |  |  | 
+ |  |  | 
+5 |  | Update parameters | 
+ |  | θ ← θ + α · ∇_θJ | 
+ |  | Gradient ascent step | 
+ |  |  | 
+ |  |  | 
+↺ |  | Repeat from Step 2 | 
+ |  | Until policy converges | 
+ |  | Each repeat = one new Monte Carlo sample of the gradient | 
+ |  |  | 
+
+[TABLE]
+ |  | 
+ | REINFORCE is Monte Carlo Policy Gradient | 
+ | REINFORCE is called a Monte Carlo method because it estimates Q(s,a) — the true | 
+ | expected future return — by actually playing the episode to the end and using the | 
+ | observed return Gₜ as the estimate. No model, no bootstrapping. Just raw sampled | 
+ | experience. | 
+ |  | 
+
+============================================================
+FILE: REINFORCE Numerical.pdf
+============================================================
+
+
+--- Page 1 ---
+
+
+--- Page 2 ---
+
+
+--- Page 3 ---
+
+
+--- Page 4 ---
+
+
+--- Page 5 ---
+
+
+--- Page 6 ---

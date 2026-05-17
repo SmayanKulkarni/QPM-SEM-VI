@@ -1,0 +1,380 @@
+
+============================================================
+FILE: Eligibility_Traces.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+
+--- Slide 2 ---
+
+
+--- Slide 3 ---
+
+
+--- Slide 4 ---
+
+
+--- Slide 5 ---
+
+
+--- Slide 6 ---
+
+
+--- Slide 7 ---
+
+
+--- Slide 8 ---
+
+
+--- Slide 9 ---
+
+
+--- Slide 10 ---
+
+
+--- Slide 11 ---
+
+
+--- Slide 12 ---
+
+
+--- Slide 13 ---
+
+
+--- Slide 14 ---
+
+
+--- Slide 15 ---
+
+
+============================================================
+FILE: Temporal Difference Learning.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Temporal Difference Learning
+Module-5
+
+--- Slide 2 ---
+
+Table of Content
+What is Temporal Difference learning
+Advantages of Temporal Difference methods over Monte Carlo and Dynamic Programming methods
+TD(0)
+On-policy vs off-policy
+SARSA
+Q learning
+
+--- Slide 3 ---
+
+Temporal Difference (TD) Learning in RL
+Think of it this way: you're trying to learn how to predict rain. Three approaches:
+
+Dynamic Programming (DP): You have a perfect weather model. You compute everything from equations.
+Monte Carlo (MC): You wait for the entire day to end, then update based on whether it actually rained.
+TD Learning: Mid-morning, you see dark clouds. You immediately update your prediction — without waiting for the day to end.
+
+--- Slide 4 ---
+
+TD learning is like learning to predict while doing—making small, smart adjustments instead of waiting for complete feedback. This makes it fast and practical for real-world tasks.
+This means temporal difference takes a model-free. You can consider it learning from trial and error.
+
+--- Slide 5 ---
+
+The algorithm takes the benefits of both the Monte Carlo method and dynamic programming (DP) into account:
+
+
+Like MC methods, TD methods can learn from experience without requiring a model of the environment’s dynamics.
+Like DP methods, TD methods update estimates after every step based on other learned estimates without waiting for the outcome (this is called bootstrapping).
+
+--- Slide 6 ---
+
+Temporal difference (TD) learning, which is a model-free learning algorithm, has two important properties:
+It doesn’t require the model dynamics to be known in advance
+It can be applied for non-episodic tasks as well
+
+--- Slide 7 ---
+
+Like solving a maze by simulating all possible paths before acting.
+Learning to play chess by playing full games and updating values based on wins/losses.
+Navigating traffic by adjusting predictions after each observed delay (e.g., "This road is slower than expected, update ETA").
+
+--- Slide 8 ---
+
+
+--- Slide 9 ---
+
+What is Temporal Difference Learning (focuses on the differences the agent experiences in time)
+The key idea behind TD learning is that the agent can update its value estimates based on the difference between the current estimate and a better estimate, which is obtained by considering the immediate reward and the discounted value of the next state.
+The basic TD learning update rule for the value function V(s) is:
+V(s) <- V(s) + α [r + γV(s') - V(s)]
+Where:
+V(s) is the current estimate of the value of state s
+r is the immediate reward received after taking an action in state s
+γ is the discount factor (a value between 0 and 1)
+V(s') is the estimate of the value of the next state s'
+α is the learning rate (a value between 0 and 1)
+
+--- Slide 10 ---
+
+What is Temporal Difference Learning
+Monte Carlo methods adjust their estimates only after the final outcome is known, but temporal difference methods tend to adjust predictions to match later, more accurate, predictions for the future, much before the final outcome is clear and know. 
+This is essentially a type of bootstrapping.
+Bootstrapping = Don't wait for the truth. Use your best current guess to improve your current guess — and keep refining.
+
+--- Slide 11 ---
+
+What is Temporal Difference Learning
+Temporal difference learning in machine learning got its name from the way it uses changes, or differences, in predictions over successive time steps for the purpose of driving the learning process.
+The prediction at any particular time step gets updated to bring it nearer to the prediction of the same quantity at the next time step
+
+--- Slide 12 ---
+
+Temporal Difference Learning Overview
+TD learning introduces the concept of updating value estimates by bootstrapping - incorporating the current estimate to approximate the true value. 
+This iterative process allows for continual refinement, striking a balance between Monte Carlo's reliance on complete episodes and dynamic programming's model-based approach.
+Temporal Difference Methods vs. Monte Carlo and Dynamic Programming:
+Unlike Monte Carlo, TD methods update estimates after each time step, offering quicker convergence. Additionally, TD methods do not require a model of the environment, differentiating them from dynamic programming.
+TD methods have an advantage over DP methods in that they do not require a model of the environment, its reward, and next-state probability distributions, similarly TD methods have an advantage over Monte Carlo methods as they are naturally implemented in an online, fully incremental fashion. With Monte Carlo methods one must wait until the end of an episode because only then is the return known, whereas with TD methods one needs to wait for only one-time step.
+
+--- Slide 13 ---
+
+Temporal Difference methods are said to combine the sampling of Monte Carlo with the bootstrapping of DP, that is because in Monte Carlo methods target is an estimate because we do not know the actual expected value rather use a sample return from that particular episode, and in DP that target is an estimate because the value of the next state is not known instead the current estimate is used, and in TD the target is an estimate because of both the reasons, it samples the expected values and it uses the current estimate instead of the true state value.
+
+--- Slide 14 ---
+
+
+--- Slide 15 ---
+
+TD Prediction
+Prediction refers to the problem of estimating the values of states, a value of a state is an indication of how good is that state for an agent in the given environment, the higher the value of the state the better it is to be in that state.
+Backup diagram for n-step TD
+
+--- Slide 16 ---
+
+TD(0)
+TD method only need to wait until the next time step to create an update using the observed reward Rt+1 and the estimate V (St+1).
+The simplest TD method is using the following update:
+
+
+as soon as it move to state St+1 and receiving reward Rt+1.
+
+--- Slide 17 ---
+
+TD(0)
+We call the part in the brackets TD error, as it measure the difference between V(St) — the estimated value, and Rt+1 + V (St+1) — the better estimate.
+The above TD update is called TD(0) or one-step TD. That is, because it updates the value following the next state (St+1).
+It’s a special case of TD(λ)
+
+--- Slide 18 ---
+
+TD(0)
+We call the part in the brackets TD error:
+
+--- Slide 19 ---
+
+TD(0)
+
+--- Slide 20 ---
+
+
+--- Slide 21 ---
+
+The "Predicted Total Time" is a rolling estimate based on current conditions.
+At 6:00, you predicted 30 mins total → underestimated due to rain/truck.
+At 6:05, you revised to 40 mins → overestimated because the highway was faster.
+Final actual time: 43 mins.
+
+TD Learning Connection:
+
+This is exactly how Temporal Difference (TD) learning works!
+
+You constantly adjust predictions (V(s)) based on new observations (r + γV(s')).
+
+TD Error: Difference between your prediction and reality at each step.
+
+--- Slide 22 ---
+
+
+--- Slide 23 ---
+
+L
+
+--- Slide 24 ---
+
+
+--- Slide 25 ---
+
+TD is the learning technique (update after every step, bootstrap). On-policy vs Off-policy is a separate design choice made within that technique.
+
+--- Slide 26 ---
+
+
+--- Slide 27 ---
+
+
+--- Slide 28 ---
+
+Behavioral Policy vs Target Policy in Off-Policy Learning
+One policy explores the world. Another policy learns from that exploration.
+The Core Distinction
+
+--- Slide 29 ---
+
+Q-learning (off-policy TD Control)
+In Off-policy learning, we evaluate target policy (π) while following another policy called behavior policy (μ) (this is like a robot following a video or agent learning based on experience gained by another agent).
+In the Q-learning, target policy is a greedy policy and behavior policy is the Epsilon-greedy policy (this ensures exploration).
+
+--- Slide 30 ---
+
+Behavioral Policy vs Target Policy in Off-Policy Learning
+Behavioral Policy μ — uses ε-greedy: 
+
+
+Target Policy π — purely greedy: 
+
+The update rule reflects this split:
+The agent acts using μ (explores randomly sometimes), but updates as if it had always acted using π (the greedy best). That's the off-policy trick.
+
+--- Slide 31 ---
+
+What is Q-Learning?
+Q-learning is a model-free, value-based, off-policy algorithm that will find the best series of actions based on the agent's current state. The “Q” stands for quality. Quality represents how valuable the action is in maximizing future rewards.
+
+--- Slide 32 ---
+
+Q(s,a)="How much total reward will I get if I take action a in state s, and play optimally after?"
+
+--- Slide 33 ---
+
+Q-Table
+The agent will use a Q-table to take the best possible action based on the expected reward for each state in the environment. In simple words, a Q-table is a data structure of sets of actions and states, and we use the Q-learning algorithm to update the values in the table.
+Q-learning algorithm
+
+--- Slide 34 ---
+
+
+--- Slide 35 ---
+
+Update Q-Table
+
+--- Slide 36 ---
+
+
+--- Slide 37 ---
+
+
+--- Slide 38 ---
+
+
+--- Slide 39 ---
+
+SARSA (On-Policy)
+SARSA (State-Action-Reward-State-Action) TD method to solve the Control problem, which means it tries to find an optimal policy for a given task.
+In SARSA, the agent learns by updating its Q-value estimates based on the current policy, meaning that it uses the same policy for both action selection and value updates. 
+Specifically, SARSA learns by estimating the value of taking an action in a given state and following the current policy thereafter.
+
+--- Slide 40 ---
+
+SARSA (On-Policy)
+It updates the Q-value of the current state-action pair based on the current reward, the Q-value of the current state-action pair, and the estimated Q-value of that next state-action pair.
+Because SARSA uses the same policy for both action selection and value updates, it is considered an on-policy method.
+
+--- Slide 41 ---
+
+SARSA (On-Policy)
+
+--- Slide 42 ---
+
+
+--- Slide 43 ---
+
+
+--- Slide 44 ---
+
+
+--- Slide 45 ---
+
+
+--- Slide 46 ---
+
+
+--- Slide 47 ---
+
+Consider the following Q[S,A] table. Assume that α=0.1, and γ=0.5. Update the Q table with the following (S, A, R, S’, A’) experiences using SARSA.
+ 
+
+
+
+A. ⟨1, 1, 5, 2, 1⟩
+B. ⟨2, 1, 3, 3, 2⟩
+C. ⟨3, 2, 6, 1, 3⟩
+D. ⟨1, 3, 4, 2, 3⟩
+
+--- Slide 48 ---
+
+A. Q(1,1) = Q[s,a] + α(r + γQ[s',a'] - Q[s,a]) = 1.5 + 0.1(5 + 0.5(2.5) -1.5) = 1.975
+B. Q(2,1) = Q[s,a] + α(r + γQ[s',a'] - Q[s,a]) = 2.5 + 0.1(3 + 0.5(4) – 2.5) = 2.75
+C. Q(3,2) = Q[s,a] + α(r + γQ[s',a'] - Q[s,a]) = 4 + 0.1(6 + 0.5(1) – 4) = 4.25
+D. Q(1,3) = Q[s,a] + α(r + γQ[s',a'] - Q[s,a]) = 1 + 0.1(4 + 0.5(1.5) – 1) = 1.375
+
+--- Slide 49 ---
+
+Consider the following Q[S,A] table. Assume that α=0.1, and γ=0.5. Update the Q table with the following (S, A, R, S’) experiences using Q learning.
+A. ⟨1, 1, 5, 2⟩
+B. ⟨2, 1, 3, 3⟩
+C. ⟨3, 2, 6, 1⟩
+D. ⟨1, 3, 4, 2⟩
+
+--- Slide 50 ---
+
+Final Q table:
+A. Q(1,1) = Q[s,a] + α(r + γmaxa' Q[s',a'] - Q[s,a]) = 1.5 + 0.1(5 + 0.5(3) - 1.5) = 2
+B. Q(2,1) = Q[s,a] + α(r + γQ[s',a'] - Q[s,a]) = 2.5 + 0.1(3 + 0.5(4) – 2.5) = 2.75
+C. Q(3,2) = Q[s,a] + α(r + γQ[s',a'] - Q[s,a]) = 4 + 0.1(6 + 0.5(4) – 4) = 4.4
+D. Q(1,3) = Q[s,a] + α(r + γQ[s',a'] - Q[s,a]) = 1 + 0.1(4 + 0.5(3) – 1) = 1.375
+
+--- Slide 51 ---
+
+
+--- Slide 52 ---
+
+
+--- Slide 53 ---
+
+
+--- Slide 54 ---
+
+
+--- Slide 55 ---
+
+
+--- Slide 56 ---
+
+
+--- Slide 57 ---
+
+You’re a mouse in this tiny maze. You always start at the same starting point.
+The goal is to eat the big pile of cheese at the bottom right-hand corner and avoid the poison. The episode ends if we eat the poison, eat the big pile of cheese, or if we take more than five steps.
+ The learning rate is 0.1
+The discount rate (gamma) is 0.99
+The reward function goes like this:
++0: Going to a state with no cheese in it.
++1: Going to a state with a small cheese in it.
++10: Going to the state with the big pile of cheese.
+-10: Going to the state with the poison and thus dying.
++0 If we take more than five steps.
+
+
+Find the Q Values that will suggest the direction in which the mouse should move to reach the cheese.
+
+--- Slide 58 ---
+
+References
+https://web.stanford.edu/class/cme241/lecture_slides/rich_sutton_slides/11-12-TD.pdf
+https://towardsdatascience.com/introduction-to-reinforcement-learning-rl-part-6-temporal-difference-td-learning-2a12f0aba9f9
+https://medium.com/@violante.andre/simple-reinforcement-learning-temporal-difference-learning-e883ea0d65b0#:~:text=Temporal%20Difference%20(TD)&text=This%20means%20temporal%20difference%20takes,learning%20from%20trial%20and%20error.&text=You%20will%20notice%20in%20this,)%20and%20TD(%CE%BB).

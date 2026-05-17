@@ -38,9 +38,6 @@ env/
 *~
 .DS_Store
 
-# Note: LaTeX sources and outputs are tracked and should not be ignored.
-# Removed LaTeX-specific ignore patterns so .tex and generated PDFs can be committed.
-
 # Temporary files
 *.tmp
 *.bak
@@ -62,15 +59,8 @@ Thumbs.db
 .env.*.local
 secrets.json
 
-# Large binary files (keep source, not compiled)
-# PDFs in outputs/compiled are generated - can be regenerated
-# Keep curriculum PDFs as they're sources
-
-# Optional: Keep compiled PDFs if desired, or regenerate from source
-# Uncomment if you want to exclude:
-# outputs/compiled/*.pdf
-# outputs/compiled/figures/
-# outputs/compiled/images/
+# Extracted images from PPTX presentations (regenerable)
+outputs/figures/pptx/
 
 # Cache
 .cache/
@@ -79,3 +69,6 @@ secrets.json
 # Lock files (optional - include if you want reproducible versions)
 # poetry.lock
 # Pipfile.lock
+
+# LaTeX sources (.tex) and compiled outputs (.pdf, .aux, .toc, .log) are tracked
+# Only ignoring intermediate/temporary build artifacts below if needed

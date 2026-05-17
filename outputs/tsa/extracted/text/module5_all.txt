@@ -1,0 +1,681 @@
+
+============================================================
+FILE: Module 5.pdf
+============================================================
+
+
+--- Page 1 ---
+
+Module 5
+Multivariate Time Series: Background:
+Multivariate time series refers to a type of time series data where you have multiple
+variables observed over the same time intervals. Each variable has data points that are
+collected at the same time steps, making it a powerful tool for modeling and
+understanding complex systems where different variables are interrelated. Here's an
+introduction to multivariate time series:
+1. Definition: Multivariate time series data is a collection of observations,
+measurements, or readings for two or more variables over a sequence of equally
+spaced time points. The variables are typically dependent on time, and the goal
+is to analyze their joint behavior and relationships.
+2. Examples: Multivariate time series data can be found in various fields and applications,
+including:
+ Finance: Daily stock prices, trading volumes, and economic indicators.
+ Environmental science: Temperature, humidity, and air quality measurements
+over time.
+ Healthcare: Vital signs (e.g., heart rate, blood pressure) monitored over time.
+ Economics: Multiple economic indicators (e.g., GDP, unemployment rates)
+measured over time.
+ Engineering: Sensor data from machinery or processes.
+3. Data Structure: Multivariate time series data is organized in a matrix or dataframe
+format, where each row represents a time point, and each column corresponds
+to a different variable. The columns may represent different measurements or
+attributes related to the same time points.
+4. Analysis Goals: Analyzing multivariate time series data allows for various goals
+and tasks, including:
+ Understanding relationships: Identifying how variables interact and influence
+each other over time.
+ Forecasting: Predicting future values of one or more variables based on
+historical data.
+ Anomaly detection: Detecting unusual or unexpected behavior in the time
+series data.
+ Causality analysis: Determining which variables Granger-cause others(if
+one time series can predict another's future values), indicating causal
+relationships.
+ Dimensionality reduction: Reducing the number of variables while retaining
+essential information.
+5. Models and Techniques: To analyze multivariate time series data, a range of
+models and techniques can be applied, including:
+ Vector Autoregressive (VAR) models: Modeling the relationships between
+variables based on their past values.
+
+--- Page 2 ---
+
+ Granger causality analysis: Assessing the causal relationships between
+variables.
+ Principal Component Analysis (PCA): Reducing dimensionality and
+identifying dominant patterns in the data.
+ Machine learning methods: Using algorithms like neural networks, random
+forests, or support vector machines for forecasting and classification tasks.
+6. Challenges: Multivariate time series analysis presents challenges due to the
+increased complexity and interdependencies between variables. Dealing with
+missing data, model selection, and ensuring stationarity are some of the common
+challenges in this field.
+Multivariate time series data is a valuable resource for understanding and modeling
+complex systems with multiple interacting variables. It finds applications in a wide
+range of domains, and the analysis involves various statistical and machine learning
+techniques to uncover relationships, make predictions, and gain insights from the data.
+Sequences and Functions
+Sequences and functions are fundamental concepts in time series analysis, which
+is a statistical technique used to analyze and model data collected over time. Time
+series data typically involves a series of observations or measurements taken at regular
+intervals, such as daily stock prices, hourly temperature readings, monthly sales data,
+and so on. Let's explore how sequences and functions are relevant in time series
+analysis:
+1. Sequences in Time Series Analysis:
+ A time series is essentially a sequence of data points collected over time.
+These data points are often denoted as {Yt} for a time index 't,' where 't'
+represents the time step, and 'Yt' represents the value of the variable of
+interest at time 't.'
+ These sequences can be univariate (one variable) or multivariate (multiple
+variables) and can have various frequencies, such as hourly, daily, weekly,
+or any other time intervals.
+ Analyzing and understanding the underlying patterns and trends in these
+sequences is a key aspect of time series analysis. This includes identifying
+seasonality, trends, and irregular components within the data.
+2. Functions in Time Series Analysis:
+ Functions in time series analysis are used to represent and model the
+relationships within the data. Common functions include trend functions,
+seasonal functions, and autocorrelation functions.
+ Trend function: The trend component represents the long-term behavior or
+overall direction of the time series. Trend functions help to model and
+understand the underlying growth or decline in the data.
+
+--- Page 3 ---
+
+ Seasonal function: The seasonal component represents the repetitive patterns
+or cycles within the data that occur at fixed intervals (e.g., daily, weekly, yearly).
+Seasonal functions help capture and model the regular fluctuations in the data.
+ Autocorrelation function (ACF) and partial autocorrelation function
+(PACF): These functions are used to identify and quantify the relationship
+between the current observation and its past observations. ACF measures the
+correlation between data points at different lags, while PACF helps identify the
+direct and indirect effects of past observations on the current one.
+Convolution
+Convolution is a mathematical operation that is used in time series analysis for
+various purposes, including filtering, smoothing, and feature extraction. It plays
+a significant role in understanding and processing time series data. In the context of
+time series analysis, convolution is often used to apply various filters or kernels to
+the data. Here's how convolution is used in time series analysis:
+1. Moving Averages:
+ Convolution is commonly employed for calculating moving averages in time
+series data. A moving average is used to smooth the data and reduce noise or
+fluctuations. It involves taking the average of neighboring data points within a
+sliding window.
+ The convolution operation can be used to implement a moving average by
+convolving the time series data with a kernel (filter) that contains equally
+weighted coefficients over the window size.
+2. Convolutional Neural Networks (CNNs):
+ Convolutional Neural Networks, which are commonly used in image processing,
+can also be applied to time series data analysis.
+ In time series analysis, 1D convolutional layers are used to capture local
+patterns and features in the data. These layers slide a small window
+(kernel) over the time series data and perform convolution to extract
+relevant features.
+3. Cross-Correlation:
+ Cross-correlation is a variation of convolution used to measure the
+similarity between two time series or to detect patterns or relationships
+between them.
+ Cross-correlation involves sliding one time series over another and
+calculating the similarity at each position. It is particularly useful for tasks
+such as finding similarities in financial time series, detecting periodic patterns,
+or aligning two time series for analysis.
+Spectral Representations and mean squared errors
+
+--- Page 4 ---
+
+Spectral representations and mean squared errors (MSE) are important concepts in
+time series analysis, providing valuable tools for understanding and modeling time
+series data. Let's explore each concept in more detail:
+1. Spectral Representations in Time Series Analysis: Spectral representations are used to
+decompose and analyze time series data in the frequency domain, revealing the
+underlying periodic components and spectral characteristics of the data. Two common
+spectral representations are the Fourier Transform and the Power Spectral Density
+(PSD):
+a. Fourier Transform:
+ The Fourier Transform is a mathematical operation that transforms a time
+domain signal into its frequency domain representation.
+ It decomposes a time series into a set of sinusoidal components, each with an
+associated frequency, phase, and magnitude.
+ The resulting frequency domain representation provides insights into the
+periodic patterns and dominant frequencies present in the time series.
+b. Power Spectral Density (PSD):
+ The PSD is a representation of how the variance of a time series is distributed
+across different frequencies.
+ It quantifies the power or energy of a time series at each frequency component.
+ The PSD is particularly useful for identifying dominant frequencies,
+understanding periodicity, and detecting seasonality in time series data.
+Spectral representations are commonly used in time series analysis for applications
+such as identifying cyclic patterns, analyzing trends and seasonality, and making
+predictions based on the dominant spectral components. They are also essential in
+fields like signal processing, control systems, and physics for understanding the
+frequency characteristics of data.
+2. Mean Squared Error (MSE) in Time Series Analysis: MSE is a widely used metric in time
+series analysis, particularly in the context of forecasting and model evaluation. It
+quantifies the accuracy of a forecasting model by measuring the average squared
+difference between the predicted values and the actual observed values. The formula
+for MSE is typically as follows:
+MSE = (1/n) * Σ(yt - ŷt)^2
+where:
+ n is the number of observations in the time series.
+ yt is the actual value at time t.
+ ŷt is the predicted value at time t.
+Key points about MSE in time series analysis:
+ Lower MSE values indicate better predictive performance, as they suggest that
+the model's forecasts are closer to the actual data points.
+ MSE is sensitive to outliers, giving more weight to larger errors. In some cases,
+alternative error metrics like Mean Absolute Error (MAE) or Root Mean Squared
+Error (RMSE) may be preferred.
+
+--- Page 5 ---
+
+ MSE is valuable for comparing different forecasting models and selecting the
+one with the smallest error.
+In summary, spectral representations help in decomposing time series data into its
+frequency domain components, revealing periodic patterns and dominant frequencies.
+On the other hand, MSE is a critical metric for evaluating the accuracy of forecasting
+models and assessing their predictive performance in time series analysis. These
+concepts are essential for understanding and analyzing time-dependent data in
+various fields, including finance, economics, weather forecasting, and engineering.
+Multivariate time series regression: Conditional independence
+In multivariate time series regression, the concept of conditional independence is
+essential for understanding the relationships between variables and modeling their
+interactions. Conditional independence relates to the idea that the relationship
+between two variables in a multivariate time series can be assessed after
+accounting for the influence of one or more other variables. Here's how
+conditional independence is relevant in the context of multivariate time series
+regression:
+1. Conditional Independence and Causality: Conditional independence is closely
+tied to the concept of causality. It implies that two variables in a multivariate
+time series are conditionally independent if, after conditioning on other relevant
+variables, there is no direct causal relationship between them.
+2. Granger Causality Test: The Granger Causality test is a widely used method for
+assessing conditional independence and causality in time series data. It tests whether
+the past values of one variable significantly improve the prediction of another
+variable beyond the information provided by its own past values and other
+relevant predictors.
+3. Spurious Correlations: Without considering conditional independence,
+multivariate time series analysis can lead to spurious correlations. These are cases
+where two variables appear to be related, but the relationship is actually caused
+by a common third variable, leading to misleading results.
+4. Model Specification: In the context of multivariate time series regression, it is crucial
+to specify models that account for conditional independence correctly. Failing to
+consider conditional independence may lead to model misspecification and
+inaccurate parameter estimates.
+5. Vector Autoregressive (VAR) Models: VAR models are commonly used for
+multivariate time series regression. These models assume conditional independence
+between variables after conditioning on their own past values and the past values
+of other variables in the system. VAR models are explicitly designed to capture the
+dynamic relationships between variables in a multivariate time series.
+
+--- Page 6 ---
+
+In summary, conditional independence is a fundamental concept in multivariate time
+series regression. It is critical for identifying causal relationships between variables,
+distinguishing spurious correlations, and specifying appropriate models. Researchers
+and analysts use methods like the Granger Causality test and VAR models to assess
+and model conditional independence in multivariate time series data, helping to draw
+meaningful insights and make accurate predictions in complex time-dependent
+systems.
+Partial correlation and coherency between time series.
+Partial correlation and coherency are two important concepts used to analyze the
+relationships between time series data in multivariate time series analysis.
+1. Partial Correlation:
+ Partial correlation is a statistical measure that quantifies the relationship
+between two variables while controlling for the influence of one or more
+additional variables. It is used to assess the direct association between two
+variables after removing the effects of other related variables.
+ In the context of multivariate time series analysis, partial correlation helps to
+identify and measure the strength of relationships between two time series
+while accounting for the influence of other variables in the system.
+ Partial correlation is often represented by the partial correlation
+coefficient (also known as the partial correlation coefficient or conditional
+correlation coefficient), which quantifies the degree of linear dependence
+between two variables after controlling for the effects of other variables.
+ Partial correlation analysis can help reveal direct causal relationships and
+dependencies among variables in a multivariate time series, and it is commonly
+used in structural equation modeling, Granger causality analysis, and regression
+models.
+2. Coherency:
+ Coherency is a measure of the linear association or correlation in the
+frequency domain between two time series at specific frequencies. It is
+often used in the analysis of periodic or cyclical patterns in time series
+data.
+ Coherency is closely related to the concept of cross-spectral density, which is a
+way to represent the frequency-domain relationship between two time series.
+ Coherency is particularly useful when analyzing the commonality or
+synchronization of oscillations or frequency components between
+different time series, such as in the study of biorhythms, neuroscience, or
+signal processing.
+ It is computed using the Fourier transforms of the two time series and provides
+a value between 0 and 1, with 1 indicating perfect linear association at a specific
+frequency.
+
+--- Page 7 ---
+
+In summary, partial correlation and coherency are both important tools for analyzing
+relationships between time series data, but they operate in different domains. Partial
+correlation focuses on assessing direct associations between variables while
+controlling for other variables' effects in the time domain. Coherency, on the
+other hand, evaluates linear associations between time series in the frequency
+domain, helping to identify common frequency components and phase
+relationships. Both concepts play essential roles in understanding the
+interconnections between variables in multivariate time series analysis, whether it's in
+the context of statistical modeling, neuroscience, engineering, or other fields.
+
+============================================================
+FILE: Module 5.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+MODULE 5
+Multivariate
+Time Series
+Patterns, Relationships & Forecasting in Complex Systems
+VAR Models
+Granger Causality
+Spectral Analysis
+Conditional Independence
+
+--- Slide 2 ---
+
+What We'll Cover
+01
+Multivariate Time Series Basics
+Definition, structure & real-world examples
+02
+Sequences & Functions
+Trend, seasonal & autocorrelation functions
+03
+Convolution
+Moving averages, CNNs & cross-correlation
+04
+Spectral Representations & MSE
+Fourier transform, PSD & error metrics
+05
+Conditional Independence
+Granger causality & VAR models
+06
+Partial Correlation & Coherency
+Frequency-domain relationships
+
+--- Slide 3 ---
+
+What is Multivariate Time Series?
+Definition
+Multiple variables observed over the same time intervals
+
+Each variable captures a different dimension of a system, and variables are interrelated
+
+Organized as a matrix: rows = time steps, columns = variables
+
+
+Example Matrix:
+  t₁: [GDP=4.2, Unemployment=5.1%]
+  t₂: [GDP=4.5, Unemployment=4.9%]
+Analysis Goals
+🔍
+Understand Relationships:
+How variables interact over time
+📈
+Forecasting:
+Predict future values using history
+🚨
+Anomaly Detection:
+Spot unusual behavior patterns
+⚡
+Causality Analysis:
+Granger causality between variables (who affects whom)
+📊
+Dimensionality Reduction:
+PCA to reduce complexity
+
+--- Slide 4 ---
+
+Real-World Applications
+📊  Finance
+Stock Market Analysis
+Track price, volume & economic indicators simultaneously. Predict market crashes using multivariate signals.
+🏥  Healthcare
+Patient Vitals Monitoring
+Monitor heart rate, blood pressure & SpO₂ together. ICU systems alert when multiple vitals diverge.
+🌍  Environment
+Climate Monitoring
+Temperature, humidity & air quality measured together. Forecast pollution events using correlated variables.
+⚙️  Engineering
+Predictive Maintenance
+Vibration, temp & pressure sensors on machines. Detect failures before they happen using combined signals.
+📉  Economics
+Macro Indicators
+GDP, unemployment & inflation tracked together. Central banks use multivariate models for policy decisions.
+🏭  Manufacturing
+Quality Control
+Multiple process parameters monitored in real-time. Identify which variables cause defect rates to spike.
+
+--- Slide 5 ---
+
+Sequences & Functions in Time Series
+Sequences
+A time series is a sequence { Yt } where 't' is the time index and Yt is the value at time t.
+
+
+📌 Univariate: One variable (e.g., daily temp)
+
+📌 Multivariate: Multiple variables tracked together
+
+
+Real-World: Netflix tracks viewership, server load & ad clicks as a multivariate sequence — each minute tells a complete story.
+Key Functions
+Trend Function
+Models long-term growth/decline. E.g., rising e-commerce sales year over year.
+Seasonal Function
+Captures repeating cycles. E.g., ice cream sales peak every July, dip every January.
+ACF (Autocorrelation)
+Measures correlation at different lags. E.g., today's temp correlated with yesterday's?
+PACF (Partial ACF)
+Removes indirect effects. Isolates direct relationship between Yt and Yt-k.
+
+--- Slide 6 ---
+
+Convolution in Time Series
+A mathematical operation that slides a kernel/filter over time series data to extract patterns, smooth noise, or detect features.
+📉
+MA(t) = (1/n) × Σ y(t-i)
+Moving Averages
+Apply equally-weighted kernel over sliding window
+💼 Real World:
+Stock market 50-day & 200-day moving averages used by traders to identify trend reversals (Golden Cross / Death Cross)
+🧠
+Conv(t) = Σ kernel(i) × input(t+i)
+1D Convolutional Neural Networks
+Slide a learnable kernel over time series to extract local patterns
+💼 Real World:
+Wearable device (Apple Watch) uses 1D CNN to detect irregular heartbeat patterns from raw sensor data
+🔗
+CC(τ) = Σ x(t) × y(t+τ)
+Cross-Correlation
+Slide one time series over another to find similarity at each offset
+💼 Real World:
+TV show ratings vs. online search trends — finding the time lag between buzz and viewership peak
+
+--- Slide 7 ---
+
+Spectral Representations & MSE
+🔊 Spectral Analysis
+Fourier Transform
+Decomposes time series into sinusoidal components revealing dominant frequencies.
+
+💡 Spotify uses FFT to extract audio features (tempo, beat) from songs to power its recommendation engine.
+Power Spectral Density (PSD)
+Quantifies variance distribution across frequencies. Identifies dominant cycles & periodicity.
+
+💡 Geologists use PSD to analyze seismic wave frequencies and distinguish earthquake types from noise.
+📐 Mean Squared Error (MSE)
+MSE = (1/n) × Σ(yₜ - ŷₜ)²
+✅  Lower MSE = better model accuracy
+⚠️  Sensitive to outliers (squares errors)
+🔄  Compare models: pick lowest MSE
+📊  RMSE = √MSE (same units as data)
+💡 Amazon uses MSE to evaluate its demand forecasting models across thousands of products
+
+--- Slide 8 ---
+
+Conditional Independence & VAR Models
+Conditional Independence
+Two variables are conditionally independent if — after accounting for other relevant variables — there is no direct causal link between them.
+🌡️ Real-World Trap: Spurious Correlation
+Two students scoring high marks may seem related…but when you account for ‘hours studied’, the relationship disappears.
+⚡ Granger Causality Test
+Tests if past values of variable X improve prediction of variable Y beyond Y's own history.
+
+
+💼 Example: Does Google Search Volume for 'mortgage rates' Granger-cause actual mortgage applications the following week? Banks use this to time their product launches.
+📊 Vector Autoregressive (VAR) Models
+Each variable is modeled as a linear function of its own past values AND past values of all other variables.
+
+
+💼 Example: The US Federal Reserve uses VAR models to study how changes in the federal funds rate simultaneously affect inflation, unemployment, and GDP growth.
+
+--- Slide 9 ---
+
+Partial Correlation & Coherency
+🔗 Partial Correlation
+Measures the relationship between two variables after removing the influence of all other variables.
+Use Cases:
+Structural equation modeling  •  Granger causality  •  Regression model building
+🏦 Real-World Scenario
+A bank analyst wants to know if gold prices directly influence crude oil prices, or if both are driven by USD strength. Partial correlation reveals the true direct relationship after controlling for the dollar index.
+🌊 Coherency
+Measures the linear correlation between two time series in the frequency domain at specific frequencies.
+Range:
+0 to 1 (like a correlation coefficient)
+High (≈1):
+Strong sync between two series at that frequency
+Low (≈0):
+Little to no shared periodicity
+Related to:
+Cross-spectral density function
+🧬 Brain scientists use coherency to study synchronization between EEG signals from different brain regions during cognitive tasks — revealing how brain areas coordinate.
+
+--- Slide 10 ---
+
+Key Takeaways — Module 5
+01
+Multivariate ≠ Just More Data
+Multiple variables interacting over time — capturing system complexity that univariate models miss entirely.
+02
+Functions Reveal Hidden Structure
+Trend, seasonal & ACF functions decompose time series into interpretable components for better modeling.
+03
+Convolution Finds Patterns
+From moving averages to deep learning CNNs — convolution is the backbone of feature extraction in time series.
+04
+Spectral Analysis → Frequency View
+Fourier & PSD transform time series into the frequency domain, exposing cycles invisible in the time domain.
+05
+Correlation ≠ Causation
+Granger causality, conditional independence & VAR models help separate true causal links from spurious ones.
+06
+Coherency Bridges Time & Frequency
+Partial correlation & coherency quantify direct relationships — critical for brain science, finance & engineering.
+
+--- Slide 11 ---
+
+Module 5 Complete
+Multivariate Time Series Analysis
+VAR Models   •   Granger Causality   •   Convolution   •   Spectral Analysis   •   Conditional Independence   •   Partial Correlation
+Understanding complex systems through interrelated time-dependent variables
+
+============================================================
+FILE: Automated_Time_Series_Modeling.pptx
+============================================================
+
+
+--- Slide 1 ---
+
+Automated Forecasting Systems
+Module 3
+
+--- Slide 2 ---
+
+
+--- Slide 3 ---
+
+
+--- Slide 4 ---
+
+
+--- Slide 5 ---
+
+
+--- Slide 6 ---
+
+
+--- Slide 7 ---
+
+
+--- Slide 8 ---
+
+
+--- Slide 9 ---
+
+
+--- Slide 10 ---
+
+
+--- Slide 11 ---
+
+
+--- Slide 12 ---
+
+
+--- Slide 13 ---
+
+
+--- Slide 14 ---
+
+
+--- Slide 15 ---
+
+
+--- Slide 16 ---
+
+
+--- Slide 17 ---
+
+
+--- Slide 18 ---
+
+
+--- Slide 19 ---
+
+
+--- Slide 20 ---
+
+
+--- Slide 21 ---
+
+
+--- Slide 22 ---
+
+
+--- Slide 23 ---
+
+
+--- Slide 24 ---
+
+
+--- Slide 25 ---
+
+
+--- Slide 26 ---
+
+
+--- Slide 27 ---
+
+
+--- Slide 28 ---
+
+
+--- Slide 29 ---
+
+
+--- Slide 30 ---
+
+
+--- Slide 31 ---
+
+
+--- Slide 32 ---
+
+
+--- Slide 33 ---
+
+
+--- Slide 34 ---
+
+
+--- Slide 35 ---
+
+
+--- Slide 36 ---
+
+
+--- Slide 37 ---
+
+
+--- Slide 38 ---
+
+
+--- Slide 39 ---
+
+
+--- Slide 40 ---
+
+
+--- Slide 41 ---
+
+
+--- Slide 42 ---
+
+
+--- Slide 43 ---
+
+Auto ML in Time Series
+
+--- Slide 44 ---
+
+
+--- Slide 45 ---
+
+
+--- Slide 46 ---
+
+
+--- Slide 47 ---
+
+
+--- Slide 48 ---
+
+
+--- Slide 49 ---
+
+
+--- Slide 50 ---
+
+
+--- Slide 51 ---
+
+
+--- Slide 52 ---
+
+
+--- Slide 53 ---
+
+
+--- Slide 54 ---
+
+
+--- Slide 55 ---
+
+
+--- Slide 56 ---
+
+
+--- Slide 57 ---
+
+
+--- Slide 58 ---
+
+Integration of Auto ML and Hashing for Time Series Forecasting

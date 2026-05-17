@@ -1,0 +1,81 @@
+\contentsline {section}{\numberline {1}Unit 1: Introduction to Time Series Analysis}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}What is Time Series Analysis?}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Types of Time Series Analysis}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Stationarity vs Non-Stationarity}{3}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Stationary Time Series}{3}{subsubsection.1.3.1}%
+\contentsline {subsubsection}{\numberline {1.3.2}Non-Stationary Time Series}{3}{subsubsection.1.3.2}%
+\contentsline {subsubsection}{\numberline {1.3.3}Testing for Stationarity}{4}{subsubsection.1.3.3}%
+\contentsline {subsubsection}{\numberline {1.3.4}Types of Stationarity}{4}{subsubsection.1.3.4}%
+\contentsline {subsection}{\numberline {1.4}Seasonality}{4}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Trends: Parametric, Nonparametric, and Noise}{4}{subsection.1.5}%
+\contentsline {subsubsection}{\numberline {1.5.1}Parametric Trends}{4}{subsubsection.1.5.1}%
+\contentsline {subsubsection}{\numberline {1.5.2}Nonparametric Trends}{5}{subsubsection.1.5.2}%
+\contentsline {subsubsection}{\numberline {1.5.3}Noise (Irregular Component)}{5}{subsubsection.1.5.3}%
+\contentsline {subsection}{\numberline {1.6}Components of a Time Series}{5}{subsection.1.6}%
+\contentsline {section}{\numberline {2}Unit 2: Stationary Time Series}{6}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Formal Definition of a Time Series}{6}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Sample Mean and Standard Error}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Stationary Processes}{6}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Statistical Inference for Time Series}{6}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}The Correlogram (ACF and PACF)}{7}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Unit 3: Linear Time Series Models}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Motivation for Linear Time Series Models}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}The Autoregressive (AR) Model}{8}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}AR(1) Model}{8}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}AR(2) Model}{9}{subsubsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.3}The Moving Average (MA) Model}{10}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}MA(1) Model}{10}{subsubsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.4}The ARMA Model}{11}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}The ARIMA Model}{13}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}The SARIMA Model}{14}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Unit Roots, Integrated and Non-Invertible Processes}{15}{subsection.3.7}%
+\contentsline {subsubsection}{\numberline {3.7.1}Unit Roots}{15}{subsubsection.3.7.1}%
+\contentsline {subsubsection}{\numberline {3.7.2}Integrated Processes}{15}{subsubsection.3.7.2}%
+\contentsline {subsubsection}{\numberline {3.7.3}Non-Invertible Processes}{15}{subsubsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.8}Box-Jenkins Model Selection}{15}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Simulating from an Autoregressive Process}{16}{subsection.3.9}%
+\contentsline {section}{\numberline {4}Unit 4: Prediction and Forecasting}{16}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Using Prediction in Estimating Time Series}{16}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Forecasting for Autoregressive Processes}{17}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Forecasting for ARMA Processes}{17}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Forecasting Using the Infinite Past}{17}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Levinson-Durbin Algorithm}{17}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}The Kalman Filter}{17}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Automated Forecasting Systems}{18}{subsection.4.7}%
+\contentsline {subsubsection}{\numberline {4.7.1}Auto-ARIMA}{18}{subsubsection.4.7.1}%
+\contentsline {subsubsection}{\numberline {4.7.2}Prophet}{18}{subsubsection.4.7.2}%
+\contentsline {subsubsection}{\numberline {4.7.3}AutoML for Time Series}{18}{subsubsection.4.7.3}%
+\contentsline {section}{\numberline {5}Unit 5: Models with Trend, Unit Root Tests, and Monte Carlo}{18}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Removing Trend}{18}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Dickey-Fuller Tests}{19}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}The Monte Carlo Method}{19}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Unit 6: Multiequation Time Series Models}{20}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Intervention Analysis}{20}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Autoregressive Distributed Lag (ADL) Model}{21}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Transfer Function Model}{21}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Vector Autoregressive (VAR) Model}{21}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Vector Error Correction Model (VECM)}{22}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Structural VAR (SVAR)}{22}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Time-Varying Parameter VAR (TVP-VAR)}{22}{subsection.6.7}%
+\contentsline {subsection}{\numberline {6.8}Bayesian VAR (BVAR)}{23}{subsection.6.8}%
+\contentsline {section}{\numberline {7}Unit 7: Multivariate Time Series}{23}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Background: Sequences and Functions}{23}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Convolution}{23}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Spectral Representations and Mean Squared Error}{24}{subsection.7.3}%
+\contentsline {subsubsection}{\numberline {7.3.1}Spectral Representations}{24}{subsubsection.7.3.1}%
+\contentsline {subsubsection}{\numberline {7.3.2}Mean Squared Error}{24}{subsubsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.4}Multivariate Time Series Regression: Conditional Independence}{24}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Partial Correlation and Coherency}{24}{subsection.7.5}%
+\contentsline {section}{\numberline {8}Unit 8: Nonlinear Time Series Models}{25}{section.8}%
+\contentsline {subsection}{\numberline {8.1}The ARCH Model}{25}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}The GARCH Model}{25}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Bilinear Autoregressive (BAR) Model}{26}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Stochastic Volatility (SV) Models}{26}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Nonlinear Autoregressive Models (NAR and NARX)}{27}{subsection.8.5}%
+\contentsline {subsubsection}{\numberline {8.5.1}NAR --- Nonlinear Autoregressive Model}{27}{subsubsection.8.5.1}%
+\contentsline {subsubsection}{\numberline {8.5.2}NARX --- Nonlinear Autoregressive with Exogenous Inputs}{27}{subsubsection.8.5.2}%
+\contentsline {section}{\numberline {9}Visual Diagrams for Time Series Concepts}{27}{section.9}%
+\contentsline {subsection}{\numberline {9.1}ACF and PACF Identification Flowchart}{27}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Seasonal Decomposition Diagram}{28}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}AR(1) Stationarity Behavior Diagram}{28}{subsection.9.3}%
+\contentsline {section}{\numberline {10}Model Identification Summary: ACF and PACF Rules}{29}{section.10}%
