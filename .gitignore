@@ -70,5 +70,9 @@ outputs/figures/pptx/
 # poetry.lock
 # Pipfile.lock
 
+# Large binaries not tracked in GitHub
+*.pptx
+subjects/CV.zip
+
 # LaTeX sources (.tex) and compiled outputs (.pdf, .aux, .toc, .log) are tracked
 # Only ignoring intermediate/temporary build artifacts below if needed
