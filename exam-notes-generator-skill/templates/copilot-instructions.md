@@ -2,66 +2,86 @@
 
 ## Skill Routing Priority
 
-When the user asks for notes, revision material, flashcards, cheatsheets, or exam prep from any syllabus/unit/course files, use the skill at .github/docs/skills/exam-notes-generator/SKILL.md.
+When the user asks for notes, revision material, flashcards, cheatsheets, exam prep, solutions, or
+answers to practice questions from any course files or folders, use the skill at:
+`.github/docs/skills/exam-notes-generator/SKILL.md`
 
-If the user asks for a complete study source, exhaustive notes, or a LaTeX-ready document, route to the same skill and require a full coverage pass over every provided file.
+**One prompt is sufficient.** Do not ask for clarification unless the user's request is completely
+ambiguous about which subject or file to use. All other parameters (output type, depth, paths,
+syllabus) have safe defaults defined in the skill.
 
-For any notes request, treat LaTeX as the default output format: produce LaTeX-first structure with sectioning, itemize/enumerate lists, equations, and figure callouts, even if the file is saved as markdown for convenience.
+If the user asks for a complete study source, exhaustive notes, or a LaTeX-ready document, route to
+the same skill and require a full coverage pass over every provided file.
 
 ## Trigger Phrases
 
-Strongly prefer the exam-notes-generator skill when requests include phrases such as:
-- make notes
-- create notes
-- study notes
-- exam notes
-- summarize lecture
-- notes from slides
-- notes from pdf
-- prepare for exam
-- revise topic
-- make a cheatsheet
-- flashcards from these files
+Use the exam-notes-generator skill when requests include any of:
+- make notes / create notes / study notes / exam notes
+- notes from slides / notes from pdf / notes from this file
+- summarize lecture / revise topic / prepare for exam
+- make a cheatsheet / flashcards from these files
+- **solutions** / **solve the questions** / **answers to practice questions** / **answer the questions in**
+- generate solutions / practice question solutions
 
-## Scope Detection
+## Scope Detection (Folder-Pattern-Agnostic)
 
-Auto-detect relevant source content from these workspace areas unless the user specifies a narrower set:
-- UNIT 1/
-- UNIT 2/
-- UNIT 3/
-- UNIT 4/
-- UNIT 5/
-- UNIT 6/
-- any syllabus PDF in the workspace root
+Auto-detect source content from the workspace. The skill supports multiple folder conventions:
+
+| Pattern | Example |
+|---------|---------|
+| `subjects/<SubjectName>/Module N/` | `subjects/MLIII/Module 5/` |
+| `subjects/<SubjectName>/Unit N/` | `subjects/QPM/Unit 3/` |
+| `UNIT N/` | `UNIT 1/`, `UNIT 2/` |
+| `Module N/` at root | `Module 3/` |
+| Any folder with `.pptx`/`.pdf`/`.docx` files | detected automatically |
+
+When the user names a subject (e.g. "ML3", "NLTP"), scan the full workspace for a matching folder.
+Do not limit scope to `UNIT N/` naming only.
 
 ## Output Policy
 
 ### Format Requirements
-- **ALL notes output must be complete `.tex` (LaTeX) documents**, not markdown or markdown-in-disguise.
+- **ALL notes output must be complete, independently compilable `.tex` (LaTeX) documents.**
+- **Default: one `.tex` file per module/unit subfolder** — not one monolithic document.
+- Output path: `outputs/<subject-slug>/latex/<subject-slug>-module<N>-complete-study-source.tex`
 - The output `.tex` file must include:
-  - Full preamble: `\documentclass{article}` with required packages (amsmath, amssymb, graphicx, hyperref, tcolorbox, enumitem, etc.)
+  - Full preamble with all required packages: amsmath, amssymb, lmodern, graphicx, booktabs,
+    geometry, hyperref, tcolorbox, enumitem, xcolor, float, caption
+  - `\newtcolorbox` definitions matching any existing module files for the same subject
+    (**Style Inheritance Rule**: all modules of a subject share the same preamble and box styles)
   - `\tableofcontents` with proper sectioning
   - `\section`, `\subsection` hierarchy matching source depth
-  - Proper `\begin{itemize}` / `\begin{enumerate}` with nested lists where source material uses nesting
+  - Every `\subsection` opens with a 2–4 sentence explanatory paragraph before any bullet list
+  - Proper `\begin{itemize}` / `\begin{enumerate}` with nested lists where source uses nesting
   - Text emphasis: `\textbf{}` for key terms, `\textit{}` where appropriate
   - Equations in proper LaTeX environments (`\[ \]` or `\begin{equation}`)
   - `tcolorbox` environments for key concept callouts, important formulas, and worked numericals
-  - `\begin{figure}[H]` blocks with `\includegraphics` and `\caption{}` for all diagrams
-  - Proper spacing and formatting (e.g., `\setlist` for consistent list spacing)
-- The file is production-ready and can be compiled directly with `pdflatex` or `xelatex` without modification.
-- Store output as `.tex` file in `/outputs/latex/` with corresponding figures in `/outputs/figures/`.
-- **Reference example:** See `.github/reference-notes/cv-modules-4-6/cv-modules-4-6-complete-study-source.tex` for the quality standard and formatting style to match.
+    (blue = source examples, green = agent-constructed examples)
+  - `\begin{figure}[H]` blocks with `\includegraphics` and `\caption{}` for all significant diagrams
+  - Numerical inventory comment block at top of file
+- **Compile with two passes of `pdflatex`** (required for TOC and cross-references).
+- Report final page count and zero `!` errors to the user.
+- **Reference quality standard:** `.github/reference-notes/template/reference-study-source.tex`
+  — open and read this before generating any `.tex` output. If an existing module `.tex` is
+  present for the same subject, also read it and inherit its preamble verbatim.
+
+### Solutions Document Requirements
+When the request is for solutions to practice questions:
+- Output path: `outputs/<subject-slug>/latex/<subject-slug>-practice-questions-solutions.tex`
+- Each question: gray tcolorbox (`colback=gray!6,colframe=black!60`) with question text verbatim
+- Each solution: blue tcolorbox (`colback=blue!4,colframe=blue!70`) with detailed answer
+- Every solution MUST open with a conceptual paragraph explaining the relevant theory — never start with bullet fragments
+- Show all arithmetic steps for numerical sub-questions
+- End numerical solutions with a boxed final answer and interpretation
 
 ### Content Requirements
 - Keep all factual content grounded in provided files only.
-- Include per-claim attribution where practical (file + page/slide/section).
-- If a requested topic is not present in sources, explicitly report missing coverage.
-- Do not invent formulas, definitions, or examples not present in source material.
-- For study-source requests, require exhaustive coverage: every theory concept, every mathematical concept, every diagram, and every explicit example visible in the sources must be mentioned in the notes or called out as missing.
-- For study-source requests, OCR every PDF page and inspect every slide/page image, including handwritten pages and screenshot-style content, rather than trusting the text layer alone.
-- If the source set is incomplete for an exhaustive output, state the gap clearly instead of silently skipping it.
-- **Do NOT compress source bullet lists.** Preserve the original bullet depth, sub-points, caveats, examples, step ordering, and qualifiers in the notes. If the source uses nested bullets or sub-bullets, keep that hierarchy in the output.
+- If a requested topic is not in sources, explicitly state that — never fill gaps by guessing.
+- Exhaustive coverage: every theory concept, formula, diagram, and worked example from sources.
+- OCR every slide/page image — do not trust the text layer alone.
+- **Do NOT compress source bullet lists.** Preserve original bullet depth, sub-points, and caveats.
+- Every taught method that has a computable form gets ≥ 3 worked examples in the output.
 
 ## Preferred Command
 
-For consistent invocation, use the slash prompt command based on .github/docs/prompts/exam-notes.prompt.md.
+For consistent invocation, use the slash prompt: `.github/docs/prompts/exam-notes.prompt.md`

@@ -20,77 +20,101 @@ This package scaffolds a **Windsurf / Copilot-compatible agent skill** into any 
 npx exam-notes-generator init
 ```
 
-This scaffolds the skill into your current directory under `.github/docs/skills/exam-notes-generator/`.
+This scaffolds the skill into your current directory.
+
+For Windsurf users, also install into `.windsurf/rules/`:
+
+```bash
+npx exam-notes-generator init --windsurf
+```
 
 ### Install locally (for repeated use)
 
 ```bash
 npm install -g exam-notes-generator-skill
-exam-notes-generator init ./my-course-project
+exam-notes-generator init ./my-course-project --windsurf
 ```
 
 ## What Gets Installed
 
 ```
 .github/
+  copilot-instructions.md            # AI workspace routing rules (Windsurf / Copilot standard path)
   docs/
-    copilot-instructions.md          # AI workspace routing rules
     prompts/
-      exam-notes.prompt.md           # Slash-prompt template
+      exam-notes.prompt.md           # Lazy-prompt harness (one prompt = full output)
     skills/
       exam-notes-generator/
-        SKILL.md                      # Full skill specification (~1000 lines)
+        SKILL.md                     # Full skill specification (~1100 lines)
         references/
-          flashcard-format.md         # Q&A card output format
-          ocr-strategy.md             # Scanned PDF handling
-          soffice-convert.md          # Legacy .doc/.ppt conversion
+          flashcard-format.md        # Q&A card output format
+          ocr-strategy.md            # Scanned PDF handling
+          soffice-convert.md         # Legacy .doc/.ppt conversion
   reference-notes/
-    (placeholder for reference .tex examples)
+    template/
+      reference-study-source.tex     # LaTeX quality & formatting benchmark
+
+# With --windsurf:
+.windsurf/
+  rules/
+    exam-notes-generator.md          # Windsurf Rules panel entry
 ```
 
-## Skill Workflow (After Install)
+## Skill Workflow (One Prompt Is All You Need)
 
-1. **Place your course materials** in the project (e.g., `subjects/ML 3/Module 1/`, `UNIT 1/`)
-2. **Ask your AI assistant**:
-   - *"Make complete study notes from subjects/ML 3/"*
-   - *"Generate exam notes for UNIT 1 and UNIT 2"*
-   - *"Create flashcards from these slides"*
-3. **The skill automatically**:
-   - Inventories all source files
-   - Extracts text, tables, and embedded images
-   - Rasterizes every page and runs OCR
-   - Classifies diagrams (architecture, flowcharts, plots, etc.)
+1. **Place your course materials** in the project (any folder structure works):
+   - `subjects/<SubjectName>/Module N/` ← standard
+   - `UNIT N/` ← also supported
+   - Any folder with `.pptx`/`.pdf`/`.docx` files
+2. **Ask your AI assistant with a single casual prompt**:
+   - *"Make complete study notes for ML3"*
+   - *"Notes for Module 5 from subjects/NLTP/Module 5/"*
+   - *"Solutions for the practice questions in Practice Questions.docx"*
+   - *"Flashcards for the DP and MC section"*
+3. **The skill automatically** (no follow-up questions):
+   - Locates source files by subject/module name matching
+   - Extracts text layer + all embedded images
+   - Rasterizes every page/slide and OCRs them
+   - Inherits preamble style from existing module files (style consistency)
    - Builds a numerical inventory and augments with extra examples
-   - Produces a production-ready `.tex` file in `/outputs/latex/`
+   - Produces one standalone compilable `.tex` per module
+   - Runs two-pass `pdflatex` and reports page count + error count
 
 ## Key Design Principles
 
 | Principle | Enforcement |
 |---|---|
+| **One prompt** | No clarifying questions — all parameters have safe defaults |
 | **Grounded only** | Every fact must trace to a specific source file |
-| **LaTeX-first** | Output is compilable `.tex`, not markdown-in-disguise |
-| **Diagrams are content** | Every significant figure is extracted, OCR'd, renamed semantically, and embedded |
-| **No compression** | Source bullet hierarchy, sub-points, and caveats are preserved |
+| **LaTeX-first** | Output is compilable `.tex`, one file per module |
+| **Style inheritance** | New modules inherit preamble from existing modules of same subject |
+| **Diagrams are content** | Every significant figure extracted, OCR'd, named semantically, embedded |
+| **No compression** | Source bullet hierarchy, sub-points, and caveats preserved |
 | **Numericals mandatory** | Every method gets ≥3 worked examples (source + constructed) |
-| **Semantic placement** | Diagrams live in the same section as the theory they illustrate |
+| **Solutions mode** | Practice question files produce explanatory Q+A `.tex` documents |
+| **Two-pass compile** | Always runs `pdflatex` twice; reports zero `!` errors |
 
-## Example Invocation
-
-After installing the skill into a project, trigger it via:
+## Example Invocations
 
 ```
-/exam-notes sourcePath=subjects/QPM/ outputType=notes depth=detailed
+# Study notes — one module
+"Make study notes for NLTP Module 6"
+
+# Study notes — all modules of a subject
+"Generate complete study-source LaTeX for all ML3 modules"
+
+# Solutions document
+"Solutions for the practice questions in subjects/MLIII/Practice Questions (2).docx"
+
+# Flashcards
+"Flashcards for the eligibility traces section of Module 5"
 ```
-
-Or simply ask your AI:
-
-> "Generate complete study-source LaTeX for all units in this workspace."
 
 ## Requirements
 
 - Node.js >= 18 (for the CLI scaffold tool)
-- The AI skill itself runs inside your agent environment (Windsurf, Copilot, etc.)
-- Optional but recommended for full functionality: `pymupdf`, `pdfplumber`, `python-pptx`, `python-docx`, `tesseract`
+- The AI skill runs inside your agent environment (Windsurf, Copilot, etc.)
+- Optional but recommended: `pymupdf`, `pdfplumber`, `python-pptx`, `python-docx`, `tesseract`
 
 ## License
 

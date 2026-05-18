@@ -1,6 +1,6 @@
 {
   "name": "exam-notes-generator-skill",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Npx-installable AI skill for generating exam-ready LaTeX study notes from course materials (PDF, DOCX, PPTX). Includes diagram extraction, OCR, worked numericals, and complete compilation-ready .tex output.",
   "bin": {
     "exam-notes-generator": "bin/cli.js",

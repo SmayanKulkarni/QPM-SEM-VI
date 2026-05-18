@@ -11,38 +11,44 @@ function printHelp() {
 exam-notes-generator-skill v${require('../package.json').version}
 
 Usage:
-  npx exam-notes-generator init [target-dir]    Scaffold the skill into a project
-  npx exam-notes-generator --help              Show this help
+  npx exam-notes-generator init [target-dir]           Scaffold the skill into a project
+  npx exam-notes-generator init [target-dir] --windsurf  Also install .windsurf/rules/ entry
+  npx exam-notes-generator --help                      Show this help
 
 Commands:
-  init [dir]    Install .github/docs/skills/exam-notes-generator/ and all
-                supporting files (copilot-instructions, prompts, references)
-                into the specified directory (default: current working dir).
+  init [dir]    Install the skill and all supporting files into the specified
+                directory (default: current working dir).
 
 What gets installed:
   .github/
+    copilot-instructions.md          <- workspace-level AI routing rules (Windsurf / Copilot)
     docs/
-      copilot-instructions.md
       prompts/
-        exam-notes.prompt.md
+        exam-notes.prompt.md         <- slash-prompt harness
       skills/
         exam-notes-generator/
-          SKILL.md
+          SKILL.md                   <- full skill specification
           references/
             flashcard-format.md
             ocr-strategy.md
             soffice-convert.md
     reference-notes/
-      (placeholder for reference .tex examples)
+      template/
+        reference-study-source.tex   <- LaTeX quality & formatting benchmark
+
+  With --windsurf flag, also installs:
+  .windsurf/
+    rules/
+      exam-notes-generator.md        <- Windsurf rules panel entry (same content as copilot-instructions)
 
 Examples:
   npx exam-notes-generator init
   npx exam-notes-generator init ./my-course-project
-  npx exam-notes-generator init /home/user/workspace/bio-notes
+  npx exam-notes-generator init /home/user/workspace/bio-notes --windsurf
 `);
 }
 
-function scaffold(targetDir) {
+function scaffold(targetDir, windsurfMode) {
   const destRoot = path.resolve(targetDir);
   const githubDir = path.join(destRoot, '.github');
 
@@ -50,9 +56,12 @@ function scaffold(targetDir) {
   const dirs = [
     path.join(githubDir, 'docs', 'prompts'),
     path.join(githubDir, 'docs', 'skills', 'exam-notes-generator', 'references'),
-    path.join(githubDir, 'reference-notes'),
     path.join(githubDir, 'reference-notes', 'template'),
   ];
+
+  if (windsurfMode) {
+    dirs.push(path.join(destRoot, '.windsurf', 'rules'));
+  }
 
   for (const d of dirs) {
     if (!fs.existsSync(d)) {
@@ -64,10 +73,12 @@ function scaffold(targetDir) {
   }
 
   // Map of template files -> destination paths
+  // IMPORTANT: copilot-instructions.md goes to .github/copilot-instructions.md
+  // (the standard path read by Windsurf and GitHub Copilot at workspace level).
   const files = [
     {
       src: path.join(TEMPLATES_DIR, 'copilot-instructions.md'),
-      dst: path.join(githubDir, 'docs', 'copilot-instructions.md'),
+      dst: path.join(githubDir, 'copilot-instructions.md'),
     },
     {
       src: path.join(TEMPLATES_DIR, 'prompts', 'exam-notes.prompt.md'),
@@ -95,6 +106,14 @@ function scaffold(targetDir) {
     },
   ];
 
+  // --windsurf: also copy copilot-instructions to .windsurf/rules/
+  if (windsurfMode) {
+    files.push({
+      src: path.join(TEMPLATES_DIR, 'copilot-instructions.md'),
+      dst: path.join(destRoot, '.windsurf', 'rules', 'exam-notes-generator.md'),
+    });
+  }
+
   let installed = 0;
   let updated = 0;
 
@@ -118,9 +137,13 @@ function scaffold(targetDir) {
   console.log(`\nDone. ${installed} new file(s) installed, ${updated} updated.`);
   console.log(`Target: ${destRoot}`);
   console.log(`\nNext steps:`);
-  console.log(`  1. Add your source materials (PDF / PPTX / DOCX) to the project.`);
-  console.log(`  2. Ask your AI assistant to generate notes using the skill.`);
-  console.log(`  3. Or invoke the slash prompt: /exam-notes <source-path> [output-type]`);
+  console.log(`  1. Place your source materials (PDF / PPTX / DOCX) in the project,`);
+  console.log(`     e.g. subjects/<SubjectName>/Module N/`);
+  console.log(`  2. Ask your AI assistant with a single prompt:`);
+  console.log(`     "Make complete study notes for <subject name>"`);
+  console.log(`     "Solutions for the practice questions in <file.docx>"`);
+  console.log(`  3. The skill auto-detects sources, output paths, and existing style.`);
+  console.log(`     No follow-up questions needed.`);
 }
 
 function main() {
@@ -134,8 +157,10 @@ function main() {
   const command = args[0];
 
   if (command === 'init') {
-    const target = args[1] || '.';
-    scaffold(target);
+    const positional = args.filter(a => !a.startsWith('--'));
+    const target = positional[1] || '.';
+    const windsurfMode = args.includes('--windsurf');
+    scaffold(target, windsurfMode);
   } else {
     console.error(`Unknown command: ${command}`);
     printHelp();

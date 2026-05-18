@@ -87,6 +87,68 @@
 \setlist[itemize]{itemsep=0.5em, topsep=0.5em, parsep=0.2em}
 \setlist[enumerate]{itemsep=0.5em, topsep=0.5em, parsep=0.2em}
 
+% ============================================================
+% TCOLORBOX LIBRARY SETUP (required for breakable boxes)
+% ============================================================
+\tcbuselibrary{skins,breakable}
+
+% ============================================================
+% NEWTCOLORBOX DEFINITIONS — STYLE INHERITANCE RULE
+% ============================================================
+% These are the CANONICAL box definitions for study notes.
+% If a subject already has existing module .tex files, OPEN ONE,
+% copy its \newtcolorbox definitions here verbatim, and delete
+% these defaults. All modules of one subject must share the same
+% box style for visual consistency.
+%
+% Pattern used in production (ML3, NLTP modules):
+
+% Key concept / definition box (blue header)
+\newtcolorbox{conceptbox}[1]{
+    colback=blue!5!white, colframe=blue!60!black,
+    fonttitle=\bfseries, title=#1,
+    breakable, enhanced
+}
+
+% Worked numerical box — source example (blue)
+\newtcolorbox{sourcebox}[1]{
+    colback=blue!4!white, colframe=blue!70!black,
+    fonttitle=\bfseries, title=\textbf{Worked Example #1},
+    breakable, enhanced
+}
+
+% Worked numerical box — agent-constructed (green)
+\newtcolorbox{constructedbox}[1]{
+    colback=green!4!white, colframe=green!65!black,
+    fonttitle=\bfseries, title=\textbf{Worked Example #1},
+    breakable, enhanced
+}
+
+% Q&A box for solutions documents — question (gray)
+\newtcolorbox{questionbox}{
+    colback=gray!6, colframe=black!60,
+    fonttitle=\bfseries, title=\textbf{Question},
+    breakable, enhanced
+}
+
+% Q&A box for solutions documents — solution (blue)
+\newtcolorbox{solutionbox}{
+    colback=blue!4, colframe=blue!70,
+    fonttitle=\bfseries, title=\textbf{Solution},
+    breakable, enhanced
+}
+
+% Inline \qabox convenience alias (used in some subject styles)
+% \newtcolorbox{qabox}[2]{colback=#1!5,colframe=#1!70,title=\textbf{#2},breakable,enhanced}
+
+% ============================================================
+% COMPILE INSTRUCTION (two-pass mandatory)
+% ============================================================
+% pdflatex -interaction=nonstopmode -output-directory <outdir> <file.tex>
+% pdflatex -interaction=nonstopmode -output-directory <outdir> <file.tex>
+% Check .log for "!" lines — zero is required before declaring completion.
+% ============================================================
+
 \title{\textbf{[Subject Name]\\Complete Study Material --- [Edition]}}
 \author{Generated from course material with all numericals solved}
 \date{}
@@ -518,5 +580,57 @@ Content was not invented --- these gaps are reported for the student's awareness
           in the provided source set.
     \item \textbf{[Topic Y]}: Mentioned in syllabus but not elaborated in any provided file.
 \end{itemize}
+
+% ============================================================
+% SOLUTIONS DOCUMENT PATTERN
+% ============================================================
+% Use this pattern when the request is for solutions to practice questions
+% (triggered by: "solutions", "solve", "answers to practice questions").
+%
+% Output file: <subject-slug>-practice-questions-solutions.tex
+% One question+solution pair per \subsection*{Q N.M Title}
+%
+% RULES FOR SOLUTION BOXES:
+%   1. ALWAYS open with a conceptual paragraph (2-4 sentences) explaining the theory.
+%      Never start a solution box with a bare bullet list or fragment.
+%   2. Use \textbf{label:} sub-sections within the solution for multi-part questions.
+%   3. Show every arithmetic step for numerical sub-questions.
+%   4. End numerical solutions with \boxed{answer} and an interpretation sentence.
+%   5. Solutions should be EXPLANATORY, not just a list of facts.
+
+% ---- Example question/solution pair ----
+
+% \subsection*{Q1.1 [Question Title]}
+% \begin{tcolorbox}[colback=gray!6,colframe=black!60,breakable,title=\textbf{Question}]
+% [Question text verbatim from the source file]
+% \end{tcolorbox}
+% \begin{tcolorbox}[colback=blue!4,colframe=blue!70,breakable,title=\textbf{Solution}]
+%
+% \textbf{[Concept Name] --- Background:}
+%
+% [2-4 sentence conceptual paragraph. Define the concept, explain its purpose,
+% state why it matters. This paragraph must make the solution self-contained.]
+%
+% \textbf{[Sub-question or part label]:}
+% \begin{itemize}
+%   \item \textbf{Key element}: [Explanation with 1-2 sentences, not a fragment]
+%   \item \textbf{Key element}: [Explanation]
+% \end{itemize}
+%
+% \textbf{Numerical calculation (if applicable):}
+% \[
+%   \text{formula} = \text{value}
+% \]
+% [Explain what the number means in context.]
+%
+% \textbf{Conclusion:} [1 sentence summarising the answer.]
+% \end{tcolorbox}
+
+% ============================================================
+% END OF REFERENCE TEMPLATE
+% ============================================================
+% To use: copy this file, replace all [bracketed placeholders],
+% fill in actual content, run two-pass pdflatex, verify zero ! lines.
+% ============================================================
 
 \end{document}

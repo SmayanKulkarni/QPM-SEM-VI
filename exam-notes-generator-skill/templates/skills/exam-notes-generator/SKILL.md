@@ -17,7 +17,12 @@ description: >
 
   Supports: PDF (including scanned/image-based), DOCX, DOC, PPTX, PPT
   Extracts: Text, embedded images (diagrams, charts, figures), tables
-  Outputs: Structured Markdown notes, optionally saved as .md or .docx
+  Outputs: Complete, compilable LaTeX (.tex) documents, one per module/unit
+
+  Also triggers on:
+  - "solutions for these practice questions"
+  - "solve the questions in this file"
+  - "generate answers for the practice questions"
 ---
 
 # Exam Notes Generator
@@ -49,17 +54,100 @@ The skill is intentionally standalone:
 
 ---
 
-## Step 0 — Understand the request
+## Step 0 — Understand the request (Lazy-Prompt Compliant)
 
-Before touching any file, clarify (from context or by asking):
+**This skill is designed to fire from a single casual prompt.** The user should never need to
+specify more than a subject name or folder path. Every parameter below has a default — only ask
+if genuinely ambiguous and blocking.
 
-1. **What files are the source material?** (workspace path(s) or a folder)
-2. **Is there a syllabus?** If yes, use it to structure and scope the notes.
-3. **What output format is needed?** (Markdown in chat, `.md` file, `.docx` file, flashcards, cheatsheet)
-4. **Depth level?** (Quick bullet summary vs. detailed notes with examples)
+### 0A — Source resolution (auto-detect, no asking)
 
-If the syllabus is already in context (e.g., from the current conversation), extract unit/topic
-structure from it immediately — do not ask again.
+Resolve source files using these rules in order:
+
+1. **If the user names a subject** (e.g. "ML3", "NLTP", "QPM"): scan the workspace for any
+   folder whose name matches or contains those letters. Common patterns:
+   - `subjects/<SubjectName>/`
+   - `subjects/<SubjectName>/Module N/`
+   - `UNIT N/`
+   - Any folder with `.pptx`, `.pdf`, or `.docx` files whose names contain the subject keyword.
+2. **If the user names a module** (e.g. "Module 5", "Unit 3"): restrict to that subfolder only.
+3. **If the user provides an explicit path**: use it directly.
+4. **If nothing is specified**: list the top-level folders and ask the user to pick one — this
+   is the ONLY case where a clarifying question is acceptable.
+
+Do **not** ask about syllabus, output type, or depth unless the user mentions them first.
+Default values:
+- Syllabus: **none** — infer structure from folder/filename hierarchy.
+- Output type: **study notes** (detailed).
+- Depth: **detailed** (exhaustive, not summary).
+- Output granularity: **one `.tex` file per module/unit subfolder** (see Step 0C).
+
+### 0B — Request type detection
+
+Before proceeding, classify the request into one of three modes:
+
+| Mode | Trigger phrases | Output format |
+|------|----------------|---------------|
+| **Study Notes** (default) | "make notes", "study notes", "create notes", "notes from slides" | Standalone `.tex` per module, see Step 4 |
+| **Solutions Document** | "solutions", "solve", "answers to practice questions", "answer the questions in" | Q&A `.tex` with question boxes + solution boxes, see Step 0D |
+| **Flashcards / Cheatsheet** | "flashcards", "cheatsheet", "revision cards" | See `references/flashcard-format.md` |
+
+### 0C — Per-module standalone output (default for Study Notes mode)
+
+**Default behaviour: produce one `.tex` file per source module/unit subfolder**, not one
+monolithic document. Each file must be independently compilable with `pdflatex`.
+
+Naming convention:
+```
+<subject-slug>-module<N>-complete-study-source.tex
+```
+Examples: `ml3-module2-complete-study-source.tex`, `nltp-module5-complete-study-source.tex`.
+
+Output directory: derive from workspace root automatically:
+- Look for existing `outputs/` directory in workspace root.
+- If found, write to `outputs/<subject-slug>/latex/`.
+- If not found, create `outputs/<subject-slug>/latex/` under workspace root.
+- Extracted images go to `outputs/<subject-slug>/extracted/images/module<N>/`.
+
+**If a module already has an existing `.tex` file in the outputs directory**:
+1. Read the existing file's preamble (first 80 lines).
+2. Extract: `\newtcolorbox` definitions, color scheme, packages, `\geometry` settings.
+3. Use that exact preamble and box definitions in the new file to maintain style consistency.
+This is the **Style Inheritance Rule** — every module in a subject must match the others.
+
+### 0D — Solutions Document mode
+
+When the request is for **solutions to practice questions**:
+
+1. Parse the source file (DOCX/PDF) to extract every question. Use XML parsing for DOCX
+   (python-docx or direct `word/document.xml` parsing) to capture all paragraph text.
+2. Identify question boundaries: numbered headings, "Q.N", question marks, or explicit
+   "Module N" section breaks.
+3. For each question, produce a `tcolorbox` pair:
+   ```latex
+   % Question box (gray)
+   \begin{tcolorbox}[colback=gray!6,colframe=black!60,breakable,title=\textbf{Question}]
+   [question text verbatim]
+   \end{tcolorbox}
+   % Solution box (blue)
+   \begin{tcolorbox}[colback=blue!4,colframe=blue!70,breakable,title=\textbf{Solution}]
+   [detailed explanatory solution — NOT bullet fragments]
+   \end{tcolorbox}
+   ```
+4. Every solution must:
+   - Open with a conceptual paragraph explaining the relevant theory.
+   - Use structured sub-sections (bold labels) for multi-part questions.
+   - Include worked arithmetic for any numerical sub-question (show every step).
+   - End with a clear conclusion or boxed answer for numerical questions.
+5. Output file: `<subject-slug>-practice-questions-solutions.tex` in the same outputs directory.
+
+### 0E — Syllabus (optional, auto-use)
+
+If a syllabus file is present in the workspace root or the subject folder:
+- Auto-detect it (look for files named `syllabus`, `curriculum`, `course-outline`, or ending in
+  `_syllabus.pdf`/`_curriculum.pdf`).
+- If found, use it to validate module coverage and sequence sections.
+- If not found, infer structure from folder names and PPTX/PDF filenames. Do not ask.
 
 ---
 
@@ -917,9 +1005,28 @@ Always state which files were used and which syllabus topics had no matching sou
 
 ---
 
+## Step 6 — Compile and verify
+
+After writing the `.tex` file:
+
+1. Run **two passes** of `pdflatex` (required for `\tableofcontents` and cross-references):
+   ```bash
+   pdflatex -interaction=nonstopmode -output-directory <out_dir> <file.tex>
+   pdflatex -interaction=nonstopmode -output-directory <out_dir> <file.tex>
+   ```
+2. Check the `.log` file for `!` lines (fatal errors). Zero `!` lines is the acceptance criterion.
+3. If errors exist, fix them before declaring completion. Common causes:
+   - Missing `\includegraphics` target (image file not copied to figures dir)
+   - Unbalanced `\begin{tcolorbox}` / `\end{tcolorbox}`
+   - Unicode characters in text — replace with LaTeX equivalents (`\textendash`, `\textemdash`, etc.)
+   - Missing package (add to preamble)
+4. Report the final page count and error count to the user.
+
+---
+
 ## Reference files
 
 - `.github/docs/skills/exam-notes-generator/references/ocr-strategy.md` — How to handle scanned/image-only PDFs
 - `.github/docs/skills/exam-notes-generator/references/flashcard-format.md` — Q&A flashcard output format
 - `.github/docs/skills/exam-notes-generator/references/soffice-convert.md` — Converting legacy .doc / .ppt files safely
-- `.github/reference-notes/template/reference-study-source.tex` — **Reference LaTeX template (bundled with this skill). This is the quality and formatting standard for all generated notes.** Open and read this file before generating any notes. It shows: full preamble with all required packages, tcolorbox callouts (blue for source examples, green for constructed examples), TikZ diagram blocks, worked example format (Given / Find / Solution steps with inline equations / Answer / Interpretation), missing-coverage section, and numerical inventory comment block. Match this structure exactly.
+- `.github/reference-notes/template/reference-study-source.tex` — **Reference LaTeX template (bundled with this skill). This is the quality and formatting standard for all generated notes.** Open and read this file before generating any notes. It shows: full preamble with all required packages, newtcolorbox definitions, tcolorbox callouts (blue for source examples, green for constructed examples), TikZ diagram blocks, worked example format (Given / Find / Solution steps with inline equations / Answer / Interpretation), missing-coverage section, and numerical inventory comment block. **Match this structure exactly.** If an existing module `.tex` is present for the same subject, also read it and inherit its preamble verbatim (Style Inheritance Rule, Step 0C).
